@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { clearAnswers, loadAnswers } from '@/lib/storage'
 import { evaluateAnswers } from '@/logic/evaluationEngine'
@@ -387,90 +388,91 @@ function DiagnosticHero({ result }: { result: EvaluationResult }) {
   )
 }
 
+function TopPriorityCallout({ action }: { action?: ActionItem }) {
+  if (!action) {
+    return null
+  }
+
+  return (
+    <section
+      aria-labelledby="top-priority-heading"
+      className="rounded-[2rem] bg-primary p-6 text-primary-foreground sm:p-8"
+    >
+      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">
+        À faire en premier · {action.eyebrow}
+      </p>
+
+      <h2
+        id="top-priority-heading"
+        className="max-w-2xl text-2xl font-semibold leading-tight sm:text-3xl"
+      >
+        {action.title}
+      </h2>
+
+      <p className="mt-3 max-w-2xl text-base leading-relaxed text-primary-foreground/80">
+        {action.why}
+      </p>
+
+      <p className="mt-3 max-w-2xl text-base font-medium leading-relaxed">
+        {action.action}
+      </p>
+
+      {action.example && (
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-primary-foreground/70">
+          Exemple : {action.example}
+        </p>
+      )}
+    </section>
+  )
+}
+
 function ActionPlanSection({ actions }: { actions: ActionItem[] }) {
+  if (actions.length === 0) {
+    return null
+  }
+
   return (
     <section aria-labelledby="action-plan-heading">
-      <div className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary/70">
-          Plan d’action
-        </p>
+      <h2
+        id="action-plan-heading"
+        className="mb-4 text-xl font-semibold text-foreground"
+      >
+        Ensuite, à vérifier aussi
+      </h2>
 
-        <h2 id="action-plan-heading" className="text-2xl font-semibold text-foreground">
-          Les points à traiter en premier
-        </h2>
-
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/65">
-          Ces points indiquent ce qu’il faudrait vérifier ou ajuster avant de présenter 
-          la proposition à une équipe ou à un client.
-        </p>
-      </div>
-
-      {actions.length === 0 ? (
-        <div className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
-          <p className="text-sm leading-relaxed text-foreground/70">
-            Aucun point prioritaire n’a été détecté. Les recommandations peuvent
-            être utilisées comme pistes d’amélioration.
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {actions.map((action, index) => (
-            <article
-              key={action.id}
-              className="rounded-3xl bg-white/75 p-5 ring-1 ring-border"
+      <div className="flex flex-col divide-y divide-border rounded-3xl bg-white/75 ring-1 ring-border">
+        {actions.map((action, index) => (
+          <div key={action.id} className="flex gap-4 p-5">
+            <span
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-foreground/70"
+              aria-hidden="true"
             >
-              <div className="mb-4 flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-sm font-semibold text-primary-foreground">
-                    {index + 1}
-                  </span>
+              {index + 2}
+            </span>
 
-                  <div>
-                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-                      {actionSourceLabels[action.source]} · {action.eyebrow}
-                    </span>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/65">
+                {actionSourceLabels[action.source]} · {action.eyebrow}
+              </p>
 
-                    <h3 className="mt-1 text-lg font-semibold leading-snug text-foreground">
-                      {action.title}
-                    </h3>
-                  </div>
-                </div>
-              </div>
+              <h3 className="mt-0.5 text-base font-semibold leading-snug text-foreground">
+                {action.title}
+              </h3>
 
-              <div className="space-y-4">
-                <div>
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-foreground/65">
-                    Ce que cela indique
-                  </p>
+              <p className="mt-1 text-sm leading-relaxed text-foreground/70">
+                {action.why}{' '}
+                <span className="font-medium text-foreground">{action.action}</span>
+              </p>
 
-                  <p className="text-sm leading-relaxed text-foreground/70">
-                    {action.why}
-                  </p>
-                </div>
-
-                <div className="border-t border-border pt-4">
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-                    À faire
-                  </p>
-
-                  <p className="text-sm leading-relaxed text-foreground/80">
-                    {action.action}
-                  </p>
-
-                  {action.example && (
-                    <p className="mt-3 text-sm leading-relaxed text-foreground/65">
-                      <span className="font-semibold text-foreground/75">
-                        Exemple :
-                      </span>{' '}
-                      {action.example}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
+              {action.example && (
+                <p className="mt-1 text-sm leading-relaxed text-foreground/65">
+                  Exemple : {action.example}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   )
 }
@@ -500,19 +502,16 @@ function RecommendationsSection({
 
   return (
     <section aria-labelledby="recommendations-heading">
-      <div className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary/70">
-          Recommandations
-        </p>
+      <h2
+        id="recommendations-heading"
+        className="mb-1 text-xl font-semibold text-foreground"
+      >
+        Autres pistes utiles
+      </h2>
 
-        <h2 id="recommendations-heading" className="text-2xl font-semibold text-foreground">
-          Autres pistes utiles
-        </h2>
-
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/65">
-          Ces pistes complètent le plan d’action. Elles peuvent aider à affiner la proposition.
-        </p>
-      </div>
+      <p className="mb-4 text-sm text-foreground/65">
+        Complètent le plan d’action, sans être bloquantes.
+      </p>
 
       {filteredRecommendations.length === 0 ? (
         <div className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
@@ -536,8 +535,6 @@ function RecommendationsSection({
                     accent.bar,
                   ].join(' ')}
                 >
-                  {/* 1. Priorité en premier, en texte simple sur la bande
-                      de couleur du bord — se voit sans ajouter de pastille. */}
                   <p
                     className={[
                       'text-xs font-semibold uppercase tracking-[0.14em]',
@@ -547,7 +544,6 @@ function RecommendationsSection({
                     {priorityLabels[recommendation.priority]}
                   </p>
 
-                  {/* 2. Titre : ce qu’est la piste. */}
                   <h3
                     id={titleId}
                     className="text-base font-semibold leading-snug text-foreground"
@@ -555,31 +551,18 @@ function RecommendationsSection({
                     {recommendation.title}
                   </h3>
 
-                  {/* 3. Constat : pourquoi cette piste est pertinente. */}
                   <p className="text-sm leading-relaxed text-foreground/70">
-                    {recommendation.insight}
+                    {recommendation.insight}{' '}
+                    <span className="font-medium text-foreground">
+                      {recommendation.recommendation}
+                    </span>
                   </p>
 
-                  {/* 4. Action + exemple regroupés, séparés par une simple
-                      ligne plutôt qu’une boîte colorée pleine. */}
-                  <div className="mt-1 border-t border-border pt-3">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-                      À faire
+                  {recommendation.example && (
+                    <p className="text-sm leading-relaxed text-foreground/60">
+                      Exemple : {recommendation.example}
                     </p>
-
-                    <p className="text-sm leading-relaxed text-foreground/80">
-                      {recommendation.recommendation}
-                    </p>
-
-                    {recommendation.example && (
-                      <p className="mt-3 text-sm leading-relaxed text-foreground/65">
-                        <span className="font-semibold text-foreground/75">
-                          Exemple :
-                        </span>{' '}
-                        {recommendation.example}
-                      </p>
-                    )}
-                  </div>
+                  )}
                 </article>
               )
             })}
@@ -592,11 +575,19 @@ function RecommendationsSection({
                 onClick={() => setShowAll((current) => !current)}
                 aria-expanded={showAll}
                 aria-controls={gridId}
-                className="border-primary text-primary hover:bg-secondary"
+                className="gap-1.5 border-primary text-primary hover:bg-secondary"
               >
                 {showAll
                   ? 'Afficher moins'
                   : `Afficher ${hiddenCount} piste${hiddenCount > 1 ? 's' : ''} de plus`}
+                <ChevronDown
+                  size={16}
+                  className={[
+                    'shrink-0 transition-transform duration-200',
+                    showAll ? 'rotate-180' : '',
+                  ].join(' ')}
+                  aria-hidden="true"
+                />
               </Button>
             </div>
           )}
@@ -616,15 +607,9 @@ function MechanicExampleCard({
   return (
     <article className="rounded-[1.75rem] bg-white/75 p-5 ring-1 ring-border">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-            Mécanique
-          </p>
-
-          <h3 className="text-lg font-semibold text-foreground">
-            {mechanic.mechanicLabel}
-          </h3>
-        </div>
+        <h3 className="text-lg font-semibold text-foreground">
+          {mechanic.mechanicLabel}
+        </h3>
 
         <span
           className={[
@@ -637,27 +622,12 @@ function MechanicExampleCard({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="space-y-4">
-          <div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-foreground/65">
-              Risque principal
-            </p>
-
-            <p className="text-sm leading-relaxed text-foreground/70">
-              {mechanic.possibleRisk}
-            </p>
-          </div>
-
-          <div className="border-t border-border pt-4">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-              Alternative recommandée
-            </p>
-
-            <p className="text-sm leading-relaxed text-foreground/80">
-              {mechanic.ethicalAlternative}
-            </p>
-          </div>
-        </div>
+        <p className="text-sm leading-relaxed text-foreground/70">
+          {mechanic.possibleRisk}{' '}
+          <span className="font-medium text-foreground">
+            {mechanic.ethicalAlternative}
+          </span>
+        </p>
 
         <div className="rounded-2xl border border-border bg-[#F8F4EF] p-4">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
@@ -702,20 +672,16 @@ function MechanicsSection({
 
   return (
     <section aria-labelledby="mechanics-heading">
-      <div className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary/70">
-          Mécaniques
-        </p>
+      <h2
+        id="mechanics-heading"
+        className="mb-1 text-xl font-semibold text-foreground"
+      >
+        Mécaniques sélectionnées
+      </h2>
 
-        <h2 id="mechanics-heading" className="text-2xl font-semibold text-foreground">
-          Mécaniques sélectionnées : risques et alternatives
-        </h2>
-
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/65">
-          Chaque mécanique sélectionnée est accompagnée d’un risque possible, 
-          d’une alternative plus sobre et d’un exemple visuel.
-        </p>
-      </div>
+      <p className="mb-4 text-sm text-foreground/65">
+        Risque, alternative et exemple visuel pour chacune.
+      </p>
 
       <div className="flex flex-col gap-5">
         {mechanicsAlternatives.map((mechanic) => (
@@ -755,23 +721,13 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
     >
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary/70">
-            Analyse approfondie
-          </p>
-
-          <h2 id="ai-prompt-heading" className="text-2xl font-semibold text-foreground">
+          <h2 id="ai-prompt-heading" className="text-xl font-semibold text-foreground">
             Préparer une analyse IA
           </h2>
 
-          <p className="mt-3 text-sm leading-relaxed text-foreground/70">
-            Le résultat principal vient du questionnaire. Le prompt sert ensuite
-            à utiliser une IA externe pour reformuler, préparer une synthèse
-            client ou faire ressortir des questions à vérifier.
-          </p>
-
-          <p className="mt-3 text-sm leading-relaxed text-foreground/60">
-            Aucun appel API n’est lancé depuis le site. Il n’y a donc pas de clé
-            à gérer et pas de coût lié à l’utilisation du site.
+          <p className="mt-2 text-sm leading-relaxed text-foreground/65">
+            Sert à reformuler ou préparer une synthèse, sans remplacer le résultat
+            ci-dessus. Aucun appel API n’est fait depuis le site : pas de clé, pas de coût.
           </p>
         </div>
 
@@ -805,12 +761,20 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
             <Button
               type="button"
               variant="outline"
-              className="border-primary text-primary hover:bg-secondary"
+              className="gap-1.5 border-primary text-primary hover:bg-secondary"
               onClick={() => setShowPrompt((current) => !current)}
               aria-expanded={showPrompt}
               aria-controls={promptPanelId}
             >
               {showPrompt ? 'Masquer le prompt' : 'Voir le prompt'}
+              <ChevronDown
+                size={16}
+                className={[
+                  'shrink-0 transition-transform duration-200',
+                  showPrompt ? 'rotate-180' : '',
+                ].join(' ')}
+                aria-hidden="true"
+              />
             </Button>
           </div>
         </div>
@@ -862,26 +826,22 @@ function RiskDetailsSection({
 
   return (
     <section aria-labelledby="risk-details-heading">
-      <div className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary/70">
-          Détails
-        </p>
+      <h2
+        id="risk-details-heading"
+        className="mb-1 text-xl font-semibold text-foreground"
+      >
+        Pourquoi ce résultat ?
+      </h2>
 
-        <h2 id="risk-details-heading" className="text-2xl font-semibold text-foreground">
-          Pourquoi ce résultat ?
-        </h2>
-
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/65">
-          Les points déjà traités dans le plan d’action ne sont pas répétés ici.
-          Le reste est replié pour garder une lecture simple.
-        </p>
-      </div>
+      <p className="mb-4 text-sm text-foreground/65">
+        Ce qui n’est pas déjà couvert plus haut. Replié par défaut.
+      </p>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {activeRiskThemes.map((theme) => (
           <details
             key={theme.id}
-            className="rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
+            className="group rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
           >
             <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
               <div>
@@ -894,13 +854,21 @@ function RiskDetailsSection({
                 </p>
               </div>
 
-              <span
-                className={[
-                  'shrink-0 rounded-full px-3 py-1 text-xs font-semibold ring-1',
-                  riskLevelStyles[theme.level],
-                ].join(' ')}
-              >
-                {riskLevelLabels[theme.level]}
+              <span className="flex shrink-0 items-center gap-2">
+                <span
+                  className={[
+                    'rounded-full px-3 py-1 text-xs font-semibold ring-1',
+                    riskLevelStyles[theme.level],
+                  ].join(' ')}
+                >
+                  {riskLevelLabels[theme.level]}
+                </span>
+
+                <ChevronDown
+                  size={18}
+                  className="shrink-0 text-foreground/40 transition-transform duration-200 group-open:rotate-180"
+                  aria-hidden="true"
+                />
               </span>
             </summary>
 
@@ -950,26 +918,22 @@ function ContradictionsDetailsSection({
 
   return (
     <section aria-labelledby="contradictions-heading">
-      <div className="mb-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary/70">
-          Contradictions
-        </p>
+      <h2
+        id="contradictions-heading"
+        className="mb-1 text-xl font-semibold text-foreground"
+      >
+        Incohérences à vérifier
+      </h2>
 
-        <h2 id="contradictions-heading" className="text-2xl font-semibold text-foreground">
-          Incohérences à vérifier
-        </h2>
-
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/65">
-          Ces réponses semblent aller dans des directions différentes. 
-          Elles méritent d’être vérifiées avant de finaliser la recommandation.
-        </p>
-      </div>
+      <p className="mb-4 text-sm text-foreground/65">
+        Ces réponses vont dans des directions différentes.
+      </p>
 
       <div className="flex flex-col gap-3">
         {visibleContradictions.map((contradiction) => (
           <details
             key={contradiction.id}
-            className="rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
+            className="group rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
           >
             <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
               <div>
@@ -982,8 +946,16 @@ function ContradictionsDetailsSection({
                 </p>
               </div>
 
-              <span className="shrink-0 rounded-full bg-[var(--color-warning)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-warning)] ring-1 ring-[var(--color-warning)]/30">
-                {severityLabels[contradiction.severity]}
+              <span className="flex shrink-0 items-center gap-2">
+                <span className="rounded-full bg-[var(--color-warning)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-warning)] ring-1 ring-[var(--color-warning)]/30">
+                  {severityLabels[contradiction.severity]}
+                </span>
+
+                <ChevronDown
+                  size={18}
+                  className="shrink-0 text-foreground/40 transition-transform duration-200 group-open:rotate-180"
+                  aria-hidden="true"
+                />
               </span>
             </summary>
 
@@ -1122,6 +1094,17 @@ export function ResultsClient() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
       <DiagnosticHero result={result} />
 
+      {actionPlan.length > 0 ? (
+        <TopPriorityCallout action={actionPlan[0]} />
+      ) : (
+        <div className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
+          <p className="text-sm leading-relaxed text-foreground/70">
+            Aucun point prioritaire n’a été détecté. Les recommandations
+            ci-dessous peuvent être utilisées comme pistes d’amélioration.
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4">
         <p className="max-w-2xl text-sm leading-relaxed text-foreground/60">
           Le résultat vient des réponses au questionnaire. Le prompt IA sert ensuite
@@ -1161,7 +1144,7 @@ export function ResultsClient() {
         </div>
       </div>
 
-      <ActionPlanSection actions={actionPlan} />
+      <ActionPlanSection actions={actionPlan.slice(1)} />
 
       <MechanicsSection mechanicsAlternatives={result.mechanicsAlternatives} />
 
