@@ -14,12 +14,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://gamification.espinasse.ch'),
 
   title: {
-    default: 'Gamification Éthique',
+    default: `Gamification Éthique | Framework d'évaluation`,
     template: '%s | Gamification Éthique',
   },
 
   description:
-    "Framework permettant d'évaluer les risques éthiques des mécaniques de gamification avant leur intégration dans une interface numérique.",
+    "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
 
   applicationName: 'Gamification Éthique',
 
@@ -54,9 +54,9 @@ export const metadata: Metadata = {
     locale: 'fr_CH',
     url: 'https://gamification.espinasse.ch',
     siteName: 'Gamification Éthique',
-    title: 'Gamification Éthique',
+    title: `Gamification Éthique | Framework d'évaluation`,
     description:
-      "Framework permettant d'évaluer les risques éthiques des mécaniques de gamification avant leur intégration dans une interface numérique.",
+      "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
     images: [
     {
       url: '/og-image.png',
@@ -70,10 +70,9 @@ export const metadata: Metadata = {
 
   twitter: {
   card: 'summary_large_image',
-  title: 'Gamification Éthique',
+  title: "Gamification Éthique | Framework d'évaluation",
   description:
-    "Framework permettant d'évaluer les risques éthiques des mécaniques de gamification.",
-
+    "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
   images: ['/og-image.png'],
 },
 
