@@ -57,14 +57,25 @@ export const metadata: Metadata = {
     title: 'Gamification Éthique',
     description:
       "Framework permettant d'évaluer les risques éthiques des mécaniques de gamification avant leur intégration dans une interface numérique.",
-  },
+    images: [
+    {
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Gamification Éthique',
+    },
+  ],
+},
+  
 
   twitter: {
-    card: 'summary_large_image',
-    title: 'Gamification Éthique',
-    description:
-      "Framework permettant d'évaluer les risques éthiques des mécaniques de gamification.",
-  },
+  card: 'summary_large_image',
+  title: 'Gamification Éthique',
+  description:
+    "Framework permettant d'évaluer les risques éthiques des mécaniques de gamification.",
+
+  images: ['/og-image.png'],
+},
 
   robots: {
     index: true,

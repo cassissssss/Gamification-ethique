@@ -1,10 +1,4 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
-
-export const metadata: Metadata = {
-  title: 'Accueil',
-  description: `Un outil d'évaluation éthique pour identifier les risques liés aux mécaniques de gamification dans les projets numériques.`,
-}
 
 const howItWorks = [
   {
@@ -174,7 +168,7 @@ export default function HomePage() {
                 </p>
                 <p>
                   Le résultat n'est pas une décision finale. Il sert de support
-                  de discussion structuré pour aligner l'équipe sur les risques
+                  de discussion pour aligner l'équipe sur les risques
                   identifiés et les ajustements à envisager avant de concevoir
                   ou de mettre en production.
                 </p>
