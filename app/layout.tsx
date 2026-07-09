@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
 
     verification: {
-    google: '5necrh2OF92dhKrQKsw9-gwXIZG4LiVwq70q3gXQ8PM" />',
+    google: '5necrh2OF92dhKrQKsw9-gwXIZG4LiVwq70q3gXQ8PM',
   },
 
   applicationName: 'Gamification Éthique',
