@@ -3,6 +3,7 @@ import { Lexend } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { StructuredData } from '@/components/seo/StructuredData'
 
 const lexend = Lexend({
   subsets: ['latin'],
@@ -100,6 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           backgroundAttachment: 'fixed',
         }}
       >
+        <StructuredData />
         <Header />
         <main id="main-content" className="flex-1">
           {children}
