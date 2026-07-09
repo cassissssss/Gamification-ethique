@@ -129,7 +129,7 @@ const contradictionRules: ContradictionRule[] = [
     message:
       'L’expérience est utilisée par choix personnel, mais la mécanique est indiquée comme nécessaire pour terminer le parcours.',
     recommendation:
-      'Vérifier si l’utilisateur·rice peut réellement utiliser le service sans subir la mécanique, ou rendre son rôle plus transparent.',
+      'Vérifier si l’utilisateur-rice peut réellement utiliser le service sans subir la mécanique, ou rendre son rôle plus transparent.',
     severity: 'warning',
     sourceQuestionIds: ['Q6', 'Q13'],
     sourceOptionIds: ['personal_choice', 'required_to_finish'],

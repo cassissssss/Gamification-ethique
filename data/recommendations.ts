@@ -35,7 +35,7 @@ export const recommendations: Recommendation[] = [
     tag: 'dependance_risque',
     priority: 'haute',
     title: `Évaluer le risque de boucles compulsives`,
-    description: `Les mécaniques envisagées (streaks, récompenses aléatoires, cycles courts) peuvent créer des habitudes compulsives. Avant de les intégrer, évaluez si elles servent réellement l'utilisateur·rice ou uniquement les métriques d'engagement de la plateforme.`,
+    description: `Les mécaniques envisagées (streaks, récompenses aléatoires, cycles courts) peuvent créer des habitudes compulsives. Avant de les intégrer, évaluez si elles servent réellement l'utilisateur-rice ou uniquement les métriques d'engagement de la plateforme.`,
     principleSlug: 'recompenses',
   },
   {
@@ -53,7 +53,7 @@ export const recommendations: Recommendation[] = [
     tag: 'transparence_absente',
     priority: 'haute',
     title: `Documenter et communiquer les règles du système`,
-    description: `Les utilisateur·rices doivent pouvoir comprendre comment fonctionne le système : comment les points sont attribués, quels comportements sont récompensés et pourquoi. Prévoyez une page d'aide ou un onboarding qui explique les règles de manière claire et accessible.`,
+    description: `Les utilisateur-rices doivent pouvoir comprendre comment fonctionne le système : comment les points sont attribués, quels comportements sont récompensés et pourquoi. Prévoyez une page d'aide ou un onboarding qui explique les règles de manière claire et accessible.`,
     principleSlug: 'transparence',
   },
   {
@@ -61,7 +61,7 @@ export const recommendations: Recommendation[] = [
     tag: 'transparence_absente',
     priority: 'moyenne',
     title: `Rendre les critères de récompense visibles`,
-    description: `Si les utilisateur·rices ne comprennent pas pourquoi ils ou elles reçoivent (ou ne reçoivent pas) une récompense, la confiance dans le système s'érode. Affichez les critères de manière proactive, pas seulement dans une FAQ.`,
+    description: `Si les utilisateur-rices ne comprennent pas pourquoi ils ou elles reçoivent (ou ne reçoivent pas) une récompense, la confiance dans le système s'érode. Affichez les critères de manière proactive, pas seulement dans une FAQ.`,
     principleSlug: 'transparence',
   },
 
@@ -79,7 +79,7 @@ export const recommendations: Recommendation[] = [
     tag: 'autonomie_reduite',
     priority: 'moyenne',
     title: `Revoir les conditions d'accès aux fonctionnalités`,
-    description: `Si des fonctionnalités essentielles sont conditionnées à l'accumulation de points ou à la participation au système, cela réduit l'autonomie de l'utilisateur·rice. Distinguez clairement ce qui relève du service de base et ce qui relève de la gamification optionnelle.`,
+    description: `Si des fonctionnalités essentielles sont conditionnées à l'accumulation de points ou à la participation au système, cela réduit l'autonomie de l'utilisateur-rice. Distinguez clairement ce qui relève du service de base et ce qui relève de la gamification optionnelle.`,
     principleSlug: 'choix-contraint',
   },
 
@@ -97,7 +97,7 @@ export const recommendations: Recommendation[] = [
     tag: 'pression_temporelle',
     priority: 'basse',
     title: `Tester l'impact émotionnel des mécaniques temporelles`,
-    description: `Les mécaniques de pression temporelle peuvent générer du stress ou de l'anxiété, en particulier chez les utilisateur·rices régulier·ères. Prévoyez des tests utilisateurs spécifiques pour évaluer cet impact avant la mise en production.`,
+    description: `Les mécaniques de pression temporelle peuvent générer du stress ou de l'anxiété, en particulier chez les utilisateur-rices régulier-ères. Prévoyez des tests utilisateurs spécifiques pour évaluer cet impact avant la mise en production.`,
     principleSlug: 'feedback',
   },
 
@@ -107,7 +107,7 @@ export const recommendations: Recommendation[] = [
     tag: 'pression_sociale',
     priority: 'moyenne',
     title: `Rendre les classements optionnels`,
-    description: `Les classements publics peuvent décourager les utilisateur·rices qui se trouvent en bas du tableau. Proposez une option pour masquer son rang ou se comparer uniquement à des pairs de niveau similaire.`,
+    description: `Les classements publics peuvent décourager les utilisateur-rices qui se trouvent en bas du tableau. Proposez une option pour masquer son rang ou se comparer uniquement à des pairs de niveau similaire.`,
     principleSlug: 'comparaison-sociale',
   },
   {
@@ -115,7 +115,7 @@ export const recommendations: Recommendation[] = [
     tag: 'pression_sociale',
     priority: 'moyenne',
     title: `Obtenir le consentement avant toute exposition publique`,
-    description: `Exposer la progression d'un·e utilisateur·rice sans son accord explicite constitue une violation de son autonomie. Assurez-vous que chaque forme de partage ou d'exposition publique est opt-in, pas opt-out.`,
+    description: `Exposer la progression d'un-e utilisateur-rice sans son accord explicite constitue une violation de son autonomie. Assurez-vous que chaque forme de partage ou d'exposition publique est opt-in, pas opt-out.`,
     principleSlug: 'comparaison-sociale',
   },
 
@@ -125,7 +125,7 @@ export const recommendations: Recommendation[] = [
     tag: 'motivation_extrinseque',
     priority: 'moyenne',
     title: `Équilibrer récompenses externes et valeur intrinsèque`,
-    description: `Un système basé uniquement sur des récompenses externes (points, badges, cadeaux) risque de supplanter la motivation naturelle des utilisateur·rices. Assurez-vous que les mécaniques renforcent l'intérêt pour l'activité elle-même, plutôt que de le remplacer.`,
+    description: `Un système basé uniquement sur des récompenses externes (points, badges, cadeaux) risque de supplanter la motivation naturelle des utilisateur-rices. Assurez-vous que les mécaniques renforcent l'intérêt pour l'activité elle-même, plutôt que de le remplacer.`,
     principleSlug: 'recompenses',
   },
   {
@@ -133,7 +133,7 @@ export const recommendations: Recommendation[] = [
     tag: 'motivation_extrinseque',
     priority: 'basse',
     title: `Anticiper l'effet de surjustification`,
-    description: `Introduire des récompenses externes pour une activité que les utilisateur·rices faisaient déjà avec plaisir peut, à terme, réduire leur motivation intrinsèque. Évaluez si la gamification ajoute de la valeur ou si elle risque de nuire à l'engagement authentique sur le long terme.`,
+    description: `Introduire des récompenses externes pour une activité que les utilisateur-rices faisaient déjà avec plaisir peut, à terme, réduire leur motivation intrinsèque. Évaluez si la gamification ajoute de la valeur ou si elle risque de nuire à l'engagement authentique sur le long terme.`,
     principleSlug: 'recompenses',
   },
 
@@ -143,7 +143,7 @@ export const recommendations: Recommendation[] = [
     tag: 'consentement_flou',
     priority: 'haute',
     title: `Clarifier les conditions de participation au système`,
-    description: `Les utilisateur·rices doivent savoir qu'ils ou elles participent à un système de gamification, ce que cela implique pour leurs données et leur expérience. Intégrez une explication claire lors de l'onboarding et rendez les conditions facilement accessibles.`,
+    description: `Les utilisateur-rices doivent savoir qu'ils ou elles participent à un système de gamification, ce que cela implique pour leurs données et leur expérience. Intégrez une explication claire lors de l'onboarding et rendez les conditions facilement accessibles.`,
     principleSlug: 'transparence',
   },
   {
@@ -151,7 +151,7 @@ export const recommendations: Recommendation[] = [
     tag: 'consentement_flou',
     priority: 'haute',
     title: `Revoir l'architecture des choix proposés`,
-    description: `Si les options présentées à l'utilisateur·rice sont déséquilibrées visuellement ou si le refus est plus difficile d'accès que l'acceptation, il s'agit d'un dark pattern. Vérifiez que toutes les options sont présentées de manière équitable.`,
+    description: `Si les options présentées à l'utilisateur-rice sont déséquilibrées visuellement ou si le refus est plus difficile d'accès que l'acceptation, il s'agit d'un dark pattern. Vérifiez que toutes les options sont présentées de manière équitable.`,
     principleSlug: 'choix-contraint',
   },
 
@@ -161,7 +161,7 @@ export const recommendations: Recommendation[] = [
     tag: 'progression_claire',
     priority: 'basse',
     title: `Maintenir la cohérence de la progression tout au long du projet`,
-    description: `Une progression lisible est un atout éthique et UX. Veillez à ce que les règles de progression restent stables dans le temps et que toute modification soit communiquée clairement aux utilisateur·rices existant·es.`,
+    description: `Une progression lisible est un atout éthique et UX. Veillez à ce que les règles de progression restent stables dans le temps et que toute modification soit communiquée clairement aux utilisateur-rices existant-es.`,
     principleSlug: 'progression',
   },
 
@@ -181,7 +181,7 @@ export const recommendations: Recommendation[] = [
     tag: 'objectif_aligne',
     priority: 'basse',
     title: `Documenter l'alignement entre objectifs business et objectifs utilisateur`,
-    description: `Un système de gamification éthique sert à la fois les objectifs de la plateforme et ceux des utilisateur·rices. Documentez cet alignement et vérifiez-le régulièrement, en particulier lors de l'ajout de nouvelles mécaniques.`,
+    description: `Un système de gamification éthique sert à la fois les objectifs de la plateforme et ceux des utilisateur-rices. Documentez cet alignement et vérifiez-le régulièrement, en particulier lors de l'ajout de nouvelles mécaniques.`,
     principleSlug: 'transparence',
   },
 
@@ -199,7 +199,7 @@ export const recommendations: Recommendation[] = [
     tag: 'contexte_sensible',
     priority: 'moyenne',
     title: `Vérifier la conformité réglementaire`,
-    description: `Selon le domaine et le public, des réglementations spécifiques peuvent s'appliquer (RGPD, réglementation sur les jeux d'argent, protection des mineurs, etc.). Consultez un·e expert·e juridique avant la mise en production.`,
+    description: `Selon le domaine et le public, des réglementations spécifiques peuvent s'appliquer (RGPD, réglementation sur les jeux d'argent, protection des mineurs, etc.). Consultez un-e expert-e juridique avant la mise en production.`,
     principleSlug: 'autonomie',
   },
 ]

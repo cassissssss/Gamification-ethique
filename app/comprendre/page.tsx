@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 
 const dimensions = [
   { id: 'objectif',      label: `Objectif de l'expérience`,      text: `Pourquoi intégrer une gamification ? Engagement, apprentissage, conversion, changement de comportement ?` },
-  { id: 'public',        label: 'Public concerné',                text: `À qui s'adresse l'expérience ? Des mineur·es, des personnes vulnérables, des professionnel·les ?` },
+  { id: 'public',        label: 'Public concerné',                text: `À qui s'adresse l'expérience ? Des mineur-es, des personnes vulnérables, des professionnel-les ?` },
   { id: 'contexte',      label: `Contexte d'utilisation`,         text: `Le projet s'inscrit-il dans un domaine sensible : santé, éducation, finance, ressources humaines ?` },
   { id: 'mecaniques',    label: 'Mécaniques envisagées',          text: `Points, badges, classements, streaks, récompenses aléatoires, rareté — chaque mécanique porte ses propres risques.` },
-  { id: 'transparence',  label: 'Transparence',                   text: `Les règles du système sont-elles clairement communiquées ? L'utilisateur·rice sait-il ou elle comment fonctionne le système ?` },
-  { id: 'controle',      label: `Contrôle utilisateur`,           text: `L'utilisateur·rice peut-il ou elle désactiver les mécaniques, masquer sa progression, ou quitter le système ?` },
+  { id: 'transparence',  label: 'Transparence',                   text: `Les règles du système sont-elles clairement communiquées ? L'utilisateur-rice sait-il ou elle comment fonctionne le système ?` },
+  { id: 'controle',      label: `Contrôle utilisateur`,           text: `L'utilisateur-rice peut-il ou elle désactiver les mécaniques, masquer sa progression, ou quitter le système ?` },
   { id: 'pression',      label: 'Pression temporelle ou sociale', text: `Le système exerce-t-il une pression via des comptes à rebours, des pénalités d'inactivité ou des classements publics ?` },
   { id: 'motivation',    label: 'Type de motivation',             text: `Le système cherche-t-il à renforcer une motivation intrinsèque ou à la remplacer par des récompenses externes ?` },
 ]

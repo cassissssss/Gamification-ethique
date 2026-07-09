@@ -24,8 +24,8 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     type: "checkbox",
     maxSelections: 2,
     options: [
-      { id: "understand_what_to_do", label: "Aider les utilisateur·rices à comprendre quoi faire", tags: ["besoin_comprehension"] },
-      { id: "early_dropoff", label: "Accompagner les utilisateur·rices qui quittent le parcours tôt", tags: ["besoin_retention_precoce"] },
+      { id: "understand_what_to_do", label: "Aider les utilisateur-rices à comprendre quoi faire", tags: ["besoin_comprehension"] },
+      { id: "early_dropoff", label: "Accompagner les utilisateur-rices qui quittent le parcours tôt", tags: ["besoin_retention_precoce"] },
       { id: "progress_cues", label: "Donner plus de repères sur la progression", tags: ["besoin_progression"] },
       { id: "participation", label: "Encourager la participation", tags: ["besoin_participation"] },
       { id: "return_experience", label: "Encourager le retour dans l'expérience", tags: ["besoin_retour"] },
@@ -91,7 +91,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
   {
     id: "Q6",
     section: "Public et contexte",
-    title: "Dans quelle situation l'utilisateur·rice utilise-t-il ou elle cette expérience ?",
+    title: "Dans quelle situation l'utilisateur-rice utilise-t-il ou elle cette expérience ?",
     type: "radio",
     maxSelections: 1,
     options: [
@@ -103,7 +103,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "commercial_context", label: "Dans un contexte commercial", tags: ["risque_conversion"] },
       { id: "context_undefined", label: "Le contexte n'est pas encore défini", tags: ["contexte_a_definir"] },
     ],
-    note: "Cette question aide à comprendre le degré de liberté de l'utilisateur·rice dans l'expérience.",
+    note: "Cette question aide à comprendre le degré de liberté de l'utilisateur-rice dans l'expérience.",
     recommendationEffect: "Influence les recommandations sur participation optionnelle, consentement réel, contrôle utilisateur et niveau de prudence.",
   },
   {
@@ -116,7 +116,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "no_personal_data", label: "Non, aucune donnée personnelle liée à la gamification n'est prévue", tags: ["donnees_aucunes"] },
       { id: "personal_progress_data", label: "Oui, pour afficher une progression personnelle", tags: ["donnees_progression_personnelle"] },
       { id: "personalization_data", label: "Oui, pour personnaliser l'expérience", tags: ["donnees_personnalisation"] },
-      { id: "ranking_data", label: "Oui, pour situer ou classer les utilisateur·rices les un·es par rapport aux autres", tags: ["donnees_classement", "risque_donnees", "risque_comparaison_sociale"] },
+      { id: "ranking_data", label: "Oui, pour situer ou classer les utilisateur-rices les un-es par rapport aux autres", tags: ["donnees_classement", "risque_donnees", "risque_comparaison_sociale"] },
       { id: "data_undefined", label: "Ce point n'est pas encore défini", tags: ["donnees_a_definir"] },
     ],
     note: "Un suivi peut inclure une progression, un historique, un profil, des préférences ou des statistiques d'usage.",
@@ -129,7 +129,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     type: "checkbox",
     maxSelections: 2,
     options: [
-      { id: "guidance", label: "Aider l'utilisateur·rice à comprendre quoi faire", tags: ["direction_guidage"] },
+      { id: "guidance", label: "Aider l'utilisateur-rice à comprendre quoi faire", tags: ["direction_guidage"] },
       { id: "personal_progress", label: "Montrer une progression personnelle", tags: ["direction_progression_personnelle"] },
       { id: "feedback_after_action", label: "Donner un feedback après une action", tags: ["direction_feedback"] },
       { id: "optional_challenges", label: "Proposer des objectifs ou défis optionnels", tags: ["direction_defis_optionnels"] },
@@ -159,7 +159,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "streak", label: "Streak ou série de jours", tags: ["mecanique_streak", "risque_pression_temporelle"] },
       { id: "personalized_goals", label: "Objectifs personnalisés", tags: ["mecanique_objectifs_personnalises", "risque_donnees"] },
       { id: "visual_feedback", label: "Feedback visuel", tags: ["mecanique_feedback_visuel"] },
-      { id: "comparison_users", label: "Comparaison avec d'autres utilisateur·rices", tags: ["mecanique_comparaison", "risque_comparaison_sociale"] },
+      { id: "comparison_users", label: "Comparaison avec d'autres utilisateur-rices", tags: ["mecanique_comparaison", "risque_comparaison_sociale"] },
 { id: "no_precise_mechanic", label: "Aucune mécanique précise pour l'instant", tags: ["mecanique_aucune"], isExclusive: true },
     ],
     note: "Si aucune mécanique n'est encore définie, vous pouvez sélectionner \"Aucune mécanique précise pour l'instant\".",
@@ -203,7 +203,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
   {
     id: "Q12",
     section: "Transparence et contrôle",
-    title: "Comment l'utilisateur·rice interagit-il ou elle avec la mécanique ?",
+    title: "Comment l'utilisateur-rice interagit-il ou elle avec la mécanique ?",
     type: "radio",
     maxSelections: 1,
     options: [
@@ -259,23 +259,23 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     maxSelections: 1,
     options: [
       { id: "private", label: "Ils restent privés", tags: ["visibilite_privee"] },
-      { id: "user_shared", label: "Ils peuvent être partagés par l'utilisateur·rice", tags: ["visibilite_partage_volontaire"] },
+      { id: "user_shared", label: "Ils peuvent être partagés par l'utilisateur-rice", tags: ["visibilite_partage_volontaire"] },
       { id: "limited_group", label: "Ils sont visibles à un groupe limité", tags: ["visibilite_groupe_limite"] },
-      { id: "visible_to_concerned_users", label: "Ils sont visibles aux utilisateur·rices concerné·es", tags: ["visibilite_utilisateurs_concernes"] },
+      { id: "visible_to_concerned_users", label: "Ils sont visibles aux utilisateur-rices concerné-es", tags: ["visibilite_utilisateurs_concernes"] },
       { id: "ranking_comparison", label: "Ils sont utilisés dans un classement ou une comparaison", tags: ["visibilite_classement", "risque_comparaison_sociale"] },
       { id: "visibility_undefined", label: "Ce point n'est pas encore défini", tags: ["visibilite_a_definir"] },
     ],
-    note: "La visibilité sociale peut être privée, volontaire, limitée à un groupe ou utilisée pour comparer les utilisateur·rices.",
+    note: "La visibilité sociale peut être privée, volontaire, limitée à un groupe ou utilisée pour comparer les utilisateur-rices.",
     recommendationEffect: "Déclenche des recommandations sur partage volontaire, feedback privé, comparaison sociale, classement alternatif et exposition des résultats.",
   },
   {
     id: "Q16",
     section: "Temporalité et visibilité",
-    title: "Que se passe-t-il si l'utilisateur·rice interrompt son usage ou revient après une période d'absence ?",
+    title: "Que se passe-t-il si l'utilisateur-rice interrompt son usage ou revient après une période d'absence ?",
     type: "radio",
     maxSelections: 1,
     options: [
-      { id: "resume_where_left", label: "Il ou elle reprend là où il ou elle s'est arrêté·e", tags: ["reprise_continuite"] },
+      { id: "resume_where_left", label: "Il ou elle reprend là où il ou elle s'est arrêté-e", tags: ["reprise_continuite"] },
       { id: "resume_help_message", label: "Un message de reprise ou d'aide est proposé", tags: ["reprise_aide"] },
       { id: "progress_visible_unchanged", label: "La progression reste visible sans changement particulier", tags: ["reprise_progression_stable"] },
       { id: "interruption_changes_status", label: "Une interruption peut modifier la progression, le statut ou certains avantages", tags: ["reprise_perte_potentielle", "risque_pression_temporelle"] },

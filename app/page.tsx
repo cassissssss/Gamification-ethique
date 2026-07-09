@@ -10,27 +10,27 @@ const howItWorks = [
   {
     id: 'questionnaire',
     number: '01',
-    title: 'Répondre au questionnaire',
-    text: `Décrivez votre projet en questions réparties en six sections : objectif, public, mécaniques envisagées, degré de transparence et de contrôle laissé aux utilisateur·rices.`,
+    title: 'Décrivez votre projet',
+    text: `Répondez à un questionnaire structuré qui décrit les objectifs de votre projet client-e, son public cible et les mécaniques de gamification envisagées.`,
   },
   {
     id: 'vigilance',
     number: '02',
-    title: 'Identifier les points de vigilance',
-    text: `Vos réponses génèrent des tags. Ces tags activent des règles de priorité qui produisent un verdict explicite : pertinent, sous conditions, léger, déconseillé ou à recadrer.`,
+    title: 'Analysez les résultats',
+    text: `Le framework analyse vos réponses afin d'identifier les points de vigilance. Chaque mécanique est ensuite évaluée et classée selon son niveau de risque éthique.`,
   },
   {
     id: 'recommandations',
     number: '03',
-    title: 'Obtenir des recommandations',
-    text: `Chaque point de vigilance est accompagné d'une recommandation concrète, liée à un principe du framework. Une analyse IA complémentaire est disponible pour approfondir les résultats.`,
+    title: 'Améliorez votre conception',
+    text: `Les recommandations vous aident à améliorer votre conception. Pour aller plus loin, utilisez le prompt IA ou exportez un rapport PDF prêt à être partagé avec vos clients et collaborateurs.`,
   },
 ]
 
 const audiences = [
   { label: 'UX/UI designers' },
-  { label: 'Développeur·ses' },
-  { label: 'Chef·fes de projet' },
+  { label: 'Développeur-ses' },
+  { label: 'Chef-fes de projet' },
   { label: 'Product owners' },
   { label: 'Account managers' },
   { label: 'Équipes client' },
@@ -46,22 +46,18 @@ export default function HomePage() {
         className="mx-auto w-full max-w-6xl px-6 py-24 md:py-32"
       >
         <div className="max-w-2xl">
-          <p className="mb-5 text-sm font-semibold uppercase tracking-widest text-primary/60">
-            Gamification éthique
-          </p>
           <h1
             id="hero-heading"
             className="mb-6 text-4xl font-semibold leading-tight text-foreground md:text-5xl"
           >
-            Évaluer une mécanique de gamification
+            Motiver sans manipuler :
             <br />
-            <span className="text-primary">avant de l'intégrer</span>
+            <span className="text-primary">la gamification éthique</span>
           </h1>
           <p className="mb-8 text-lg leading-relaxed text-foreground/80">
-            Cet outil aide les professionnel·les du numérique à identifier
-            les risques éthiques liés aux mécaniques de jeu : pression
-            sociale, dépendance, manque de transparence, perte d'autonomie.
-            Il produit un verdict structuré et des recommandations concrètes.
+            Grâce à cet outil, évaluez le niveau éthique de votre projet
+            client-e, identifiez les points de vigilance et obtenez des 
+            recommandations concrètes pour les corriger.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
@@ -107,17 +103,18 @@ export default function HomePage() {
             </h2>
             <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground/80">
               <p>
-                La gamification peut soutenir l'engagement, rendre une expérience
-                plus fluide et encourager des comportements positifs. Mais lorsqu'elle
-                exploite la pression sociale, les récompenses aléatoires, les streaks
-                ou les mécaniques d'urgence, elle peut aussi créer des effets
-                indésirables : stress, dépendance, sentiment de manipulation.
+                Aujourd'hui, la gamification est de plus en plus présente dans les applications 
+                que nous utilisons quotidiennement. Elle est principalement instaurée pour 
+                motiver, engager et fidéliser les utilisateur-rices. Mais lorsqu'elle
+                exploite la pression sociale, les streaks ou les mécaniques d'urgence, 
+                elle peut aussi créer des effets éthiquement questionnables.
               </p>
               <p>
-                La frontière entre motivation et coercition est souvent difficile
-                à identifier en phase de conception. Ce framework a été conçu pour
-                aider les équipes à la repérer avant que le produit soit mis en
-                production — pas après.
+                En pratique, il n’est pas toujours évident de distinguer une mécanique 
+                de motivation d’une mécanique manipulatrice lors de la conception 
+                d’une interface. Afin d’aider les équipes à prendre du recul sur 
+                leurs choix de conception, ce framework propose une méthode d’évaluation 
+                permettant d’identifier les risques éthiques avant le développement du produit.
               </p>
             </div>
           </div>
@@ -133,7 +130,7 @@ export default function HomePage() {
           id="fonctionnement-heading"
           className="mb-12 text-3xl font-semibold text-foreground"
         >
-          Comment ça fonctionne
+          Comment fonctionne l'outil ?
         </h2>
         <ol className="grid gap-5 sm:grid-cols-3">
           {howItWorks.map((step) => (
@@ -172,8 +169,8 @@ export default function HomePage() {
               <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground/80">
                 <p>
                   L'outil s'adresse à toute personne impliquée dans la conception
-                  ou la validation d'une expérience numérique : designers, développeur·ses,
-                  product owners, chef·fes de projet et équipes client.
+                  ou la validation d'une expérience numérique : designers, développeur-ses,
+                  product owners, chef-fes de projet et équipes client.
                 </p>
                 <p>
                   Le résultat n'est pas une décision finale. Il sert de support
@@ -207,7 +204,7 @@ export default function HomePage() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 id="cta-heading" className="mb-2 text-2xl font-semibold text-foreground">
-              Prêt·e à analyser un projet ?
+              Prêt-e à analyser un projet ?
             </h2>
             <p className="text-base text-foreground/70">
               Le questionnaire prend environ cinq minutes. Aucune inscription requise.

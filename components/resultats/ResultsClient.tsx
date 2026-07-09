@@ -165,14 +165,14 @@ function getMechanicVisualExample(
   const examples: Record<string, MechanicVisualExample> = {
     mechanic_streak: {
       before: '🔥 Série de 12 jours — ne perdez pas votre progression.',
-      after: 'Vous pouvez reprendre là où vous vous êtes arrêté·e.',
+      after: 'Vous pouvez reprendre là où vous vous êtes arrêté-e.',
     },
     mechanic_ranking: {
-      before: 'Vous êtes 18e sur 42 participant·es.',
+      before: 'Vous êtes 18e sur 42 participant-es.',
       after: 'Votre progression personnelle a augmenté cette semaine.',
     },
     mechanic_comparison_users: {
-      before: 'Vous faites moins bien que 64% des utilisateur·rices.',
+      before: 'Vous faites moins bien que 64% des utilisateur-rices.',
       after: 'Objectif collectif atteint à 72%. Chaque contribution compte.',
     },
     mechanic_rewards_benefits: {
@@ -205,7 +205,7 @@ function getMechanicVisualExample(
     },
     mechanic_personalized_goals: {
       before: 'Objectif imposé automatiquement.',
-      after: 'Objectif proposé, modifiable par l’utilisateur·rice.',
+      after: 'Objectif proposé, modifiable par l’utilisateur-rice.',
     },
     mechanic_visual_feedback: {
       before: 'Animation forte après chaque micro-action.',
@@ -399,7 +399,7 @@ function TopPriorityCallout({ action }: { action?: ActionItem }) {
       className="rounded-[2rem] bg-primary p-6 text-primary-foreground sm:p-8"
     >
       <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">
-        À faire en premier · {action.eyebrow}
+        À faire en premier - {action.eyebrow}
       </p>
 
       <h2
@@ -452,7 +452,7 @@ function ActionPlanSection({ actions }: { actions: ActionItem[] }) {
 
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/65">
-                {actionSourceLabels[action.source]} · {action.eyebrow}
+                {actionSourceLabels[action.source]} - {action.eyebrow}
               </p>
 
               <h3 className="mt-0.5 text-base font-semibold leading-snug text-foreground">

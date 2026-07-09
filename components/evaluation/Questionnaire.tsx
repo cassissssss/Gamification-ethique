@@ -41,7 +41,7 @@ const SECTION_DESCRIPTIONS: Record<EvaluationSection, string> = {
     "Repérer les directions ou mécaniques déjà envisagées pour mieux les évaluer.",
 
   "Transparence et contrôle":
-    "Vérifier si l’utilisateur·rice comprend le système et garde une marge de choix.",
+    "Vérifier si l’utilisateur-rice comprend le système et garde une marge de choix.",
 
   "Temporalité et visibilité":
     "Évaluer les effets possibles de régularité, de pression ou d’exposition sociale.",

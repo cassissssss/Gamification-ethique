@@ -12,7 +12,7 @@ const VERDICT_EXPLANATIONS: Record<VerdictLevel, string> = {
   gamification_legere:
     `Le projet ne présente pas de risques majeurs, mais le contexte appelle à la discrétion. Une gamification légère est préférable aux mécaniques de compétition ou de pression.`,
   gamification_pertinente:
-    `Le projet semble compatible avec une gamification éthique bien conçue. Les objectifs sont clairs et les mécaniques envisagées paraissent alignées avec les besoins des utilisateur·rices.`,
+    `Le projet semble compatible avec une gamification éthique bien conçue. Les objectifs sont clairs et les mécaniques envisagées paraissent alignées avec les besoins des utilisateur-rices.`,
 }
 
 const MAX_RECOMMENDATIONS = 5

@@ -22,13 +22,13 @@ export const verdicts: VerdictDefinition[] = [
   {
     level: 'gamification_sous_conditions',
     label: 'Gamification envisageable sous conditions',
-    description: `Le projet peut intégrer des mécaniques de gamification, mais plusieurs points de vigilance ont été identifiés. Des ajustements sont nécessaires pour garantir le respect de l'autonomie, la transparence du système et l'alignement avec les objectifs réels des utilisateur·rices. Un test utilisateur est fortement recommandé.`,
+    description: `Le projet peut intégrer des mécaniques de gamification, mais plusieurs points de vigilance ont été identifiés. Des ajustements sont nécessaires pour garantir le respect de l'autonomie, la transparence du système et l'alignement avec les objectifs réels des utilisateur-rices. Un test utilisateur est fortement recommandé.`,
     tone: 'warning',
   },
   {
     level: 'gamification_pertinente',
     label: 'Gamification pertinente',
-    description: `Le contexte est favorable à une gamification bien conçue. Les objectifs sont clairs, le public est adapté et les mécaniques envisagées semblent alignées avec les besoins réels des utilisateur·rices. Veillez à maintenir cette cohérence tout au long de la conception et à tester les hypothèses avec de vraies personnes.`,
+    description: `Le contexte est favorable à une gamification bien conçue. Les objectifs sont clairs, le public est adapté et les mécaniques envisagées semblent alignées avec les besoins réels des utilisateur-rices. Veillez à maintenir cette cohérence tout au long de la conception et à tester les hypothèses avec de vraies personnes.`,
     tone: 'positive',
   },
 ]

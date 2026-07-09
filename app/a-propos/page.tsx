@@ -16,16 +16,16 @@ const methodSteps = [
 ]
 
 const limits = [
-  { id: 'test',      label: 'Un test utilisateur',    text: `Seul un test avec de vraies personnes permet de valider l'impact réel des mécaniques sur le comportement et le ressenti des utilisateur·rices.` },
-  { id: 'juridique', label: 'Une revue juridique',    text: `Selon le domaine et le public, des réglementations spécifiques peuvent s'appliquer. Un·e juriste spécialisé·e est indispensable pour les cas sensibles.` },
+  { id: 'test',      label: 'Un test utilisateur',    text: `Seul un test avec de vraies personnes permet de valider l'impact réel des mécaniques sur le comportement et le ressenti des utilisateur-rices.` },
+  { id: 'juridique', label: 'Une revue juridique',    text: `Selon le domaine et le public, des réglementations spécifiques peuvent s'appliquer. Un-e juriste spécialisé-e est indispensable pour les cas sensibles.` },
   { id: 'expertise', label: 'Une expertise métier',   text: `Certains contextes — santé, éducation, finance — nécessitent une connaissance sectorielle que le framework ne peut pas remplacer.` },
   { id: 'decision',  label: `Une décision d'équipe`,  text: `L'outil produit un support de discussion, pas une décision. L'arbitrage final appartient à l'équipe projet.` },
 ]
 
 const roles = [
   'UX/UI designers',
-  'Développeur·ses',
-  `Chef·fes de projet`,
+  'Développeur-ses',
+  `Chef-fes de projet`,
   'Product owners',
   `Account managers et équipes client`,
 ]
@@ -52,7 +52,7 @@ export default function AProposPage() {
             <p>
               Ce site a été réalisé dans le cadre d'un Travail de Bachelor
               portant sur la gamification éthique dans les projets numériques.
-              Il explore la question suivante : comment aider les professionnel·les
+              Il explore la question suivante : comment aider les professionnel-les
               du numérique à évaluer si une mécanique de jeu est pertinente,
               risquée ou déconseillée dans leur contexte ?
             </p>
@@ -144,7 +144,7 @@ export default function AProposPage() {
               L'intention n'est pas de remplacer le jugement de l'équipe, mais
               de lui fournir un point de départ structuré pour une discussion
               informée — avec les parties prenantes, le client ou les
-              utilisateur·rices.
+              utilisateur-rices.
             </p>
           </div>
         </div>

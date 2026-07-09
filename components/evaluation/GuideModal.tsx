@@ -78,7 +78,7 @@ export function GuideModal({ open, onOpenChange }: GuideModalProps) {
           </DialogTitle>
           <DialogDescription className="text-sm leading-relaxed text-foreground/70">
             Cette évaluation aide à identifier les points de vigilance éthiques
-            d'une expérience gamifiée. Elle s'adresse aux professionnel·les qui
+            d'une expérience gamifiée. Elle s'adresse aux professionnel-les qui
             souhaitent questionner une idée, une mécanique ou une interface avant
             sa conception ou sa mise en production.
           </DialogDescription>

@@ -110,7 +110,7 @@ function getGlobalOrientation(input: GlobalOrientationInput): GlobalOrientation 
       id: 'gamification_under_conditions',
       title: 'Gamification pertinente sous conditions',
       summary:
-        'La gamification semble possible, à condition de conserver une logique claire, proportionnée et compréhensible pour l’utilisateur·rice.',
+        'La gamification semble possible, à condition de conserver une logique claire, proportionnée et compréhensible pour l’utilisateur-rice.',
       nextStep:
         'Conserver les mécaniques utiles, expliquer leur fonctionnement et vérifier que les recommandations positives sont bien appliquées.',
     }

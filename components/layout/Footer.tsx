@@ -21,8 +21,7 @@ export function Footer() {
               Gamification Éthique
             </p>
             <p className="text-sm leading-relaxed text-foreground/70">
-              Un outil d'évaluation éthique pour les professionnel·les du numérique.
-              Travail de Bachelor.
+              Un outil d'évaluation éthique pour les professionnel-les du numérique.
             </p>
           </div>
 
@@ -46,8 +45,8 @@ export function Footer() {
           className="mt-8 pt-6 text-sm text-foreground/60"
           style={{ borderTop: '1px solid rgba(217,208,227,0.5)' }}
         >
-          © {currentYear} — Travail de Bachelor. Cet outil ne remplace pas un avis
-          juridique ou une décision de projet.
+          © {currentYear} — Réalisé dans le cadre du Travail de Bachelor à la HEIG-VD. 
+          En collaboration avec l'agence digitale Antistatique.
         </div>
       </div>
     </footer>

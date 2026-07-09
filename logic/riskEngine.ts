@@ -44,7 +44,7 @@ const riskSignalRules: RiskSignalRule[] = [
     optionId: 'ranking_data',
     weight: 2,
     message:
-      'Le suivi servant à situer ou classer les utilisateur·rices augmente la vigilance sur la comparaison sociale.',
+      'Le suivi servant à situer ou classer les utilisateur-rices augmente la vigilance sur la comparaison sociale.',
   },
   {
     id: 'risk_social_ranking_mechanic',
@@ -62,7 +62,7 @@ const riskSignalRules: RiskSignalRule[] = [
     optionId: 'comparison_users',
     weight: 2,
     message:
-      'La comparaison entre utilisateur·rices peut déplacer l’attention de la progression personnelle vers la performance relative.',
+      'La comparaison entre utilisateur-rices peut déplacer l’attention de la progression personnelle vers la performance relative.',
   },
   {
     id: 'risk_social_badges',
@@ -98,7 +98,7 @@ const riskSignalRules: RiskSignalRule[] = [
     optionId: 'visible_to_concerned_users',
     weight: 1,
     message:
-      'Une visibilité auprès des autres utilisateur·rices concerné·es peut renforcer les effets de comparaison.',
+      'Une visibilité auprès des autres utilisateur-rices concerné-es peut renforcer les effets de comparaison.',
   },
   {
     id: 'risk_social_visibility_ranking',
@@ -163,7 +163,7 @@ const riskSignalRules: RiskSignalRule[] = [
     optionId: 'rules_low_visibility',
     weight: 1,
     message:
-      'Un fonctionnement peu visible limite la capacité de l’utilisateur·rice à comprendre ce qui influence son expérience.',
+      'Un fonctionnement peu visible limite la capacité de l’utilisateur-rice à comprendre ce qui influence son expérience.',
   },
   {
     id: 'risk_autonomy_transparency_undefined',
@@ -246,7 +246,7 @@ const riskSignalRules: RiskSignalRule[] = [
     optionId: 'ranking_data',
     weight: 2,
     message:
-      'Le suivi utilisé pour classer ou comparer les utilisateur·rices augmente fortement la vigilance liée aux données.',
+      'Le suivi utilisé pour classer ou comparer les utilisateur-rices augmente fortement la vigilance liée aux données.',
   },
   {
     id: 'risk_data_undefined',
@@ -403,7 +403,7 @@ const riskSignalRules: RiskSignalRule[] = [
     optionId: 'commercial_promotional_context',
     weight: 2,
     message:
-      'Un contexte commercial ou promotionnel demande de vérifier que la mécanique sert aussi l’intérêt de l’utilisateur·rice.',
+      'Un contexte commercial ou promotionnel demande de vérifier que la mécanique sert aussi l’intérêt de l’utilisateur-rice.',
   },
   {
     id: 'risk_commercial_usage_context',
@@ -600,9 +600,9 @@ function getThemeSummary(themeId: RiskThemeId, level: RiskLevel): string {
 
   const summaries: Record<RiskThemeId, string> = {
     social_comparison:
-      'Des éléments peuvent exposer les utilisateur·rices à une comparaison, un classement ou une logique de statut.',
+      'Des éléments peuvent exposer les utilisateur-rices à une comparaison, un classement ou une logique de statut.',
     autonomy_control:
-      'Certains éléments peuvent réduire la marge de choix, de compréhension ou de contrôle de l’utilisateur·rice.',
+      'Certains éléments peuvent réduire la marge de choix, de compréhension ou de contrôle de l’utilisateur-rice.',
     data_profile:
       'La mécanique semble impliquer un suivi individuel, une personnalisation ou une utilisation de données à clarifier.',
     temporal_pressure:

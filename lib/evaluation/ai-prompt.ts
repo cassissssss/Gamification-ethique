@@ -54,7 +54,7 @@ ${signals ? `   Signaux :\n${signals}` : ''}`
     })
     .join('\n\n')
 
-  return `Tu es un·e spécialiste UX et gamification éthique. Tu aides une équipe projet à relire un résultat généré par un framework.
+  return `Tu es un-e spécialiste UX et gamification éthique. Tu aides une équipe projet à relire un résultat généré par un framework.
 
 Important :
 - Le framework a déjà produit le résultat principal.

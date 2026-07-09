@@ -54,7 +54,7 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     mechanicOptionId: 'levels',
     mechanicLabel: 'Niveaux',
     relevantUse:
-      'Structurer une progression longue ou aider l’utilisateur·rice à comprendre son avancement dans un parcours.',
+      'Structurer une progression longue ou aider l’utilisateur-rice à comprendre son avancement dans un parcours.',
     possibleRisk:
       'Les niveaux peuvent créer une hiérarchie, un statut ou une pression à progresser, surtout s’ils conditionnent l’accès à certaines fonctionnalités.',
     baseVigilanceLevel: 'moderate',
@@ -69,7 +69,7 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     mechanicOptionId: 'progress_bar',
     mechanicLabel: 'Barre de progression',
     relevantUse:
-      'Aider l’utilisateur·rice à se situer dans un parcours, un formulaire, une formation ou une action en plusieurs étapes.',
+      'Aider l’utilisateur-rice à se situer dans un parcours, un formulaire, une formation ou une action en plusieurs étapes.',
     possibleRisk:
       'Une barre de progression peut devenir frustrante si elle donne une impression d’obligation ou si elle cache la complexité réelle du parcours.',
     baseVigilanceLevel: 'low',
@@ -129,7 +129,7 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     mechanicOptionId: 'notifications_reminders',
     mechanicLabel: 'Notifications ou rappels',
     relevantUse:
-      'Aider l’utilisateur·rice à reprendre une action, ne pas oublier une étape ou revenir à un moment utile.',
+      'Aider l’utilisateur-rice à reprendre une action, ne pas oublier une étape ou revenir à un moment utile.',
     possibleRisk:
       'Les notifications peuvent capter l’attention, créer une pression au retour ou devenir intrusives si elles sont trop fréquentes.',
     baseVigilanceLevel: 'moderate',
@@ -144,7 +144,7 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     mechanicOptionId: 'streak',
     mechanicLabel: 'Streak ou série d’actions',
     relevantUse:
-      'Encourager une régularité légère lorsque le rythme est réellement utile pour l’utilisateur·rice.',
+      'Encourager une régularité légère lorsque le rythme est réellement utile pour l’utilisateur-rice.',
     possibleRisk:
       'Les streaks peuvent créer une peur de perdre la série, de la culpabilisation ou une pression à revenir même lorsque ce n’est pas utile.',
     baseVigilanceLevel: 'high',
@@ -159,12 +159,12 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     mechanicOptionId: 'personalized_goals',
     mechanicLabel: 'Objectifs personnalisés',
     relevantUse:
-      'Adapter une progression ou un parcours à la situation, au niveau ou au besoin de l’utilisateur·rice.',
+      'Adapter une progression ou un parcours à la situation, au niveau ou au besoin de l’utilisateur-rice.',
     possibleRisk:
-      'La personnalisation peut devenir opaque si l’utilisateur·rice ne comprend pas quelles données sont utilisées ou comment les objectifs sont définis.',
+      'La personnalisation peut devenir opaque si l’utilisateur-rice ne comprend pas quelles données sont utilisées ou comment les objectifs sont définis.',
     baseVigilanceLevel: 'moderate',
     ethicalAlternative:
-      'Expliquer les critères de personnalisation et permettre à l’utilisateur·rice d’ajuster ou refuser certains objectifs.',
+      'Expliquer les critères de personnalisation et permettre à l’utilisateur-rice d’ajuster ou refuser certains objectifs.',
     interfaceExample:
       'Un objectif modifiable avec une info-bulle expliquant pourquoi il est proposé.',
     relatedThemeIds: ['data_profile', 'autonomy_control'],
@@ -187,7 +187,7 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
   {
     id: 'mechanic_comparison_users',
     mechanicOptionId: 'comparison_users',
-    mechanicLabel: 'Comparaison entre utilisateur·rices',
+    mechanicLabel: 'Comparaison entre utilisateur-rices',
     relevantUse:
       'Donner un repère collectif lorsque la comparaison est pertinente, volontaire et comprise.',
     possibleRisk:

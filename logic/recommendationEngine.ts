@@ -93,7 +93,7 @@ const recommendationRules: RecommendationRule[] = [
     optionId: 'early_dropoff',
     title: 'Identifier le moment d’abandon avant d’ajouter une mécanique',
     insight:
-      'Le besoin concerne les utilisateur·rices qui quittent le parcours tôt.',
+      'Le besoin concerne les utilisateur-rices qui quittent le parcours tôt.',
     recommendation:
       'Analyser d’abord où le parcours bloque, puis proposer une mécanique légère de progression, d’encouragement ou d’aide à la reprise.',
     priority: 'high',
@@ -143,7 +143,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'Le besoin est lié à un indicateur d’engagement ou de participation.',
     recommendation:
-      'Vérifier que l’indicateur suivi correspond aussi à une valeur réelle pour l’utilisateur·rice, et pas uniquement à une métrique interne.',
+      'Vérifier que l’indicateur suivi correspond aussi à une valeur réelle pour l’utilisateur-rice, et pas uniquement à une métrique interne.',
     priority: 'high',
   },
   {
@@ -154,7 +154,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'Le besoin n’est pas encore suffisamment défini.',
     recommendation:
-      'Revenir au problème utilisateur : que doit mieux comprendre, faire, terminer ou reprendre l’utilisateur·rice ?',
+      'Revenir au problème utilisateur : que doit mieux comprendre, faire, terminer ou reprendre l’utilisateur-rice ?',
     priority: 'high',
   },
 
@@ -201,7 +201,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'L’action principale consiste à participer ou contribuer.',
     recommendation:
-      'Mettre en avant l’impact ou l’utilité de la contribution plutôt qu’un rang entre participant·es.',
+      'Mettre en avant l’impact ou l’utilité de la contribution plutôt qu’un rang entre participant-es.',
     priority: 'medium',
   },
   {
@@ -234,7 +234,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'L’action principale est liée à un achat, une réservation ou une conversion.',
     recommendation:
-      'S’assurer que la mécanique aide réellement l’utilisateur·rice à décider, et ne crée pas uniquement une pression artificielle à l’action.',
+      'S’assurer que la mécanique aide réellement l’utilisateur-rice à décider, et ne crée pas uniquement une pression artificielle à l’action.',
     priority: 'high',
   },
   {
@@ -256,7 +256,7 @@ const recommendationRules: RecommendationRule[] = [
     optionId: 'guidance',
     title: 'Concevoir une gamification comme aide au guidage',
     insight:
-      'La direction envisagée vise à aider l’utilisateur·rice à comprendre quoi faire.',
+      'La direction envisagée vise à aider l’utilisateur-rice à comprendre quoi faire.',
     recommendation:
       'Favoriser des repères, étapes ou messages contextuels plutôt qu’une mécanique de compétition.',
     priority: 'medium',
@@ -291,7 +291,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'La direction envisagée repose sur des objectifs ou défis.',
     recommendation:
-      'Présenter les défis comme des possibilités, sans bloquer le parcours principal si l’utilisateur·rice ne souhaite pas y participer.',
+      'Présenter les défis comme des possibilités, sans bloquer le parcours principal si l’utilisateur-rice ne souhaite pas y participer.',
     priority: 'high',
   },
   {
@@ -313,7 +313,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'La direction envisagée consiste à rendre le parcours plus lisible.',
     recommendation:
-      'Utiliser des étapes visibles, des jalons ou une checklist courte pour aider l’utilisateur·rice à se situer.',
+      'Utiliser des étapes visibles, des jalons ou une checklist courte pour aider l’utilisateur-rice à se situer.',
     priority: 'medium',
   },
   {
@@ -359,7 +359,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'La motivation recherchée est liée à l’atteinte d’un objectif personnel.',
     recommendation:
-      'Permettre à l’utilisateur·rice de comprendre, ajuster ou suivre son propre objectif.',
+      'Permettre à l’utilisateur-rice de comprendre, ajuster ou suivre son propre objectif.',
     priority: 'medium',
   },
   {
@@ -438,7 +438,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'Les règles sont présentées à certains moments du parcours.',
     recommendation:
-      'S’assurer que l’utilisateur·rice reçoit l’explication avant que la mécanique influence son action ou son résultat.',
+      'S’assurer que l’utilisateur-rice reçoit l’explication avant que la mécanique influence son action ou son résultat.',
     priority: 'medium',
   },
   {
@@ -506,7 +506,7 @@ const recommendationRules: RecommendationRule[] = [
     insight:
       'La mécanique peut être ignorée sans bloquer le parcours.',
     recommendation:
-      'Maintenir un accès clair au service principal, même si l’utilisateur·rice ne participe pas à la mécanique.',
+      'Maintenir un accès clair au service principal, même si l’utilisateur-rice ne participe pas à la mécanique.',
     priority: 'medium',
   },
   {

@@ -9,7 +9,7 @@ export const tagDefinitions: TagDefinition[] = [
   {
     tag: 'public_vulnerable',
     label: 'Public vulnérable',
-    description: `Le système s'adresse à un public susceptible d'être affecté de manière disproportionnée par les mécaniques de gamification : mineur·es, personnes en situation de fragilité psychologique, personnes exposées à des risques d'addiction.`,
+    description: `Le système s'adresse à un public susceptible d'être affecté de manière disproportionnée par les mécaniques de gamification : mineur-es, personnes en situation de fragilité psychologique, personnes exposées à des risques d'addiction.`,
   },
   {
     tag: 'dependance_risque',
@@ -19,17 +19,17 @@ export const tagDefinitions: TagDefinition[] = [
   {
     tag: 'transparence_absente',
     label: 'Transparence insuffisante',
-    description: `Les règles du système, les critères de récompense ou les objectifs de la plateforme ne sont pas clairement communiqués à l'utilisateur·rice.`,
+    description: `Les règles du système, les critères de récompense ou les objectifs de la plateforme ne sont pas clairement communiqués à l'utilisateur-rice.`,
   },
   {
     tag: 'autonomie_reduite',
     label: 'Autonomie réduite',
-    description: `L'utilisateur·rice ne dispose pas d'un contrôle suffisant sur sa participation au système : impossibilité de désactiver des mécaniques, pénalités en cas d'inactivité, accès conditionnel à des fonctionnalités essentielles.`,
+    description: `L'utilisateur-rice ne dispose pas d'un contrôle suffisant sur sa participation au système : impossibilité de désactiver des mécaniques, pénalités en cas d'inactivité, accès conditionnel à des fonctionnalités essentielles.`,
   },
   {
     tag: 'pression_temporelle',
     label: 'Pression temporelle',
-    description: `Le système utilise des comptes à rebours, des offres limitées dans le temps ou des mécaniques d'urgence pour pousser l'utilisateur·rice à agir rapidement, parfois au détriment d'une décision réfléchie.`,
+    description: `Le système utilise des comptes à rebours, des offres limitées dans le temps ou des mécaniques d'urgence pour pousser l'utilisateur-rice à agir rapidement, parfois au détriment d'une décision réfléchie.`,
   },
   {
     tag: 'pression_sociale',
@@ -44,22 +44,22 @@ export const tagDefinitions: TagDefinition[] = [
   {
     tag: 'consentement_flou',
     label: 'Consentement insuffisant',
-    description: `L'utilisateur·rice n'a pas donné un consentement éclairé à la participation au système de gamification, ou les conditions de ce consentement sont formulées de manière ambiguë ou trompeuse.`,
+    description: `L'utilisateur-rice n'a pas donné un consentement éclairé à la participation au système de gamification, ou les conditions de ce consentement sont formulées de manière ambiguë ou trompeuse.`,
   },
   {
     tag: 'progression_claire',
     label: 'Progression lisible',
-    description: `Le système offre une progression transparente, cohérente et alignée avec des objectifs réels. L'utilisateur·rice comprend où il ou elle en est et ce qu'il ou elle doit faire pour progresser.`,
+    description: `Le système offre une progression transparente, cohérente et alignée avec des objectifs réels. L'utilisateur-rice comprend où il ou elle en est et ce qu'il ou elle doit faire pour progresser.`,
   },
   {
     tag: 'feedback_adequat',
     label: 'Feedback adapté',
-    description: `Le système fournit des retours clairs, utiles et proportionnés aux actions de l'utilisateur·rice, sans exploiter les biais cognitifs ni créer d'anxiété artificielle.`,
+    description: `Le système fournit des retours clairs, utiles et proportionnés aux actions de l'utilisateur-rice, sans exploiter les biais cognitifs ni créer d'anxiété artificielle.`,
   },
   {
     tag: 'objectif_aligne',
     label: 'Objectif aligné',
-    description: `Les mécaniques de gamification sont cohérentes avec les objectifs réels de l'utilisateur·rice et ne servent pas uniquement les intérêts commerciaux de la plateforme.`,
+    description: `Les mécaniques de gamification sont cohérentes avec les objectifs réels de l'utilisateur-rice et ne servent pas uniquement les intérêts commerciaux de la plateforme.`,
   },
   {
     tag: 'contexte_sensible',
