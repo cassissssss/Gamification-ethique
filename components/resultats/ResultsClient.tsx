@@ -17,6 +17,7 @@ import type {
   QuestionId,
   RiskLevel,
   RiskThemeResult,
+  SynergyResult,
 } from '@/logic/evaluation.types'
 
 interface StoredAnswer {
@@ -975,6 +976,80 @@ function ContradictionsDetailsSection({
   )
 }
 
+function SynergyDetailsSection({
+  synergyResults,
+}: {
+  synergyResults: SynergyResult[]
+}) {
+  if (synergyResults.length === 0) {
+    return null
+  }
+
+  return (
+    <section aria-labelledby="synergy-heading">
+      <h2
+        id="synergy-heading"
+        className="mb-1 text-xl font-semibold text-foreground"
+      >
+        Combinaisons de mécaniques à risque amplifié
+      </h2>
+
+      <p className="mb-4 text-sm text-foreground/65">
+        Ces combinaisons précises de réponses créent un risque plus important
+        que la somme de chaque signal pris séparément.
+      </p>
+
+      <div className="flex flex-col gap-3">
+        {synergyResults.map((synergy) => (
+          <details
+            key={synergy.id}
+            className="group rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
+          >
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
+              <div>
+                <h3 className="text-base font-semibold text-foreground">
+                  {synergy.title}
+                </h3>
+
+                <p className="mt-1 text-sm leading-relaxed text-foreground/65">
+                  {synergy.message}
+                </p>
+              </div>
+
+              <span className="flex shrink-0 items-center gap-2">
+                <span
+                  className={[
+                    'rounded-full px-3 py-1 text-xs font-semibold ring-1',
+                    riskLevelStyles[synergy.level],
+                  ].join(' ')}
+                >
+                  {riskLevelLabels[synergy.level]}
+                </span>
+
+                <ChevronDown
+                  size={18}
+                  className="shrink-0 text-foreground/40 transition-transform duration-200 group-open:rotate-180"
+                  aria-hidden="true"
+                />
+              </span>
+            </summary>
+
+            <div className="mt-4 border-t border-border pt-4">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
+                Recommandation
+              </p>
+
+              <p className="text-sm leading-relaxed text-foreground/80">
+                {synergy.recommendation}
+              </p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function ClientArgumentSection({ result }: { result: EvaluationResult }) {
   return (
     <section
@@ -1002,6 +1077,7 @@ export function ResultsClient() {
   const router = useRouter()
 
   const [result, setResult] = useState<EvaluationResult | null>(null)
+  const [isClientContext, setIsClientContext] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [copyState, setCopyState] = useState<CopyState>('idle')
 
@@ -1023,6 +1099,7 @@ export function ResultsClient() {
     const evaluationResult = evaluateAnswers(evaluationAnswers)
 
     setResult(evaluationResult)
+    setIsClientContext(evaluationAnswers.Q19 === 'client_argument')
     setHasLoaded(true)
   }, [])
 
@@ -1158,6 +1235,8 @@ export function ResultsClient() {
         excludedIds={actionPlan.map((action) => action.id)}
       />
 
+      <SynergyDetailsSection synergyResults={result.synergyResults} />
+
       <ContradictionsDetailsSection
         contradictions={result.contradictions}
         excludedIds={actionPlan.map((action) => action.id)}
@@ -1167,7 +1246,7 @@ export function ResultsClient() {
           pas un résultat en soi — le texte du bloc le dit déjà lui-même. */}
       <AiPromptSection result={result} />
 
-      <ClientArgumentSection result={result} />
+      {isClientContext && <ClientArgumentSection result={result} />}
     </div>
   )
 }

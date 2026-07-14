@@ -30,6 +30,7 @@ const mechanicOptionIds: OptionId[] = [
   'personalized_goals',
   'visual_feedback',
   'comparison_users',
+  'random_reward',
 ]
 
 const trackingMechanicOptionIds: OptionId[] = [
@@ -50,6 +51,19 @@ const strongMechanicOptionIds: OptionId[] = [
   'comparison_users',
   'streak',
   'rewards_benefits',
+  'random_reward',
+]
+
+const businessOnlyBenefitOptionIds: OptionId[] = [
+  'increase_actions',
+  'increase_time_spent',
+  'commercial_objective',
+]
+
+const userBenefitOptionIds: OptionId[] = [
+  'help_task',
+  'improve_autonomy',
+  'clearer_path',
 ]
 
 const contradictionRules: ContradictionRule[] = [
@@ -61,11 +75,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Clarifier d’abord le problème utilisateur à résoudre, puis vérifier si les mécaniques choisies répondent réellement à ce besoin.',
     severity: 'warning',
-    sourceQuestionIds: ['Q2', 'Q9'],
+    sourceQuestionIds: ['Q2', 'Q12'],
     sourceOptionIds: ['need_unclear', ...mechanicOptionIds],
     matches: (answers) =>
       hasSelectedOption(answers, 'Q2', 'need_unclear') &&
-      hasAnySelectedOption(answers, 'Q9', mechanicOptionIds),
+      hasAnySelectedOption(answers, 'Q12', mechanicOptionIds),
   },
   {
     id: 'contradiction_action_undefined_mechanics_defined',
@@ -75,11 +89,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Définir l’action principale avant de valider une mécanique : comprendre, terminer, progresser, contribuer, revenir, partager ou convertir.',
     severity: 'warning',
-    sourceQuestionIds: ['Q4', 'Q9'],
+    sourceQuestionIds: ['Q4', 'Q12'],
     sourceOptionIds: ['action_undefined', ...mechanicOptionIds],
     matches: (answers) =>
       hasSelectedOption(answers, 'Q4', 'action_undefined') &&
-      hasAnySelectedOption(answers, 'Q9', mechanicOptionIds),
+      hasAnySelectedOption(answers, 'Q12', mechanicOptionIds),
   },
   {
     id: 'contradiction_personal_choice_main_path',
@@ -89,11 +103,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Vérifier que la mécanique reste réellement optionnelle ou qu’elle apporte une aide claire sans devenir une contrainte.',
     severity: 'warning',
-    sourceQuestionIds: ['Q6', 'Q12'],
+    sourceQuestionIds: ['Q7', 'Q14'],
     sourceOptionIds: ['personal_choice', 'main_path'],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q6', 'personal_choice') &&
-      hasSelectedOption(answers, 'Q12', 'main_path'),
+      hasSelectedOption(answers, 'Q7', 'personal_choice') &&
+      hasSelectedOption(answers, 'Q14', 'main_path'),
   },
   {
     id: 'contradiction_personal_choice_dependent_elements',
@@ -103,11 +117,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Prévoir une alternative ou un accès non gamifié pour éviter que la participation devienne implicitement obligatoire.',
     severity: 'warning',
-    sourceQuestionIds: ['Q6', 'Q12'],
+    sourceQuestionIds: ['Q7', 'Q14'],
     sourceOptionIds: ['personal_choice', 'dependent_elements'],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q6', 'personal_choice') &&
-      hasSelectedOption(answers, 'Q12', 'dependent_elements'),
+      hasSelectedOption(answers, 'Q7', 'personal_choice') &&
+      hasSelectedOption(answers, 'Q14', 'dependent_elements'),
   },
   {
     id: 'contradiction_optional_required_to_finish',
@@ -117,11 +131,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Clarifier si la mécanique est réellement optionnelle. Si elle est nécessaire, il faut expliquer son rôle et éviter qu’elle bloque inutilement l’accès au service.',
     severity: 'blocking',
-    sourceQuestionIds: ['Q12', 'Q13'],
+    sourceQuestionIds: ['Q14', 'Q15'],
     sourceOptionIds: ['optional_participation', 'required_to_finish'],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q12', 'optional_participation') &&
-      hasSelectedOption(answers, 'Q13', 'required_to_finish'),
+      hasSelectedOption(answers, 'Q14', 'optional_participation') &&
+      hasSelectedOption(answers, 'Q15', 'required_to_finish'),
   },
   {
     id: 'contradiction_personal_choice_required_to_finish',
@@ -131,11 +145,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Vérifier si l’utilisateur-rice peut réellement utiliser le service sans subir la mécanique, ou rendre son rôle plus transparent.',
     severity: 'warning',
-    sourceQuestionIds: ['Q6', 'Q13'],
+    sourceQuestionIds: ['Q7', 'Q15'],
     sourceOptionIds: ['personal_choice', 'required_to_finish'],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q6', 'personal_choice') &&
-      hasSelectedOption(answers, 'Q13', 'required_to_finish'),
+      hasSelectedOption(answers, 'Q7', 'personal_choice') &&
+      hasSelectedOption(answers, 'Q15', 'required_to_finish'),
   },
   {
     id: 'contradiction_no_data_tracking_mechanics',
@@ -145,11 +159,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Clarifier quelles données sont nécessaires pour afficher la progression, les niveaux, le classement, les objectifs ou les séries.',
     severity: 'warning',
-    sourceQuestionIds: ['Q7', 'Q9'],
+    sourceQuestionIds: ['Q9', 'Q12'],
     sourceOptionIds: ['no_personal_data', ...trackingMechanicOptionIds],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q7', 'no_personal_data') &&
-      hasAnySelectedOption(answers, 'Q9', trackingMechanicOptionIds),
+      hasSelectedOption(answers, 'Q9', 'no_personal_data') &&
+      hasAnySelectedOption(answers, 'Q12', trackingMechanicOptionIds),
   },
   {
     id: 'contradiction_no_regular_usage_recurring_mechanics',
@@ -159,11 +173,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Vérifier si la régularité est réellement utile. Si l’usage est ponctuel, privilégier un feedback ou une progression simple plutôt qu’une mécanique de retour.',
     severity: 'warning',
-    sourceQuestionIds: ['Q9', 'Q14'],
+    sourceQuestionIds: ['Q12', 'Q16'],
     sourceOptionIds: ['no_regular_usage', ...recurringMechanicOptionIds],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q14', 'no_regular_usage') &&
-      hasAnySelectedOption(answers, 'Q9', recurringMechanicOptionIds),
+      hasSelectedOption(answers, 'Q16', 'no_regular_usage') &&
+      hasAnySelectedOption(answers, 'Q12', recurringMechanicOptionIds),
   },
   {
     id: 'contradiction_no_regular_usage_frequent_return',
@@ -173,10 +187,10 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Clarifier le rythme attendu : usage ponctuel, retour occasionnel ou usage régulier. La mécanique doit correspondre à ce rythme.',
     severity: 'warning',
-    sourceQuestionIds: ['Q10', 'Q14'],
+    sourceQuestionIds: ['Q10', 'Q16'],
     sourceOptionIds: ['frequent_return', 'no_regular_usage'],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q14', 'no_regular_usage') &&
+      hasSelectedOption(answers, 'Q16', 'no_regular_usage') &&
       hasSelectedOption(answers, 'Q10', 'frequent_return'),
   },
   {
@@ -187,11 +201,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Clarifier si la comparaison est vraiment nécessaire. Une progression personnelle ou un objectif collectif peut être plus cohérent avec une visibilité privée.',
     severity: 'warning',
-    sourceQuestionIds: ['Q9', 'Q15'],
+    sourceQuestionIds: ['Q12', 'Q17'],
     sourceOptionIds: ['private', 'ranking', 'comparison_users'],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q15', 'private') &&
-      hasAnySelectedOption(answers, 'Q9', ['ranking', 'comparison_users']),
+      hasSelectedOption(answers, 'Q17', 'private') &&
+      hasAnySelectedOption(answers, 'Q12', ['ranking', 'comparison_users']),
   },
   {
     id: 'contradiction_light_role_strong_mechanics',
@@ -201,11 +215,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Vérifier si ces mécaniques sont proportionnées. Si l’objectif est un guidage léger, privilégier plutôt des étapes visibles, du feedback ou une progression individuelle.',
     severity: 'warning',
-    sourceQuestionIds: ['Q3', 'Q9'],
+    sourceQuestionIds: ['Q3', 'Q12'],
     sourceOptionIds: ['light_marker', ...strongMechanicOptionIds],
     matches: (answers) =>
       hasSelectedOption(answers, 'Q3', 'light_marker') &&
-      hasAnySelectedOption(answers, 'Q9', strongMechanicOptionIds),
+      hasAnySelectedOption(answers, 'Q12', strongMechanicOptionIds),
   },
   {
     id: 'contradiction_unclear_role_central_mechanic',
@@ -215,11 +229,11 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Définir si la gamification doit seulement guider, soutenir, structurer ou devenir centrale avant de choisir les mécaniques.',
     severity: 'info',
-    sourceQuestionIds: ['Q3', 'Q9'],
+    sourceQuestionIds: ['Q3', 'Q12'],
     sourceOptionIds: ['role_unclear', ...mechanicOptionIds],
     matches: (answers) =>
       hasSelectedOption(answers, 'Q3', 'role_unclear') &&
-      hasAnySelectedOption(answers, 'Q9', mechanicOptionIds),
+      hasAnySelectedOption(answers, 'Q12', mechanicOptionIds),
   },
   {
     id: 'contradiction_low_visibility_high_impact_mechanics',
@@ -229,7 +243,7 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Ajouter une explication accessible sur ce qui est mesuré, calculé ou déclenché par la mécanique.',
     severity: 'warning',
-    sourceQuestionIds: ['Q9', 'Q11'],
+    sourceQuestionIds: ['Q12', 'Q13'],
     sourceOptionIds: [
       'rules_low_visibility',
       'ranking',
@@ -238,8 +252,8 @@ const contradictionRules: ContradictionRule[] = [
       'levels',
     ],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q11', 'rules_low_visibility') &&
-      hasAnySelectedOption(answers, 'Q9', [
+      hasSelectedOption(answers, 'Q13', 'rules_low_visibility') &&
+      hasAnySelectedOption(answers, 'Q12', [
         'ranking',
         'rewards_benefits',
         'personalized_goals',
@@ -254,7 +268,7 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Choisir soit “Aucun élément particulier identifié”, soit les caractéristiques spécifiques du projet. Cette clarification évite un diagnostic contradictoire.',
     severity: 'info',
-    sourceQuestionIds: ['Q5'],
+    sourceQuestionIds: ['Q6'],
     sourceOptionIds: [
       'no_specific_element',
       'young_audience',
@@ -265,8 +279,8 @@ const contradictionRules: ContradictionRule[] = [
       'commercial_promotional_context',
     ],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q5', 'no_specific_element') &&
-      hasAnySelectedOption(answers, 'Q5', [
+      hasSelectedOption(answers, 'Q6', 'no_specific_element') &&
+      hasAnySelectedOption(answers, 'Q6', [
         'young_audience',
         'health_wellbeing_performance',
         'evaluative_context',
@@ -283,11 +297,39 @@ const contradictionRules: ContradictionRule[] = [
     recommendation:
       'Choisir soit “Aucune mécanique précise pour l’instant”, soit les mécaniques déjà envisagées.',
     severity: 'info',
-    sourceQuestionIds: ['Q9'],
+    sourceQuestionIds: ['Q12'],
     sourceOptionIds: ['no_precise_mechanic', ...mechanicOptionIds],
     matches: (answers) =>
-      hasSelectedOption(answers, 'Q9', 'no_precise_mechanic') &&
-      hasAnySelectedOption(answers, 'Q9', mechanicOptionIds),
+      hasSelectedOption(answers, 'Q12', 'no_precise_mechanic') &&
+      hasAnySelectedOption(answers, 'Q12', mechanicOptionIds),
+  },
+  {
+    id: 'contradiction_business_only_benefit',
+    title: 'Bénéfice orienté uniquement business',
+    message:
+      'Les bénéfices identifiés semblent principalement orientés vers des objectifs internes (temps passé, actions, conversion), sans bénéfice explicite pour l’utilisateur-rice.',
+    recommendation:
+      'Clarifier ou reformuler le bénéfice utilisateur avant de poursuivre. Si aucun bénéfice utilisateur n’est identifiable, repenser la mécanique plutôt que de l’optimiser.',
+    severity: 'warning',
+    sourceQuestionIds: ['Q5'],
+    sourceOptionIds: [...businessOnlyBenefitOptionIds, ...userBenefitOptionIds],
+    matches: (answers) =>
+      hasAnySelectedOption(answers, 'Q5', businessOnlyBenefitOptionIds) &&
+      !hasAnySelectedOption(answers, 'Q5', userBenefitOptionIds),
+  },
+  {
+    id: 'contradiction_random_reward_young_audience',
+    title: 'Récompense aléatoire pour un public jeune',
+    message:
+      'Le public cible inclut des jeunes ou adolescent-es, et une mécanique de récompense aléatoire est envisagée. Cette combinaison est particulièrement sensible (proche des mécaniques de type loot box).',
+    recommendation:
+      'Recommander vivement une alternative non aléatoire et prévisible ; justification écrite explicite requise si la mécanique est maintenue.',
+    severity: 'warning',
+    sourceQuestionIds: ['Q6', 'Q12'],
+    sourceOptionIds: ['young_audience', 'random_reward'],
+    matches: (answers) =>
+      hasSelectedOption(answers, 'Q6', 'young_audience') &&
+      hasSelectedOption(answers, 'Q12', 'random_reward'),
   },
 ]
 

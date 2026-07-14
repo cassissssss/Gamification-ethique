@@ -31,7 +31,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_young_audience',
     themeId: 'social_comparison',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'young_audience',
     weight: 1,
     message:
@@ -40,7 +40,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_ranking_data',
     themeId: 'social_comparison',
-    questionId: 'Q7',
+    questionId: 'Q9',
     optionId: 'ranking_data',
     weight: 2,
     message:
@@ -49,7 +49,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_ranking_mechanic',
     themeId: 'social_comparison',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'ranking',
     weight: 2,
     message:
@@ -58,7 +58,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_comparison_mechanic',
     themeId: 'social_comparison',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'comparison_users',
     weight: 2,
     message:
@@ -67,7 +67,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_badges',
     themeId: 'social_comparison',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'badges_trophies',
     weight: 1,
     message:
@@ -85,7 +85,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_visibility_limited_group',
     themeId: 'social_comparison',
-    questionId: 'Q15',
+    questionId: 'Q17',
     optionId: 'limited_group',
     weight: 1,
     message:
@@ -94,7 +94,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_visibility_concerned_users',
     themeId: 'social_comparison',
-    questionId: 'Q15',
+    questionId: 'Q17',
     optionId: 'visible_to_concerned_users',
     weight: 1,
     message:
@@ -103,7 +103,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_social_visibility_ranking',
     themeId: 'social_comparison',
-    questionId: 'Q15',
+    questionId: 'Q17',
     optionId: 'ranking_comparison',
     weight: 2,
     message:
@@ -114,7 +114,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_evaluative_context',
     themeId: 'autonomy_control',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'evaluative_context',
     weight: 2,
     message:
@@ -123,7 +123,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_important_service',
     themeId: 'autonomy_control',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'important_service_access',
     weight: 2,
     message:
@@ -132,7 +132,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_work_context',
     themeId: 'autonomy_control',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'work_context',
     weight: 1,
     message:
@@ -141,7 +141,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_school_context',
     themeId: 'autonomy_control',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'school_training_context',
     weight: 2,
     message:
@@ -150,7 +150,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_important_service_usage',
     themeId: 'autonomy_control',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'important_service',
     weight: 2,
     message:
@@ -159,7 +159,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_rules_low_visibility',
     themeId: 'autonomy_control',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'rules_low_visibility',
     weight: 1,
     message:
@@ -168,7 +168,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_transparency_undefined',
     themeId: 'autonomy_control',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'transparency_undefined',
     weight: 1,
     message:
@@ -177,7 +177,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_main_path',
     themeId: 'autonomy_control',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'main_path',
     weight: 2,
     message:
@@ -186,7 +186,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_dependent_elements',
     themeId: 'autonomy_control',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'dependent_elements',
     weight: 2,
     message:
@@ -195,16 +195,25 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_autonomy_control_undefined',
     themeId: 'autonomy_control',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'control_undefined',
     weight: 1,
     message:
       'Le niveau de contrôle utilisateur doit être clarifié avant de finaliser la mécanique.',
   },
   {
+    id: 'risk_autonomy_hard_to_disengage',
+    themeId: 'autonomy_control',
+    questionId: 'Q14',
+    optionId: 'hard_to_disengage',
+    weight: 2,
+    message:
+      'Une mécanique facile à rejoindre mais difficile à quitter (classement qu’on ne peut pas abandonner, streak qu’on ne peut pas arrêter sans tout perdre) déplace le problème de l’entrée vers la sortie.',
+  },
+  {
     id: 'risk_autonomy_required_to_finish',
     themeId: 'autonomy_control',
-    questionId: 'Q13',
+    questionId: 'Q15',
     optionId: 'required_to_finish',
     weight: 2,
     message:
@@ -215,7 +224,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_sensitive_personal_data',
     themeId: 'data_profile',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'sensitive_personal_data',
     weight: 2,
     message:
@@ -224,7 +233,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_personal_progress',
     themeId: 'data_profile',
-    questionId: 'Q7',
+    questionId: 'Q9',
     optionId: 'personal_progress_data',
     weight: 1,
     message:
@@ -233,7 +242,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_personalization',
     themeId: 'data_profile',
-    questionId: 'Q7',
+    questionId: 'Q9',
     optionId: 'personalization_data',
     weight: 2,
     message:
@@ -242,7 +251,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_ranking',
     themeId: 'data_profile',
-    questionId: 'Q7',
+    questionId: 'Q9',
     optionId: 'ranking_data',
     weight: 2,
     message:
@@ -251,7 +260,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_undefined',
     themeId: 'data_profile',
-    questionId: 'Q7',
+    questionId: 'Q9',
     optionId: 'data_undefined',
     weight: 1,
     message:
@@ -260,7 +269,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_levels',
     themeId: 'data_profile',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'levels',
     weight: 1,
     message:
@@ -269,7 +278,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_progress_bar',
     themeId: 'data_profile',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'progress_bar',
     weight: 1,
     message:
@@ -278,7 +287,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_data_personalized_goals',
     themeId: 'data_profile',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'personalized_goals',
     weight: 2,
     message:
@@ -307,7 +316,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_notifications',
     themeId: 'temporal_pressure',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'notifications_reminders',
     weight: 1,
     message:
@@ -316,7 +325,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_streak',
     themeId: 'temporal_pressure',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'streak',
     weight: 2,
     message:
@@ -325,7 +334,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_rewards',
     themeId: 'temporal_pressure',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'rewards_benefits',
     weight: 1,
     message:
@@ -343,7 +352,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_regular_encouraged',
     themeId: 'temporal_pressure',
-    questionId: 'Q14',
+    questionId: 'Q16',
     optionId: 'regularity_encouraged',
     weight: 1,
     message:
@@ -352,7 +361,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_regular_valued',
     themeId: 'temporal_pressure',
-    questionId: 'Q14',
+    questionId: 'Q16',
     optionId: 'regularity_valued',
     weight: 2,
     message:
@@ -361,7 +370,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_interruption_progress',
     themeId: 'temporal_pressure',
-    questionId: 'Q14',
+    questionId: 'Q16',
     optionId: 'interruption_changes_progress',
     weight: 2,
     message:
@@ -370,16 +379,25 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_temporal_interruption_status',
     themeId: 'temporal_pressure',
-    questionId: 'Q16',
+    questionId: 'Q18',
     optionId: 'interruption_changes_status',
     weight: 2,
     message:
       'La perte de progression, de statut ou d’avantages après une pause augmente la vigilance.',
   },
   {
+    id: 'risk_temporal_random_reward',
+    themeId: 'temporal_pressure',
+    questionId: 'Q12',
+    optionId: 'random_reward',
+    weight: 2,
+    message:
+      'Le renforcement à ratio variable (récompense imprévisible) est un des mécanismes les plus documentés de dépendance comportementale.',
+  },
+  {
     id: 'risk_temporal_no_resume_behavior',
     themeId: 'temporal_pressure',
-    questionId: 'Q16',
+    questionId: 'Q18',
     optionId: 'no_specific_behavior',
     weight: 1,
     message:
@@ -387,6 +405,33 @@ const riskSignalRules: RiskSignalRule[] = [
   },
 
   // ─── Finalité commerciale / conversion ──────────────────────────────────────
+  {
+    id: 'risk_commercial_increase_actions',
+    themeId: 'commercial_conversion',
+    questionId: 'Q5',
+    optionId: 'increase_actions',
+    weight: 1,
+    message:
+      'Vérifier que ce KPI ne prime pas sur un bénéfice réel pour l’utilisateur-rice.',
+  },
+  {
+    id: 'risk_commercial_increase_time_spent',
+    themeId: 'commercial_conversion',
+    questionId: 'Q5',
+    optionId: 'increase_time_spent',
+    weight: 1,
+    message:
+      'Le temps passé n’est pas un indicateur neutre : vérifier qu’il traduit une valeur réelle et non une captation d’attention.',
+  },
+  {
+    id: 'risk_commercial_objective',
+    themeId: 'commercial_conversion',
+    questionId: 'Q5',
+    optionId: 'commercial_objective',
+    weight: 1,
+    message:
+      'Légitime en soi ; vérifier qu’il est équilibré par au moins un bénéfice explicite pour l’utilisateur-rice.',
+  },
   {
     id: 'risk_commercial_convert_action',
     themeId: 'commercial_conversion',
@@ -399,7 +444,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_commercial_promotional_context',
     themeId: 'commercial_conversion',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'commercial_promotional_context',
     weight: 2,
     message:
@@ -408,7 +453,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_commercial_usage_context',
     themeId: 'commercial_conversion',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'commercial_context',
     weight: 1,
     message:
@@ -417,7 +462,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_commercial_rewards',
     themeId: 'commercial_conversion',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'rewards_benefits',
     weight: 2,
     message:
@@ -426,7 +471,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_commercial_notifications',
     themeId: 'commercial_conversion',
-    questionId: 'Q9',
+    questionId: 'Q12',
     optionId: 'notifications_reminders',
     weight: 1,
     message:
@@ -446,7 +491,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_young_audience',
     themeId: 'sensitive_context',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'young_audience',
     weight: 2,
     message:
@@ -455,7 +500,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_health_performance',
     themeId: 'sensitive_context',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'health_wellbeing_performance',
     weight: 2,
     message:
@@ -464,7 +509,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_evaluative_context',
     themeId: 'sensitive_context',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'evaluative_context',
     weight: 2,
     message:
@@ -473,7 +518,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_important_service',
     themeId: 'sensitive_context',
-    questionId: 'Q5',
+    questionId: 'Q6',
     optionId: 'important_service_access',
     weight: 2,
     message:
@@ -482,7 +527,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_work',
     themeId: 'sensitive_context',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'work_context',
     weight: 1,
     message:
@@ -491,7 +536,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_school',
     themeId: 'sensitive_context',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'school_training_context',
     weight: 2,
     message:
@@ -500,7 +545,7 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_health',
     themeId: 'sensitive_context',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'health_wellbeing_context',
     weight: 2,
     message:
@@ -509,11 +554,49 @@ const riskSignalRules: RiskSignalRule[] = [
   {
     id: 'risk_sensitive_service',
     themeId: 'sensitive_context',
-    questionId: 'Q6',
+    questionId: 'Q7',
     optionId: 'important_service',
     weight: 2,
     message:
       'Pour accéder à un service important, la mécanique ne doit pas conditionner inutilement l’accès ou la compréhension.',
+  },
+  {
+    id: 'risk_sensitive_organizational_financial_impact',
+    themeId: 'sensitive_context',
+    questionId: 'Q8',
+    optionId: 'organizational_financial_impact',
+    weight: 1,
+    message:
+      'Vérifier que la mécanique n’introduit pas de pénalité disproportionnée par rapport à l’enjeu réel.',
+  },
+  {
+    id: 'risk_sensitive_school_professional_impact',
+    themeId: 'sensitive_context',
+    questionId: 'Q8',
+    optionId: 'school_professional_impact',
+    weight: 2,
+    message:
+      'Signal fort : vérifier que la mécanique ne pénalise jamais un parcours scolaire ou professionnel réel.',
+  },
+  {
+    id: 'risk_sensitive_health_safety_impact',
+    themeId: 'sensitive_context',
+    questionId: 'Q8',
+    optionId: 'health_safety_impact',
+    weight: 2,
+    message:
+      'Signal fort : dans ce contexte, toute mécanique de pression temporelle ou de comparaison sociale doit être reconsidérée en priorité.',
+  },
+
+  // ─── Données et profilage (Q12 — récompense aléatoire) ──────────────────────
+  {
+    id: 'risk_data_random_reward_tracking',
+    themeId: 'data_profile',
+    questionId: 'Q12',
+    optionId: 'random_reward',
+    weight: 1,
+    message:
+      'Une récompense aléatoire nécessite souvent de suivre l’historique des tirages pour éviter les répétitions ou en garantir l’équité.',
   },
 ]
 

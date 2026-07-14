@@ -49,9 +49,8 @@ export default function HomePage() {
             <span className="text-primary">la gamification éthique</span>
           </h1>
           <p className="mb-8 text-lg leading-relaxed text-foreground/80">
-            Grâce à cet outil, évaluez le niveau éthique de votre projet
-            client-e, identifiez les points de vigilance et obtenez des 
-            recommandations concrètes pour les corriger.
+            Évaluez les mécaniques de gamification de votre produit numérique 
+            afin d'identifier les risques de manipulation et améliorer votre conception.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link

@@ -45,6 +45,9 @@ const SECTION_DESCRIPTIONS: Record<EvaluationSection, string> = {
 
   "Temporalité et visibilité":
     "Évaluer les effets possibles de régularité, de pression ou d’exposition sociale.",
+
+  "Finalisation":
+    "Préciser le contexte d’usage du résultat pour adapter la forme du rapport final.",
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -230,6 +233,12 @@ function QuestionCard({
         {question.note && (
           <p className="mt-2 text-sm leading-relaxed text-foreground/65">
             {question.note}
+          </p>
+        )}
+
+        {question.subtext && (
+          <p className="mt-1 text-xs italic leading-relaxed text-foreground/50">
+            {question.subtext}
           </p>
         )}
 

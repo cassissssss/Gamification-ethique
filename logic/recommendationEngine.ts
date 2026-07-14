@@ -52,17 +52,6 @@ const recommendationRules: RecommendationRule[] = [
     priority: 'medium',
   },
   {
-    id: 'rec_mode_client_recommendation',
-    questionId: 'Q1',
-    optionId: 'client_recommendation',
-    title: 'Préparer une recommandation argumentée',
-    insight:
-      'Le résultat devra probablement être compris par une équipe ou un client, pas seulement par la personne qui remplit le questionnaire.',
-    recommendation:
-      'Formuler les résultats sous forme d’arguments simples : besoin identifié, mécanique proposée, point de vigilance et alternative possible.',
-    priority: 'high',
-  },
-  {
     id: 'rec_mode_insufficient_info',
     questionId: 'Q1',
     optionId: 'insufficient_info',
@@ -249,10 +238,10 @@ const recommendationRules: RecommendationRule[] = [
     priority: 'high',
   },
 
-  // ─── Q8 — Direction gamifiée ────────────────────────────────────────────────
+  // ─── Q11 — Direction gamifiée ────────────────────────────────────────────────
   {
     id: 'rec_direction_guidance',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'guidance',
     title: 'Concevoir une gamification comme aide au guidage',
     insight:
@@ -263,7 +252,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_direction_personal_progress',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'personal_progress',
     title: 'Privilégier une progression personnelle',
     insight:
@@ -274,7 +263,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_direction_feedback',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'feedback_after_action',
     title: 'Utiliser le feedback comme soutien',
     insight:
@@ -285,7 +274,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_direction_optional_challenges',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'optional_challenges',
     title: 'Garder les défis optionnels',
     insight:
@@ -296,7 +285,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_direction_collective',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'collective_dynamic',
     title: 'Favoriser une dynamique collective non compétitive',
     insight:
@@ -307,7 +296,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_direction_steps',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'visible_steps',
     title: 'Structurer l’expérience avec des étapes visibles',
     insight:
@@ -318,7 +307,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_direction_undefined',
-    questionId: 'Q8',
+    questionId: 'Q11',
     optionId: 'direction_undefined',
     title: 'Comparer plusieurs directions possibles',
     insight:
@@ -418,10 +407,10 @@ const recommendationRules: RecommendationRule[] = [
     priority: 'medium',
   },
 
-  // ─── Q11 — Transparence ─────────────────────────────────────────────────────
+  // ─── Q13 — Transparence ─────────────────────────────────────────────────────
   {
     id: 'rec_rules_visible',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'rules_visible',
     title: 'Maintenir des règles visibles',
     insight:
@@ -432,7 +421,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_rules_contextual',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'rules_contextual',
     title: 'Expliquer les règles au bon moment',
     insight:
@@ -443,7 +432,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_rules_progressive',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'rules_progressive',
     title: 'Utiliser une transparence progressive',
     insight:
@@ -454,7 +443,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_rules_low_visibility',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'rules_low_visibility',
     title: 'Rendre le fonctionnement plus compréhensible',
     insight:
@@ -465,7 +454,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_transparency_undefined',
-    questionId: 'Q11',
+    questionId: 'Q13',
     optionId: 'transparency_undefined',
     title: 'Définir la manière d’expliquer la mécanique',
     insight:
@@ -475,10 +464,10 @@ const recommendationRules: RecommendationRule[] = [
     priority: 'high',
   },
 
-  // ─── Q12 — Contrôle utilisateur ─────────────────────────────────────────────
+  // ─── Q14 — Contrôle utilisateur ─────────────────────────────────────────────
   {
     id: 'rec_control_optional',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'optional_participation',
     title: 'Conserver une participation optionnelle',
     insight:
@@ -489,7 +478,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_control_adjustable',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'adjustable_settings',
     title: 'Permettre l’ajustement de la mécanique',
     insight:
@@ -500,7 +489,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_control_ignorable',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'ignorable_without_blocking',
     title: 'Préserver un parcours non bloquant',
     insight:
@@ -511,7 +500,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_control_main_path',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'main_path',
     title: 'Vérifier l’impact sur le parcours principal',
     insight:
@@ -522,7 +511,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_control_dependent_elements',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'dependent_elements',
     title: 'Prévoir une alternative si des éléments dépendent de la mécanique',
     insight:
@@ -533,7 +522,7 @@ const recommendationRules: RecommendationRule[] = [
   },
   {
     id: 'rec_control_undefined',
-    questionId: 'Q12',
+    questionId: 'Q14',
     optionId: 'control_undefined',
     title: 'Clarifier le niveau de contrôle utilisateur',
     insight:

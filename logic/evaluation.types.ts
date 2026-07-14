@@ -14,7 +14,10 @@ export type QuestionId =
   | "Q13"
   | "Q14"
   | "Q15"
-  | "Q16";
+  | "Q16"
+  | "Q17"
+  | "Q18"
+  | "Q19";
 
 export type QuestionType = "radio" | "checkbox";
 
@@ -24,7 +27,8 @@ export type EvaluationSection =
   | "Public et contexte"
   | "Direction de gamification"
   | "Transparence et contrôle"
-  | "Temporalité et visibilité";
+  | "Temporalité et visibilité"
+  | "Finalisation";
 
 export type EvaluationTag = string;
 export type OptionId = string;
@@ -48,6 +52,13 @@ export interface EvaluationQuestion {
   maxSelections: number;
   options: EvaluationOption[];
   note?: string;
+  /**
+   * Micro-texte affiché sous la question dans l'interface, pour désamorcer
+   * la redondance perçue entre deux questions proches (ex. Q2/Q4, Q3/Q14).
+   * Contrairement à `note`, qui reste une documentation plus technique,
+   * `subtext` est rédigé pour la personne qui répond au questionnaire.
+   */
+  subtext?: string;
   recommendationEffect?: string;
 }
 
@@ -160,6 +171,23 @@ export interface MechanicAlternative {
 }
 
 /**
+ * Combinaison de réponses dont le risque combiné dépasse la simple somme
+ * des signaux pris séparément (effet multiplicatif plutôt qu'additif).
+ * Distinct de la matrice de pondération thématique et de la détection de
+ * contradictions logiques : une règle de synergie ne signale pas une
+ * incohérence, mais une amplification de risque entre mécaniques ou réponses
+ * par ailleurs cohérentes entre elles.
+ */
+export interface SynergyResult {
+  id: string;
+  title: string;
+  message: string;
+  recommendation: string;
+  level: RiskLevel;
+  sourceQuestionIds: QuestionId[];
+}
+
+/**
  * Orientation globale donnée à la fin de l'analyse.
  * Elle ne dit pas "éthique" ou "pas éthique", mais donne une direction actionnable.
  */
@@ -186,5 +214,6 @@ export interface EvaluationResult {
   positiveRecommendations: PositiveRecommendation[];
   riskThemes: RiskThemeResult[];
   mechanicsAlternatives: MechanicAlternative[];
+  synergyResults: SynergyResult[];
   globalOrientation: GlobalOrientation;
 }

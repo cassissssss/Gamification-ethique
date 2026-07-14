@@ -4,6 +4,7 @@ const MAX_RECOMMENDATIONS = 5
 const MAX_CONTRADICTIONS = 4
 const MAX_RISK_THEMES = 6
 const MAX_MECHANICS = 5
+const MAX_SYNERGIES = 4
 
 function getActiveRiskThemes(result: EvaluationResult): RiskThemeResult[] {
   return result.riskThemes.filter((theme) => theme.level !== 'none')
@@ -54,6 +55,15 @@ ${signals ? `   Signaux :\n${signals}` : ''}`
     })
     .join('\n\n')
 
+  const synergies = result.synergyResults
+    .slice(0, MAX_SYNERGIES)
+    .map((synergy, index) => {
+      return `${index + 1}. ${synergy.title} (${synergy.level})
+   Ce que cela indique : ${synergy.message}
+   À faire : ${synergy.recommendation}`
+    })
+    .join('\n\n')
+
   return `Tu es un-e spécialiste UX et gamification éthique. Tu aides une équipe projet à relire un résultat généré par un framework.
 
 Important :
@@ -81,6 +91,9 @@ ${contradictions || '(aucun point particulier)'}
 
 Points de vigilance :
 ${riskThemes || '(aucun point de vigilance spécifique)'}
+
+Combinaisons à risque amplifié :
+${synergies || '(aucune combinaison particulière détectée)'}
 
 Pistes recommandées :
 ${recommendations || '(aucune piste spécifique)'}

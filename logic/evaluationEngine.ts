@@ -10,6 +10,7 @@ import { getPositiveRecommendations } from './recommendationEngine'
 import { getRiskThemes } from './riskEngine'
 import { getContradictions } from './contradictionEngine'
 import { getMechanicsAlternatives } from './mechanicsEngine'
+import { getSynergyResults } from './synergyEngine'
 
 export function evaluateAnswers(answers: EvaluationAnswers): EvaluationResult {
   const visibleQuestions = getVisibleQuestions(answers)
@@ -17,6 +18,7 @@ export function evaluateAnswers(answers: EvaluationAnswers): EvaluationResult {
   const positiveRecommendations = getPositiveRecommendations(answers)
   const riskThemes = getRiskThemes(answers)
   const mechanicsAlternatives = getMechanicsAlternatives(answers)
+  const synergyResults = getSynergyResults(answers)
 
   const globalOrientation = getGlobalOrientation({
     answers,
@@ -28,6 +30,9 @@ export function evaluateAnswers(answers: EvaluationAnswers): EvaluationResult {
       (contradiction) => contradiction.severity === 'warning',
     ).length,
     mechanicsAlternativesCount: mechanicsAlternatives.length,
+    criticalSynergiesCount: synergyResults.filter(
+      (synergy) => synergy.level === 'critical',
+    ).length,
   })
 
   return {
@@ -36,6 +41,7 @@ export function evaluateAnswers(answers: EvaluationAnswers): EvaluationResult {
     positiveRecommendations,
     riskThemes,
     mechanicsAlternatives,
+    synergyResults,
     globalOrientation,
   }
 }
@@ -46,6 +52,7 @@ interface GlobalOrientationInput {
   blockingContradictionsCount: number
   warningsCount: number
   mechanicsAlternativesCount: number
+  criticalSynergiesCount: number
 }
 
 function getGlobalOrientation(input: GlobalOrientationInput): GlobalOrientation {
@@ -55,6 +62,7 @@ function getGlobalOrientation(input: GlobalOrientationInput): GlobalOrientation 
     blockingContradictionsCount,
     warningsCount,
     mechanicsAlternativesCount,
+    criticalSynergiesCount,
   } = input
 
   const criticalThemesCount = countRiskThemesByLevel(riskThemes, 'critical')
@@ -80,6 +88,17 @@ function getGlobalOrientation(input: GlobalOrientationInput): GlobalOrientation 
         'Plusieurs réponses indiquent que le besoin, l’action principale ou la direction gamifiée ne sont pas encore suffisamment définis.',
       nextStep:
         'Clarifier le besoin utilisateur, l’action à soutenir et le contexte d’usage avant de choisir une mécanique précise.',
+    }
+  }
+
+  if (criticalSynergiesCount > 0) {
+    return {
+      id: 'high_vigilance_required',
+      title: 'Combinaison de mécaniques à risque amplifié',
+      summary:
+        'Une combinaison précise de réponses crée un risque plus important que la somme de chaque signal pris séparément. Cette combinaison doit être traitée en priorité.',
+      nextStep:
+        'Consulter les combinaisons signalées, retirer ou adapter au moins une des mécaniques concernées, et documenter la décision si la combinaison est maintenue.',
     }
   }
 
@@ -138,7 +157,7 @@ function hasUnclearProjectBasis(answers: EvaluationAnswers): boolean {
     hasSelectedOption(answers, 'Q1', 'insufficient_info') ||
     hasSelectedOption(answers, 'Q2', 'need_unclear') ||
     hasSelectedOption(answers, 'Q4', 'action_undefined') ||
-    hasSelectedOption(answers, 'Q8', 'direction_undefined') ||
+    hasSelectedOption(answers, 'Q11', 'direction_undefined') ||
     hasSelectedOption(answers, 'Q10', 'motivation_unclear')
   )
 }

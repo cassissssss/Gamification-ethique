@@ -23,48 +23,47 @@ export const isQuestionVisible = (
   answers: EvaluationAnswers,
 ): boolean => {
   switch (questionId) {
-    case "Q7":
-      // Décision d'intégration : Q7 est toujours affichée pour éviter une dépendance à Q8/Q9, qui arrivent après dans le parcours.
+    case "Q9":
+      // Décision d'intégration : Q9 (données) est toujours affichée pour éviter une dépendance à Q11/Q12, qui arrivent après dans le parcours.
       return true;
 
-    case "Q8":
+    case "Q11":
       return hasAnySelected(answers, "Q1", [
         "project_open",
         "insufficient_info",
-        "client_recommendation",
       ]);
 
-    case "Q9":
-  return hasAnySelected(answers, "Q1", [
-    "project_open",
-    "insufficient_info",
-    "mechanics_envisaged",
-    "mechanic_requested",
-    "client_recommendation",
-  ]);
+    case "Q12":
+      return hasAnySelected(answers, "Q1", [
+        "project_open",
+        "insufficient_info",
+        "mechanics_envisaged",
+        "mechanic_requested",
+      ]);
 
-    case "Q15":
+    case "Q17":
       return (
-        hasAnySelected(answers, "Q9", [
+        hasAnySelected(answers, "Q12", [
           "ranking",
           "comparison_users",
           "badges_trophies",
           "rewards_benefits",
         ]) ||
-        hasAnySelected(answers, "Q8", ["value_contribution", "collective_dynamic"]) ||
+        hasAnySelected(answers, "Q11", ["value_contribution", "collective_dynamic"]) ||
         hasAnySelected(answers, "Q10", ["symbolic_recognition", "social_comparison"])
       );
 
-    case "Q16":
+    case "Q18":
       return (
-        hasAnySelected(answers, "Q9", [
+        hasAnySelected(answers, "Q12", [
           "streak",
           "notifications_reminders",
           "rewards_benefits",
           "levels",
           "progress_bar",
+          "random_reward",
         ]) ||
-        hasAnySelected(answers, "Q14", [
+        hasAnySelected(answers, "Q16", [
           "regularity_encouraged",
           "regularity_valued",
           "interruption_changes_progress",

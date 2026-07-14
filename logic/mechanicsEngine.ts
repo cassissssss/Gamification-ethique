@@ -199,12 +199,27 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
       'Afficher une contribution collective ou une progression personnelle plutôt qu’un score comparé aux autres.',
     relatedThemeIds: ['social_comparison', 'sensitive_context'],
   },
+  {
+    id: 'mechanic_random_reward',
+    mechanicOptionId: 'random_reward',
+    mechanicLabel: 'Récompense aléatoire ou surprise',
+    relevantUse:
+      'Créer un moment de surprise ponctuel dans une expérience déjà utile.',
+    possibleRisk:
+      'Le renforcement à ratio variable est un des mécanismes les plus documentés comme addictif (proche des loot boxes), avec un effet renforcé chez un public jeune.',
+    baseVigilanceLevel: 'critical',
+    ethicalAlternative:
+      'Proposer une récompense prévisible et transparente : probabilités affichées si un aléa est conservé, ou remplacement par un bonus fixe et annoncé.',
+    interfaceExample:
+      'Un bonus annoncé à l’avance avec sa valeur exacte, sans effet de tirage ni suspense visuel.',
+    relatedThemeIds: ['temporal_pressure', 'sensitive_context'],
+  },
 ]
 
 export function getMechanicsAlternatives(
   answers: EvaluationAnswers,
 ): MechanicAlternative[] {
-  const selectedMechanicOptionIds = getSelectedOptionIds(answers, 'Q9')
+  const selectedMechanicOptionIds = getSelectedOptionIds(answers, 'Q12')
 
   return mechanicAlternativeRules
     .filter((rule) => selectedMechanicOptionIds.includes(rule.mechanicOptionId))
@@ -224,7 +239,7 @@ export function getMechanicsAlternatives(
 
 function getSelectedOptionIds(
   answers: EvaluationAnswers,
-  questionId: 'Q9',
+  questionId: 'Q12',
 ): OptionId[] {
   const answer = answers[questionId]
 
