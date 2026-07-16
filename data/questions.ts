@@ -13,7 +13,6 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "mechanic_requested", label: "Une mécanique a été demandée et doit être discutée", tags: ["mode_mechanic_requested"] },
       { id: "insufficient_info", label: "Le projet manque encore d'informations pour choisir une direction", tags: ["mode_insufficient_info"] },
     ],
-    note: "Cette question porte uniquement sur le stade d'avancement du projet. La question sur l'usage du résultat (réflexion interne ou argumentaire client) est posée séparément, en toute fin de questionnaire (Q19), car elle influence la forme du rapport mais pas l'analyse elle-même.",
     recommendationEffect: "Adapte la forme des résultats : mécaniques à explorer, points de vigilance ou retour au cadrage.",
   },
   {
@@ -32,7 +31,6 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "need_unclear", label: "Je préfère répondre plus tard", tags: ["besoin_a_clarifier"], isExclusive: true },
     ],
     note: "Le besoin correspond au problème que l'on cherche à résoudre avant de choisir une mécanique.",
-    subtext: "Le besoin, c'est le problème à résoudre — indépendamment de l'action concrète que vous choisirez à la question suivante.",
     recommendationEffect: "Oriente les mécaniques recommandées : progression, feedback, étapes, défis optionnels, contribution, rappel modéré ou retour au cadrage.",
   },
   {
@@ -49,7 +47,6 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "role_unclear", label: "Je préfère répondre plus tard", tags: ["role_a_clarifier"] },
     ],
     note: "Le service principal correspond à ce que l'expérience apporte même sans élément gamifié : apprendre, réserver, comprendre, contribuer, acheter, etc.",
-    subtext: "Cette question porte sur le rôle de la gamification dans l'expérience globale (ce à quoi elle sert), pas sur ce qui se passe si on l'ignore concrètement — ce point est couvert plus loin (Q14).",
     recommendationEffect: "Influence le niveau de vigilance : gamification légère, gamification structurante, gamification sous conditions ou besoin de clarifier la valeur du service.",
   },
   {
@@ -69,7 +66,6 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "action_undefined", label: "Je préfère répondre plus tard", tags: ["action_a_definir"] },
     ],
     note: "Il s'agit de l'action concrète que l'expérience cherche à soutenir.",
-    subtext: "L'action, c'est ce que la personne fera concrètement — à distinguer du besoin plus général identifié juste avant.",
     recommendationEffect: "Relie le besoin à des recommandations concrètes : aide contextuelle, progression, feedback, contribution, retour régulier, partage ou conversion.",
   },
   {
@@ -87,7 +83,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "commercial_objective", label: "Répondre à un objectif commercial (ventes, conversion, rétention)", tags: ["benefice_business_commercial", "risque_conversion"] },
       { id: "benefit_unclear", label: "Je préfère répondre plus tard", tags: ["benefice_a_clarifier"], isExclusive: true },
     ],
-    note: "Question ajoutée pour distinguer explicitement le bénéfice utilisateur du bénéfice business — les deux ne sont pas incompatibles, d'où le format checkbox plutôt que radio : forcer un choix unique inciterait à cocher uniquement l'option la plus présentable par désirabilité sociale, sans refléter la réalité où les deux objectifs coexistent souvent.",
+    note: "Un bénéfice pour l'utilisateur-rice et un objectif business peuvent coexister : plusieurs réponses sont possibles.",
     recommendationEffect: "Si seules des options orientées business sont cochées sans aucune option orientée bénéfice utilisateur, déclenche une contradiction invitant à clarifier l'intention. Alimente aussi la thématique Finalité commerciale / conversion.",
   },
   {
@@ -107,7 +103,6 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "context_to_verify", label: "Je préfère répondre plus tard", tags: ["contexte_a_verifier"], isExclusive: true },
     ],
     note: "Certaines mécaniques peuvent avoir des effets différents selon le public ou le contexte d'usage.",
-    subtext: "Ces caractéristiques concernent le projet dans son ensemble — la situation personnelle de l'utilisateur-rice est couverte à la question suivante.",
     recommendationEffect: "Augmente le niveau de vigilance et déclenche des recommandations sur autonomie, transparence, comparaison sociale, données ou pression de performance.",
   },
   {
@@ -126,7 +121,6 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "context_undefined", label: "Je préfère répondre plus tard", tags: ["contexte_a_definir"] },
     ],
     note: "Cette question aide à comprendre le degré de liberté de l'utilisateur-rice dans l'expérience.",
-    subtext: "Cette question porte sur la situation personnelle de la personne qui utilise l'expérience — pas sur les caractéristiques générales du projet vues juste avant.",
     recommendationEffect: "Influence les recommandations sur participation optionnelle, consentement réel, contrôle utilisateur et niveau de prudence.",
   },
   {
@@ -143,7 +137,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "health_safety_impact", label: "Un impact sur la santé, la sécurité ou le bien-être", tags: ["consequence_sante", "risque_public_sensible"] },
       { id: "consequence_undefined", label: "Je préfère répondre plus tard", tags: ["consequence_a_clarifier"] },
     ],
-    note: "Question formulée de façon factuelle (\"que se passe-t-il\") plutôt que jugeante (\"est-ce risqué\"), pour limiter le biais de désirabilité sociale : personne n'admet facilement qu'un produit a un impact santé si la question sonne comme une accusation, mais décrire un fait objectif est plus neutre. Complète Q6/Q7 (domaine et situation d'usage) avec l'enjeu réel de l'action — ce qui distingue par exemple une appli de fitness ludique d'une appli de suivi médical utilisant les mêmes mécaniques.",
+    note: "Pensez à la conséquence concrète pour la personne, pas à un jugement sur le produit.",
     recommendationEffect: "Alimente fortement la thématique Public ou contexte sensible, avec un poids renforcé pour les impacts santé et scolaire/professionnel. Combiné à une mécanique de pression temporelle, déclenche une règle de synergie dédiée.",
   },
   {
@@ -179,7 +173,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "frequent_return", label: "Le retour fréquent dans l'expérience", tags: ["motivation_retour_frequent"] },
       { id: "motivation_unclear", label: "Je préfère répondre plus tard", tags: ["motivation_a_clarifier"], isExclusive: true },
     ],
-    note: "Cette question aide à comprendre le type de motivation recherché, sans encore juger s'il est adapté ou non. Elle est posée avant le choix d'une direction ou de mécaniques précises (Q11/Q12), afin de clarifier le ressort motivationnel avant de choisir comment le mettre en œuvre.",
+    note: "Il s'agit du type de motivation recherché, sans encore juger s'il est adapté ou non.",
     recommendationEffect: "Oriente les recommandations sur motivation intrinsèque, récompense, comparaison sociale, régularité ou besoin de renforcer la valeur du service.",
   },
   {
@@ -257,8 +251,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "hard_to_disengage", label: "Une fois engagé-e, il est difficile de revenir en arrière ou de se désengager complètement (ex. quitter un classement, arrêter un streak, supprimer sa progression)", tags: ["controle_desengagement_difficile", "risque_autonomie"] },
       { id: "control_undefined", label: "Je préfère répondre plus tard", tags: ["controle_a_definir"] },
     ],
-    note: "Cette question aide à comprendre si la mécanique est optionnelle, personnalisable ou intégrée au parcours principal. Passée en checkbox (3 max) car plusieurs de ces facettes coexistent souvent dans la réalité (ex. \"proposée comme option\" + \"certains paramètres ajustables\", ou \"fait partie du parcours principal\" + \"certains éléments en dépendent\"). L'option sur la réversibilité porte sur la sortie de la mécanique une fois engagé-e, un angle absent des options précédentes qui ne couvraient que l'entrée.",
-    subtext: "Cette question porte sur l'interaction concrète et le caractère bloquant ou non de la mécanique, à distinguer de Q3 qui porte sur son rôle conceptuel dans l'expérience globale.",
+    note: "Plusieurs réponses sont possibles si plusieurs aspects s'appliquent à la fois.",
     recommendationEffect: "Déclenche des recommandations sur autonomie, opt-out, personnalisation, accès non bloquant et niveau de contrôle utilisateur. L'option sur la réversibilité alimente ce même score avec un poids renforcé, car l'impossibilité de se désengager facilement est un signal de vigilance fort à elle seule.",
   },
   {

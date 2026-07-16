@@ -58,7 +58,6 @@ export interface EvaluationQuestion {
    * Contrairement à `note`, qui reste une documentation plus technique,
    * `subtext` est rédigé pour la personne qui répond au questionnaire.
    */
-  subtext?: string;
   recommendationEffect?: string;
 }
 

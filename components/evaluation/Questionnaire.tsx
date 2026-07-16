@@ -2,7 +2,9 @@
 
 import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useEvaluationForm } from '@/hooks/useEvaluationForm'
 import type {
   EvaluationAnswers,
@@ -226,21 +228,24 @@ function QuestionCard({
   return (
     <div className="rounded-2xl bg-white/70 p-6 shadow-sm backdrop-blur-sm sm:p-8">
       <fieldset>
-        <legend className="text-lg font-semibold leading-snug text-foreground">
+        <legend className="flex items-center gap-2 text-lg font-semibold leading-snug text-foreground">
           {question.title}
+
+          {question.note && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex shrink-0 items-center justify-center rounded-full text-foreground/70 hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  aria-label="Plus d'explications sur cette question"
+                >
+                  <Info size={16} aria-hidden="true" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{question.note}</TooltipContent>
+            </Tooltip>
+          )}
         </legend>
-
-        {question.note && (
-          <p className="mt-2 text-sm leading-relaxed text-foreground/65">
-            {question.note}
-          </p>
-        )}
-
-        {question.subtext && (
-          <p className="mt-1 text-xs italic leading-relaxed text-foreground/50">
-            {question.subtext}
-          </p>
-        )}
 
         <div className="mt-5 flex flex-col gap-3">
           {question.options.map((option) => {
