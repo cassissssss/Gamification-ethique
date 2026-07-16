@@ -1,4 +1,4 @@
-import type { Answer } from '@/types'
+import type { Answer } from '@/types/principle'
 
 const KEYS = {
   answers:   'gamification_ethique_answers',

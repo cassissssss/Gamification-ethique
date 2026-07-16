@@ -1,4 +1,4 @@
-import type { VerdictLevel, VerdictTone } from '@/types'
+import type { VerdictLevel, VerdictTone } from '@/types/principle'
 import { verdicts } from '@/data/verdicts'
 
 interface VerdictProps {

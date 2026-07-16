@@ -52,12 +52,6 @@ export interface EvaluationQuestion {
   maxSelections: number;
   options: EvaluationOption[];
   note?: string;
-  /**
-   * Micro-texte affiché sous la question dans l'interface, pour désamorcer
-   * la redondance perçue entre deux questions proches (ex. Q2/Q4, Q3/Q14).
-   * Contrairement à `note`, qui reste une documentation plus technique,
-   * `subtext` est rédigé pour la personne qui répond au questionnaire.
-   */
   recommendationEffect?: string;
 }
 
@@ -108,6 +102,22 @@ export interface RiskSignal {
 }
 
 /**
+ * Contenu approfondi, affiché derrière un "En savoir plus" plutôt que toujours
+ * visible — pour rester scannable tout en donnant accès à une vraie expertise
+ * pour qui veut creuser. Le cœur de la valeur est `alternatives` : plusieurs
+ * solutions concrètes et directement applicables, pas une seule reformulation
+ * de la recommandation courte.
+ */
+export interface RecommendationDeepDive {
+  /** Le mécanisme en jeu : pourquoi ce problème existe, brièvement (2-4 phrases). */
+  mechanism: string;
+  /** Plusieurs alternatives concrètes, copiables telles quelles dans un produit. */
+  alternatives: string[];
+  /** Référence à un produit connu illustrant une bonne pratique (optionnel). */
+  realWorldExample?: string;
+}
+
+/**
  * Résultat calculé pour une thématique de vigilance.
  */
 export interface RiskThemeResult {
@@ -118,6 +128,7 @@ export interface RiskThemeResult {
   signals: RiskSignal[];
   summary: string;
   recommendation?: string;
+  deepDive?: RecommendationDeepDive;
 }
 
 /**
@@ -134,6 +145,7 @@ export interface PositiveRecommendation {
   sourceOptionId?: OptionId;
   relatedTags?: EvaluationTag[];
   example?: string;
+  deepDive?: RecommendationDeepDive;
 }
 
 /**
@@ -152,6 +164,7 @@ export interface ContradictionResult {
   severity: ContradictionSeverity;
   sourceQuestionIds: QuestionId[];
   sourceOptionIds?: OptionId[];
+  deepDive?: RecommendationDeepDive;
 }
 
 /**
@@ -167,6 +180,7 @@ export interface MechanicAlternative {
   ethicalAlternative: string;
   interfaceExample?: string;
   relatedThemeIds: RiskThemeId[];
+  deepDive?: RecommendationDeepDive;
 }
 
 /**
@@ -184,6 +198,7 @@ export interface SynergyResult {
   recommendation: string;
   level: RiskLevel;
   sourceQuestionIds: QuestionId[];
+  deepDive?: RecommendationDeepDive;
 }
 
 /**

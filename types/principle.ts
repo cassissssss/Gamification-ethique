@@ -31,78 +31,148 @@ export type VerdictTone =
   | 'danger'
   | 'info'
 
+  // ─── Mechanic ─────────────────────────────────────────────────────────────────
+
+  export type PrincipleMechanic =
+  | 'points'
+  | 'badges'
+  | 'levels'
+  | 'leaderboards'
+  | 'streaks'
+  | 'rewards'
+  | 'challenges'
+  | 'notifications'
+  | 'progress'
+  | 'missions'
+
 // ─── Questions ────────────────────────────────────────────────────────────────
 
 export interface ShowIfCondition {
   questionId: string
-  optionIds:  string[]
+  optionIds: string[]
 }
 
 export interface Option {
-  id:    string
+  id: string
   label: string
-  tags:  Tag[]
+  tags: Tag[]
 }
 
 export interface Question {
-  id:             string
-  text:           string
-  helpText?:      string
-  type:           'single' | 'multiple'
-  options:        Option[]
-  section?:       string
+  id: string
+  text: string
+  helpText?: string
+  type: 'single' | 'multiple'
+  options: Option[]
+  section?: string
   maxSelections?: number
-  showIf?:        ShowIfCondition[]
+  showIf?: ShowIfCondition[]
 }
 
 export interface Answer {
-  questionId:        string
+  questionId: string
   selectedOptionIds: string[]
 }
 
 // ─── Résultats ────────────────────────────────────────────────────────────────
 
 export interface Recommendation {
-  id:             string
-  tag:            Tag
-  priority:       'haute' | 'moyenne' | 'basse'
-  title:          string
-  description:    string
+  id: string
+  tag: Tag
+  priority: 'haute' | 'moyenne' | 'basse'
+  title: string
+  description: string
   principleSlug?: string
 }
 
 export interface EvaluationResult {
-  tags:            Tag[]
-  verdict:         VerdictLevel
+  tags: Tag[]
+  verdict: VerdictLevel
   recommendations: Recommendation[]
 }
 
 // ─── Principes ────────────────────────────────────────────────────────────────
 
+export interface PrincipleReference {
+  title: string
+  authors: string
+  year: number
+  url?: string
+}
+
 export interface Principe {
-  slug:             string
-  title:            string
+  slug: string
+  title: string
+
+  /**
+   * Phrase affichée sous le titre
+   */
   shortDescription: string
-  content:          string
-  examples?:        string[]
-  risks?:           string[]
-  relatedTags?:     Tag[]
+
+  /**
+   * Dans quels cas ce principe est important ?
+   */
+  whenToUse: string
+
+  /**
+   * Pourquoi ce principe est important ?
+   */
+  why: string
+
+  /**
+   * Explication du principe
+   */
+  content: string
+
+  /**
+   * Conséquence d'une mauvaise conception
+   */
+  impact: string
+
+  /**
+   * Mécaniques concernées
+   */
+  relatedMechanics: PrincipleMechanic[]
+
+  /**
+   * Les idées essentielles
+   */
+  takeaways: string[]
+
+  /**
+   * Bonnes pratiques
+   */
+  goodPractices: string[]
+
+  /**
+   * Erreurs fréquentes
+   */
+  avoid: string[]
+
+  /**
+   * Question pour aider l'évaluation
+   */
+  evaluationQuestion: string
+
+  references: PrincipleReference[]
+
+  relatedTags: Tag[]
 }
 
 // ─── Verdict (définition éditoriale) ──────────────────────────────────────────
 
 export interface VerdictDefinition {
-  level:       VerdictLevel
-  label:       string
+  level: VerdictLevel
+  label: string
   description: string
-  tone:        VerdictTone
-  icon?:       string
+  tone: VerdictTone
+  icon?: string
 }
 
 // ─── Tag (définition éditoriale) ──────────────────────────────────────────────
 
 export interface TagDefinition {
-  tag:         Tag
-  label:       string
+  tag: Tag
+  label: string
   description: string
 }

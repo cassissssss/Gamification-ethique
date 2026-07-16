@@ -1,7 +1,8 @@
 import type {
-  EvaluationAnswers,
   MechanicAlternative,
+  EvaluationAnswers,
   OptionId,
+  RecommendationDeepDive,
   RiskLevel,
   RiskThemeId,
 } from './evaluation.types'
@@ -16,6 +17,7 @@ interface MechanicAlternativeRule {
   ethicalAlternative: string
   interfaceExample?: string
   relatedThemeIds: RiskThemeId[]
+  deepDive?: RecommendationDeepDive
 }
 
 const mechanicAlternativeRules: MechanicAlternativeRule[] = [
@@ -33,6 +35,17 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Afficher un retour du type “action complétée” ou “progression mise à jour” plutôt qu’un score central permanent.',
     relatedThemeIds: ['social_comparison', 'temporal_pressure'],
+    deepDive: {
+      mechanism:
+        'Un score, même sans classement, incite naturellement à optimiser pour le nombre plutôt que pour la valeur de l’action — un glissement bien documenté en psychologie de la motivation (substitution d’un objectif extrinsèque à l’objectif réel).',
+      alternatives: [
+        'Remplacer le score cumulatif par un indicateur d’état (« à jour », « complété ») plutôt qu’un nombre qui grimpe indéfiniment.',
+        'Si un score doit rester visible, le contextualiser (« 3 leçons terminées cette semaine ») plutôt que de l’afficher comme une valeur brute et permanente.',
+        'Éviter tout affichage comparatif du score par défaut — le rendre consultable, mais pas mis en avant.',
+      ],
+      realWorldExample:
+        'Duolingo affiche des XP, mais les contextualise toujours par leçon plutôt que comme un score global mis en avant en continu.',
+    },
   },
   {
     id: 'mechanic_badges_trophies',
@@ -48,6 +61,17 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Un badge discret affiché dans un récapitulatif personnel après une étape réellement importante.',
     relatedThemeIds: ['social_comparison'],
+    deepDive: {
+      mechanism:
+        'Un badge attribué trop souvent perd sa fonction de reconnaissance et devient un simple accusé de réception déguisé — l’utilisateur-rice cesse d’y accorder de la valeur, ce qui pousse à en ajouter toujours plus pour maintenir l’effet (fuite en avant classique du design à récompenses).',
+      alternatives: [
+        'Réserver les badges aux étapes qui représentent un vrai jalon, pas chaque micro-action.',
+        'Les rendre privés par défaut, avec un partage optionnel plutôt qu’automatique.',
+        'Accompagner chaque badge d’une explication de ce qu’il représente concrètement, pas seulement d’une icône.',
+      ],
+      realWorldExample:
+        'Strava attribue des badges pour des jalons réels (premier semi-marathon, record personnel) plutôt que pour chaque sortie enregistrée.',
+    },
   },
   {
     id: 'mechanic_levels',
@@ -63,6 +87,15 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Des paliers de progression personnels avec une explication claire de ce que chaque étape signifie.',
     relatedThemeIds: ['autonomy_control', 'data_profile'],
+    deepDive: {
+      mechanism:
+        'Un système de niveaux fonctionne comme un filtre implicite : dès qu’il conditionne l’accès à une fonctionnalité utile, la progression cesse d’être un repère pour devenir une contrainte — l’utilisateur-rice n’avance plus pour son bénéfice mais pour lever un blocage artificiel.',
+      alternatives: [
+        'Garantir que le service principal reste accessible à tous les niveaux, sans fonctionnalité essentielle réservée à un palier supérieur.',
+        'Expliquer explicitement ce que chaque niveau signifie et permet, plutôt que de le laisser comme un simple nombre.',
+        'Proposer un moyen de revenir à un niveau antérieur ou de le masquer pour qui ne veut pas s’en préoccuper.',
+      ],
+    },
   },
   {
     id: 'mechanic_progress_bar',
@@ -78,6 +111,15 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Une indication simple comme “Étape 2 sur 5” avec la possibilité de revenir en arrière.',
     relatedThemeIds: ['autonomy_control', 'data_profile'],
+    deepDive: {
+      mechanism:
+        'L’effet Zeigarnik (une tâche inachevée reste plus présente à l’esprit qu’une tâche terminée) rend une barre presque pleine particulièrement efficace pour pousser à terminer dans l’instant — ce qui est utile pour un formulaire court, mais problématique si ça pousse à écourter une vraie réflexion.',
+      alternatives: [
+        'Afficher le nombre d’étapes restantes en plus du pourcentage, pour donner une estimation honnête du temps encore nécessaire.',
+        'Permettre explicitement de sauvegarder et reprendre plus tard, visible dès le début du parcours.',
+        'Éviter les barres qui ne reflètent pas la réalité (ex. progression accélérée artificiellement au début pour donner une impression de rapidité).',
+      ],
+    },
   },
   {
     id: 'mechanic_challenges_missions',
@@ -93,6 +135,15 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Une suggestion du type “Vous pouvez essayer cette action” plutôt qu’une mission obligatoire.',
     relatedThemeIds: ['autonomy_control', 'temporal_pressure'],
+    deepDive: {
+      mechanism:
+        'Un défi transforme une action anodine en performance évaluée — ce qui peut être motivant ponctuellement, mais devient épuisant si chaque interaction du produit est reformulée en mission à accomplir plutôt qu’en usage normal.',
+      alternatives: [
+        'Limiter le nombre de défis actifs simultanément pour éviter l’effet de liste de tâches jamais terminée.',
+        'Rendre chaque défi entièrement ignorable sans perte ni rappel insistant.',
+        'Réserver les défis aux fonctionnalités secondaires à découvrir, jamais au parcours principal.',
+      ],
+    },
   },
   {
     id: 'mechanic_ranking',
@@ -108,6 +159,17 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Afficher “votre progression cette semaine” ou “objectif collectif atteint à 72%” plutôt qu’un top utilisateurs.',
     relatedThemeIds: ['social_comparison', 'sensitive_context'],
+    deepDive: {
+      mechanism:
+        'Un classement crée mécaniquement des perdant·es : par construction, la moitié des participant·es se retrouve sous la médiane, quel que soit leur effort réel. Pour cette majorité, l’effet motivationnel s’inverse et devient décourageant plutôt que stimulant.',
+      alternatives: [
+        'Remplacer le classement global par une comparaison à soi-même dans le temps (« mieux que la semaine dernière »).',
+        'Si une dimension collective est souhaitée, utiliser un objectif de groupe atteint ensemble plutôt qu’un rang individuel.',
+        'Si un classement doit être conservé, le rendre optionnel (opt-in) et limité à un petit groupe choisi (amis, équipe), jamais à l’ensemble des utilisateur-rices par défaut.',
+      ],
+      realWorldExample:
+        'Fitbit propose des défis entre amis opt-in plutôt qu’un classement public par défaut de tous les utilisateurs.',
+    },
   },
   {
     id: 'mechanic_rewards_benefits',
@@ -123,6 +185,15 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Un avantage ponctuel annoncé clairement après une action utile, sans urgence artificielle ni rareté forcée.',
     relatedThemeIds: ['commercial_conversion', 'temporal_pressure'],
+    deepDive: {
+      mechanism:
+        'Une récompense externe répétée peut, à terme, remplacer la motivation intrinsèque plutôt que la renforcer (effet de surjustification, documenté depuis les années 1970 en psychologie de la motivation) : l’utilisateur-rice agit pour l’avantage, plus pour la valeur de l’action elle-même.',
+      alternatives: [
+        'Réserver les récompenses à des actions rares et significatives, jamais à chaque interaction courante.',
+        'Annoncer la récompense à l’avance plutôt que de la réserver en surprise, pour éviter tout effet de dépendance.',
+        'Vérifier que retirer la récompense ne ferait pas disparaître toute motivation à agir — si oui, c’est le signe que la mécanique masque un manque de valeur réelle du produit.',
+      ],
+    },
   },
   {
     id: 'mechanic_notifications_reminders',
@@ -138,6 +209,17 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Un rappel paramétrable du type “me le rappeler plus tard” plutôt qu’une relance répétée automatique.',
     relatedThemeIds: ['temporal_pressure', 'autonomy_control'],
+    deepDive: {
+      mechanism:
+        'Une notification qui interrompt sans lien avec une intention exprimée par l’utilisateur-rice est perçue comme une sollicitation externe, pas un service — c’est l’un des signaux les plus cités dans les études sur la fatigue numérique et le désinstallation d’applications.',
+      alternatives: [
+        'Ne notifier que ce que l’utilisateur-rice a explicitement demandé à suivre, jamais par défaut sur tout.',
+        'Espacer automatiquement les rappels si l’utilisateur-rice ne les ouvre pas, plutôt que de maintenir la même fréquence.',
+        'Proposer un réglage simple et visible (pas enfoui dans un sous-menu) pour ajuster ou couper les rappels.',
+      ],
+      realWorldExample:
+        'Fitbit laisse choisir précisément quels rappels recevoir (mouvement, sommeil, objectifs) plutôt que d’imposer un flux unique.',
+    },
   },
   {
     id: 'mechanic_streak',
@@ -153,6 +235,17 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Afficher “vous pouvez reprendre quand vous voulez” plutôt que “série perdue”.',
     relatedThemeIds: ['temporal_pressure', 'sensitive_context'],
+    deepDive: {
+      mechanism:
+        'Un streak fonctionne par aversion à la perte plus que par motivation positive : au bout de quelques jours, ce n’est plus l’envie de continuer qui pousse à revenir, mais la peur de perdre ce qui a déjà été accumulé — un des ressorts les plus efficaces, et les plus documentés comme problématiques, du design comportemental.',
+      alternatives: [
+        'Proposer un système de « gel » de série (freeze) utilisable un nombre limité de fois par mois, pour absorber les pauses normales de la vie.',
+        'Remplacer la remise à zéro brutale par une dégradation douce (ex. la série diminue mais ne disparaît pas complètement).',
+        'Afficher un message de reprise neutre ou encourageant plutôt qu’un message de perte culpabilisant.',
+      ],
+      realWorldExample:
+        'Duolingo propose des « streak freezes » achetables ou gagnables pour absorber une pause sans perdre toute la série.',
+    },
   },
   {
     id: 'mechanic_personalized_goals',
@@ -168,6 +261,15 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Un objectif modifiable avec une info-bulle expliquant pourquoi il est proposé.',
     relatedThemeIds: ['data_profile', 'autonomy_control'],
+    deepDive: {
+      mechanism:
+        'Un objectif « personnalisé » sans explication devient une boîte noire : l’utilisateur-rice ne peut ni le challenger ni le comprendre, ce qui érode la confiance dès qu’il semble décalé (trop ambitieux, trop facile, ou hors-sujet).',
+      alternatives: [
+        'Expliquer en une phrase simple pourquoi cet objectif précis est proposé (« basé sur vos 3 dernières sessions »).',
+        'Permettre de modifier ou de réinitialiser l’objectif à tout moment, sans justification à donner.',
+        'Ne jamais utiliser des données sensibles (santé, localisation précise) pour personnaliser sans consentement explicite et spécifique.',
+      ],
+    },
   },
   {
     id: 'mechanic_visual_feedback',
@@ -183,6 +285,15 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Une confirmation simple comme “Votre réponse a été enregistrée” ou “Étape terminée”.',
     relatedThemeIds: ['autonomy_control'],
+    deepDive: {
+      mechanism:
+        'Un feedback disproportionné (confettis, sons, animations) pour une action banale crée un décalage qui, répété, finit par être perçu comme manipulateur plutôt que gratifiant — l’intensité du feedback doit rester proportionnée à l’importance réelle de l’action.',
+      alternatives: [
+        'Réserver les animations marquées aux étapes réellement importantes, pas à chaque clic.',
+        'Proposer un mode sobre (réduction des animations) accessible facilement pour qui le préfère.',
+        'Vérifier que le feedback confirme l’action sans orienter systématiquement vers une action suivante non demandée.',
+      ],
+    },
   },
   {
     id: 'mechanic_comparison_users',
@@ -198,6 +309,17 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Afficher une contribution collective ou une progression personnelle plutôt qu’un score comparé aux autres.',
     relatedThemeIds: ['social_comparison', 'sensitive_context'],
+    deepDive: {
+      mechanism:
+        'Dire à quelqu’un qu’il fait moins bien qu’un pourcentage d’autres personnes n’apporte aucune information actionnable — ça ne dit pas quoi améliorer, seulement que l’on est « en dessous », ce qui a un effet démotivant démontré chez une partie significative des utilisateur-rices.',
+      alternatives: [
+        'Remplacer « vous faites moins bien que X% » par une progression personnelle dans le temps.',
+        'Si une dimension collective est utile, utiliser une moyenne anonymisée ou un objectif de groupe plutôt qu’un rang individuel.',
+        'Ne jamais afficher de comparaison négative par défaut — la rendre, au mieux, consultable sur demande explicite.',
+      ],
+      realWorldExample:
+        'Steam affiche un pourcentage de joueurs ayant débloqué un succès, de façon informative et non comparative individuellement — sans jamais dire « vous êtes moins bon que ».',
+    },
   },
   {
     id: 'mechanic_random_reward',
@@ -213,6 +335,18 @@ const mechanicAlternativeRules: MechanicAlternativeRule[] = [
     interfaceExample:
       'Un bonus annoncé à l’avance avec sa valeur exacte, sans effet de tirage ni suspense visuel.',
     relatedThemeIds: ['temporal_pressure', 'sensitive_context'],
+    deepDive: {
+      mechanism:
+        'Ce mécanisme active un renforcement à ratio variable (Skinner, 1957) — le schéma de conditionnement comportemental le plus puissant connu, celui des machines à sous. Ce n’est pas une comparaison rhétorique : la Belgique et les Pays-Bas qualifient déjà des mécaniques similaires de jeux de hasard, et le régulateur britannique (CMA) surveille activement ces pratiques au-delà du seul jeu vidéo.',
+      alternatives: [
+        'Remplacer par une récompense garantie et de valeur constante, sans tirage.',
+        'Annoncer clairement la nature de la prochaine récompense avant que l’action ne soit réalisée.',
+        'Si un aléa est conservé, afficher les probabilités exactes (ex. « 70% de chances d’obtenir X »).',
+        'Conserver un effet de surprise uniquement esthétique : l’animation surprend, mais la valeur ou la nature du gain est toujours connue à l’avance.',
+      ],
+      realWorldExample:
+        'Fitbit annonce à l’avance la nature du badge obtenu à un palier donné ; Duolingo affiche la valeur exacte de chaque récompense de série avant de la débloquer.',
+    },
   },
 ]
 
@@ -233,6 +367,7 @@ export function getMechanicsAlternatives(
       ethicalAlternative: rule.ethicalAlternative,
       interfaceExample: rule.interfaceExample,
       relatedThemeIds: rule.relatedThemeIds,
+      deepDive: rule.deepDive,
     }))
     .sort(sortMechanicsByVigilance)
 }

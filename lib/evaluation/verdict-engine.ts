@@ -1,4 +1,4 @@
-import type { Tag, VerdictLevel } from '@/types'
+import type { Tag, VerdictLevel } from '@/types/principle'
 
 // ─── Tags classés par nature ──────────────────────────────────────────────────
 

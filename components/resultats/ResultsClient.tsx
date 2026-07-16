@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { clearAnswers, loadAnswers } from '@/lib/storage'
 import { evaluateAnswers } from '@/logic/evaluationEngine'
 import { buildAiPrompt } from '@/lib/evaluation/ai-prompt'
@@ -15,9 +16,9 @@ import type {
   OptionId,
   PositiveRecommendation,
   QuestionId,
+  RecommendationDeepDive,
   RiskLevel,
   RiskThemeResult,
-  SynergyResult,
 } from '@/logic/evaluation.types'
 
 interface StoredAnswer {
@@ -27,23 +28,74 @@ interface StoredAnswer {
 
 type CopyState = 'idle' | 'success' | 'error'
 
-interface ActionItem {
-  id: string
-  source: 'contradiction' | 'risk' | 'recommendation' | 'mechanic'
-  eyebrow: string
-  title: string
-  why: string
-  action: string
-  example?: string
-}
-
 interface MechanicVisualExample {
   before: string
   after: string
 }
 
-const MAX_ACTION_ITEMS = 4
-const INITIAL_RECOMMENDATIONS_VISIBLE = 3
+// ─── Liste unifiée de priorités ───────────────────────────────────────────────
+//
+// Contradictions, thématiques de vigilance, mécaniques à adapter, synergies et
+// recommandations positives sont fondamentalement la même chose du point de
+// vue de la lecture : un point à connaître, avec un niveau, un pourquoi et une
+// action. On les combine donc dans UNE seule liste, triée par niveau, plutôt
+// que de leur donner chacun un gabarit visuel différent (bloc plein écran,
+// liste numérotée, grille de cartes, accordéons séparés).
+
+interface MechanicChipInfo {
+  label: string
+}
+
+type PriorityItemSource = 'contradiction' | 'risk' | 'synergy' | 'mechanic' | 'recommendation'
+type PriorityItemTier = 'major' | 'secondary'
+
+interface PriorityItem {
+  id: string
+  level: RiskLevel
+  category: string
+  title: string
+  why: string
+  action: string
+  visualExample?: MechanicVisualExample
+  plainExample?: string
+  deepDive?: RecommendationDeepDive
+  relatedMechanics?: MechanicChipInfo[]
+  source: PriorityItemSource
+  tier: PriorityItemTier
+}
+
+// Une thématique de risque, une contradiction ou une synergie sont toujours
+// de vrais enjeux de conception : elles restent des fiches complètes quel
+// que soit leur niveau. Une mécanique ou une recommandation positive, en
+// revanche, ne devient une fiche complète que si sa vigilance est élevée —
+// sinon elle reste une piste compacte, plus proche d'une bonne pratique.
+function getItemTier(source: PriorityItemSource, level: RiskLevel): PriorityItemTier {
+  if (source === 'contradiction' || source === 'risk' || source === 'synergy') {
+    return 'major'
+  }
+
+  return level === 'critical' || level === 'high' ? 'major' : 'secondary'
+}
+
+// Libellé court par mécanique, affiché comme un tag discret (sans icône —
+// la hiérarchie vient de la typographie, pas de la décoration).
+const MECHANIC_CHIP_INFO: Partial<Record<OptionId, MechanicChipInfo>> = {
+  points_score: { label: 'Points' },
+  badges_trophies: { label: 'Badges' },
+  levels: { label: 'Niveaux' },
+  progress_bar: { label: 'Progression' },
+  challenges_missions: { label: 'Défis' },
+  ranking: { label: 'Classement' },
+  rewards_benefits: { label: 'Récompenses' },
+  notifications_reminders: { label: 'Rappels' },
+  streak: { label: 'Série' },
+  personalized_goals: { label: 'Objectifs personnalisés' },
+  visual_feedback: { label: 'Feedback' },
+  comparison_users: { label: 'Comparaison' },
+  random_reward: { label: 'Récompense aléatoire' },
+}
+
+const INITIAL_VISIBLE_ITEMS = 8
 
 const riskLevelLabels: Record<RiskLevel, string> = {
   none: 'Aucun signal',
@@ -53,15 +105,33 @@ const riskLevelLabels: Record<RiskLevel, string> = {
   critical: 'Vigilance critique',
 }
 
+// Badges de niveau très discrets (esprit Linear/Notion) : fond quasi neutre,
+// pas de contour, la couleur n'apparaît que sur le texte et seulement à
+// partir du niveau élevé.
 const riskLevelStyles: Record<RiskLevel, string> = {
-  none: 'bg-white/70 text-foreground/65 ring-black/10',
-  low: 'bg-white/70 text-foreground/70 ring-black/10',
-  moderate:
-    'bg-[var(--color-warning)]/10 text-[var(--color-warning)] ring-[var(--color-warning)]/30',
-  high:
-    'bg-[var(--color-warning)]/15 text-[var(--color-warning)] ring-[var(--color-warning)]/40',
-  critical:
-    'bg-[var(--color-danger)]/10 text-[var(--color-danger)] ring-[var(--color-danger)]/35',
+  none: 'bg-foreground/5 text-foreground/60',
+  low: 'bg-foreground/5 text-foreground/60',
+  moderate: 'bg-foreground/5 text-foreground/70',
+  high: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]',
+  critical: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]',
+}
+
+// Fond de carte neutre, avec une teinte à peine perceptible pour les niveaux
+// élevés — la couleur de vigilance reste la seule variation chromatique.
+const priorityCardStyles: Record<RiskLevel, string> = {
+  critical: 'bg-[var(--color-danger)]/[0.025] border-border',
+  high: 'bg-[var(--color-warning)]/[0.03] border-border',
+  moderate: 'bg-transparent border-border',
+  low: 'bg-transparent border-border',
+  none: 'bg-transparent border-border',
+}
+
+const priorityLevelWeight: Record<RiskLevel, number> = {
+  critical: 5,
+  high: 4,
+  moderate: 3,
+  low: 2,
+  none: 1,
 }
 
 const priorityLabels: Record<PositiveRecommendation['priority'], string> = {
@@ -70,34 +140,10 @@ const priorityLabels: Record<PositiveRecommendation['priority'], string> = {
   low: 'Priorité basse',
 }
 
-// Chaque niveau reste visuellement distinct (pas seulement par le texte),
-// via une fine bande de couleur sur le bord de la carte plutôt qu'un
-// badge plein — moins de « boîtes dans des boîtes » sur la page.
-const priorityAccentStyles: Record<
-  PositiveRecommendation['priority'],
-  { bar: string; text: string }
-> = {
-  high: {
-    bar: 'shadow-[inset_3px_0_0_0_var(--color-danger)]',
-    text: 'text-[var(--color-danger)]',
-  },
-  medium: {
-    bar: 'shadow-[inset_3px_0_0_0_var(--color-warning)]',
-    text: 'text-[var(--color-warning)]',
-  },
-  low: {
-    bar: 'shadow-[inset_3px_0_0_0_var(--color-neutral)]',
-    text: 'text-[var(--color-neutral)]',
-  },
-}
-
-// Priorité haute → basse, pour que les pistes les plus importantes
-// apparaissent toujours en premier dans la section (avant les 3 visibles
-// par défaut, et dans le reste une fois « Afficher plus » ouvert).
-const priorityOrder: Record<PositiveRecommendation['priority'], number> = {
-  high: 0,
-  medium: 1,
-  low: 2,
+const priorityToLevel: Record<PositiveRecommendation['priority'], RiskLevel> = {
+  high: 'high',
+  medium: 'moderate',
+  low: 'low',
 }
 
 const severityLabels: Record<ContradictionResult['severity'], string> = {
@@ -106,11 +152,10 @@ const severityLabels: Record<ContradictionResult['severity'], string> = {
   info: 'Information',
 }
 
-const actionSourceLabels: Record<ActionItem['source'], string> = {
-  contradiction: 'Clarifier',
-  risk: 'Réduire le risque',
-  recommendation: 'Action',
-  mechanic: 'Adapter',
+const severityToLevel: Record<ContradictionResult['severity'], RiskLevel> = {
+  blocking: 'critical',
+  warning: 'high',
+  info: 'low',
 }
 
 function toEvaluationAnswers(storedAnswers: StoredAnswer[]): EvaluationAnswers {
@@ -133,39 +178,12 @@ function getActiveRiskThemes(result: EvaluationResult): RiskThemeResult[] {
   return result.riskThemes.filter((theme) => theme.level !== 'none')
 }
 
-function countThemesByLevel(
-  riskThemes: RiskThemeResult[],
-  levels: RiskLevel[],
-): number {
-  return riskThemes.filter((theme) => levels.includes(theme.level)).length
-}
-
-function getTopRiskThemes(result: EvaluationResult): RiskThemeResult[] {
-  const levelWeight: Record<RiskLevel, number> = {
-    critical: 5,
-    high: 4,
-    moderate: 3,
-    low: 2,
-    none: 1,
-  }
-
-  return [...getActiveRiskThemes(result)]
-    .sort((first, second) => {
-      if (levelWeight[second.level] !== levelWeight[first.level]) {
-        return levelWeight[second.level] - levelWeight[first.level]
-      }
-
-      return second.score - first.score
-    })
-    .slice(0, 3)
-}
-
 function getMechanicVisualExample(
   mechanic: MechanicAlternative,
 ): MechanicVisualExample {
   const examples: Record<string, MechanicVisualExample> = {
     mechanic_streak: {
-      before: '🔥 Série de 12 jours — ne perdez pas votre progression.',
+      before: 'Série de 12 jours — ne perdez pas votre progression.',
       after: 'Vous pouvez reprendre là où vous vous êtes arrêté-e.',
     },
     mechanic_ranking: {
@@ -212,6 +230,10 @@ function getMechanicVisualExample(
       before: 'Animation forte après chaque micro-action.',
       after: 'Confirmation simple : votre action a été enregistrée.',
     },
+    mechanic_random_reward: {
+      before: 'Tirage surprise à chaque connexion — tentez votre chance !',
+      after: 'Bonus fixe annoncé à l’avance, sans effet de tirage.',
+    },
   }
 
   return (
@@ -222,68 +244,109 @@ function getMechanicVisualExample(
   )
 }
 
-function getActionPlan(result: EvaluationResult): ActionItem[] {
-  const contradictionActions: ActionItem[] = result.contradictions
-    .filter((contradiction) => contradiction.severity !== 'info')
-    .map((contradiction) => ({
+function getPriorityItems(result: EvaluationResult): PriorityItem[] {
+  const contradictionItems: PriorityItem[] = result.contradictions.map(
+    (contradiction) => ({
       id: contradiction.id,
-      source: 'contradiction',
-      eyebrow: severityLabels[contradiction.severity],
+      level: severityToLevel[contradiction.severity],
+      category: severityLabels[contradiction.severity],
       title: contradiction.title,
       why: contradiction.message,
       action: contradiction.recommendation,
-    }))
+      deepDive: contradiction.deepDive,
+      source: 'contradiction',
+      tier: getItemTier('contradiction', severityToLevel[contradiction.severity]),
+    }),
+  )
 
-  const riskActions: ActionItem[] = getTopRiskThemes(result).map((theme) => ({
-    id: theme.id,
-    source: 'risk',
-    eyebrow: riskLevelLabels[theme.level],
-    title: theme.label,
-    why: theme.summary,
-    action:
-      theme.recommendation ??
-      'Clarifier cette thématique avant de valider la mécanique.',
+  const riskItems: PriorityItem[] = getActiveRiskThemes(result).map((theme) => {
+    const mechanicOptionIds = Array.from(
+      new Set(
+        theme.signals
+          .filter((signal) => signal.questionId === 'Q12')
+          .map((signal) => signal.optionId),
+      ),
+    )
+
+    return {
+      id: theme.id,
+      level: theme.level,
+      category: 'Réduire le risque',
+      title: theme.label,
+      why: theme.summary,
+      action:
+        theme.recommendation ?? 'Clarifier cette thématique avant de valider la mécanique.',
+      deepDive: theme.deepDive,
+      relatedMechanics: mechanicOptionIds
+        .map((optionId) => MECHANIC_CHIP_INFO[optionId])
+        .filter((chip): chip is MechanicChipInfo => Boolean(chip)),
+      source: 'risk',
+      tier: getItemTier('risk', theme.level),
+    }
+  })
+
+  const synergyItems: PriorityItem[] = result.synergyResults.map((synergy) => ({
+    id: synergy.id,
+    level: synergy.level,
+    category: 'Combinaison à risque',
+    title: synergy.title,
+    why: synergy.message,
+    action: synergy.recommendation,
+    deepDive: synergy.deepDive,
+    source: 'synergy',
+    tier: getItemTier('synergy', synergy.level),
   }))
 
-  const recommendationActions: ActionItem[] = result.positiveRecommendations
-    .filter((recommendation) => recommendation.priority === 'high')
-    .map((recommendation) => ({
+  const mechanicItems: PriorityItem[] = result.mechanicsAlternatives.map(
+    (mechanic) => ({
+      id: mechanic.id,
+      level: mechanic.baseVigilanceLevel,
+      category: 'Adapter une mécanique',
+      title: mechanic.mechanicLabel,
+      why: mechanic.possibleRisk,
+      action: mechanic.ethicalAlternative,
+      visualExample: getMechanicVisualExample(mechanic),
+      deepDive: mechanic.deepDive,
+      relatedMechanics: MECHANIC_CHIP_INFO[mechanic.mechanicOptionId]
+        ? [MECHANIC_CHIP_INFO[mechanic.mechanicOptionId] as MechanicChipInfo]
+        : undefined,
+      source: 'mechanic',
+      tier: getItemTier('mechanic', mechanic.baseVigilanceLevel),
+    }),
+  )
+
+  const recommendationItems: PriorityItem[] = result.positiveRecommendations.map(
+    (recommendation) => ({
       id: recommendation.id,
-      source: 'recommendation',
-      eyebrow: priorityLabels[recommendation.priority],
+      level: priorityToLevel[recommendation.priority],
+      category: priorityLabels[recommendation.priority],
       title: recommendation.title,
       why: recommendation.insight,
       action: recommendation.recommendation,
-      example: recommendation.example,
-    }))
+      plainExample: recommendation.example,
+      deepDive: recommendation.deepDive,
+      source: 'recommendation',
+      tier: getItemTier('recommendation', priorityToLevel[recommendation.priority]),
+    }),
+  )
 
-  const mechanicActions: ActionItem[] = result.mechanicsAlternatives
-    .filter(
-      (mechanic) =>
-        mechanic.baseVigilanceLevel === 'high' ||
-        mechanic.baseVigilanceLevel === 'critical',
-    )
-    .map((mechanic) => ({
-      id: mechanic.id,
-      source: 'mechanic',
-      eyebrow: riskLevelLabels[mechanic.baseVigilanceLevel],
-      title: `Adapter : ${mechanic.mechanicLabel}`,
-      why: mechanic.possibleRisk,
-      action: mechanic.ethicalAlternative,
-      example: mechanic.interfaceExample,
-    }))
+  const allItems = [
+    ...contradictionItems,
+    ...riskItems,
+    ...synergyItems,
+    ...mechanicItems,
+    ...recommendationItems,
+  ]
 
-  return [
-    ...contradictionActions,
-    ...riskActions,
-    ...mechanicActions,
-    ...recommendationActions,
-  ].slice(0, MAX_ACTION_ITEMS)
+  // Tri stable : à niveau égal, l’ordre d’origine est conservé (contradictions
+  // avant thématiques, avant synergies, avant mécaniques, avant recommandations).
+  return allItems.sort(
+    (first, second) => priorityLevelWeight[second.level] - priorityLevelWeight[first.level],
+  )
 }
 
 function buildTextSummary(result: EvaluationResult): string {
-  const activeRiskThemes = getActiveRiskThemes(result)
-  const actionPlan = getActionPlan(result)
+  const priorityItems = getPriorityItems(result)
 
   return [
     `Diagnostic : ${result.globalOrientation.title}`,
@@ -292,402 +355,617 @@ function buildTextSummary(result: EvaluationResult): string {
     '',
     `Prochaine étape : ${result.globalOrientation.nextStep}`,
     '',
-    `Contradictions détectées : ${result.contradictions.length}`,
-    `Thématiques en vigilance : ${activeRiskThemes.length}`,
-    `Mécaniques à adapter : ${result.mechanicsAlternatives.length}`,
+    `Points identifiés : ${priorityItems.length}`,
     '',
-    'Plan d’action recommandé :',
-    ...actionPlan.map((item, index) => {
-      return `${index + 1}. ${item.title} — ${item.action}`
-    }),
+    'Plan d’action, du plus au moins prioritaire :',
+    ...priorityItems.map((item, index) => `${index + 1}. ${item.title} — ${item.action}`),
   ].join('\n')
 }
 
-function MetricCard({
-  value,
-  label,
-  tone = 'default',
+function DiagnosticHero({
+  result,
+  priorityItems,
+  onNavigate,
 }: {
-  value: number
-  label: string
-  tone?: 'default' | 'warning'
+  result: EvaluationResult
+  priorityItems: PriorityItem[]
+  onNavigate: (id: string) => void
 }) {
+  // Les « principaux sujets » sont les thématiques de risque les plus
+  // sévères — c'est ce qui donne le plus rapidement une idée de la nature
+  // du problème, avant même d'ouvrir une seule fiche.
+  const mainSubjects = priorityItems.filter((item) => item.source === 'risk').slice(0, 3)
+
+  // Même vocabulaire que le sommaire (À traiter en priorité / À améliorer /
+  // Bonnes pratiques), pour ne pas introduire un quatrième jeu de mots —
+  // mais réduit ici à une phrase de résumé, pas des pastilles.
+  const groupCounts = PLAN_GROUP_ORDER.map((group) => ({
+    group,
+    count: priorityItems.filter((item) => getPlanGroup(item.level) === group).length,
+  })).filter(({ count }) => count > 0)
+
+  const summaryLine = groupCounts
+    .map(({ group, count }) => {
+      const label =
+        group === 'priority'
+          ? 'à traiter en priorité'
+          : group === 'improve'
+            ? 'à améliorer'
+            : 'bonne(s) pratique(s)'
+
+      return `${count} ${label}`
+    })
+    .join(' · ')
+
   return (
-    <div
-      className={[
-        'rounded-2xl px-4 py-3 ring-1',
-        tone === 'warning'
-          ? 'bg-[var(--color-warning)]/10 text-[var(--color-warning)] ring-[var(--color-warning)]/30'
-          : 'bg-white/70 text-foreground ring-border',
-      ].join(' ')}
-    >
-      <p className="text-2xl font-semibold leading-none">{value}</p>
-      <p className="mt-1 text-xs leading-snug opacity-70">{label}</p>
+    <section className="border-b border-border pb-10">
+      <p className="text-xs font-medium tracking-wide text-foreground/40">Diagnostic</p>
+
+      <h1 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
+        {result.globalOrientation.title}
+      </h1>
+
+      <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-foreground/70">
+        {result.globalOrientation.summary}
+      </p>
+
+      {mainSubjects.length > 0 && (
+        <div className="mt-6">
+          <p className="text-[15px] text-foreground/70">Les principaux sujets concernent :</p>
+
+          <ul className="mt-2 flex flex-col gap-1">
+            {mainSubjects.map((item) => (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  onClick={() => onNavigate(item.id)}
+                  className="text-[15px] font-medium text-foreground underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground/60"
+                >
+                  {item.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mt-8 max-w-2xl border-t border-border pt-6">
+        <p className="text-xs font-medium tracking-wide text-foreground/40">
+          Notre recommandation
+        </p>
+
+        <p className="mt-2 text-[15px] leading-relaxed text-foreground/80">
+          {result.globalOrientation.nextStep}
+        </p>
+      </div>
+
+      {summaryLine && (
+        <p className="mt-8 text-sm text-foreground/45">{summaryLine}</p>
+      )}
+    </section>
+  )
+}
+
+// ─── Carte unique pour tous les points de la liste ────────────────────────────
+//
+// Un seul gabarit, dont l’intensité (fond, épaisseur du titre) diminue avec le
+// niveau et le rang — pas un composant différent par type de contenu.
+
+// ─── Groupement du plan d'action (sommaire) ───────────────────────────────────
+
+type PlanGroup = 'priority' | 'improve' | 'good'
+
+const PLAN_GROUP_ORDER: PlanGroup[] = ['priority', 'improve', 'good']
+
+const PLAN_GROUP_LABELS: Record<PlanGroup, string> = {
+  priority: 'À traiter en priorité',
+  improve: 'À améliorer',
+  good: 'Bonnes pratiques',
+}
+
+function getPlanGroup(level: RiskLevel): PlanGroup {
+  if (level === 'critical' || level === 'high') {
+    return 'priority'
+  }
+
+  if (level === 'moderate') {
+    return 'improve'
+  }
+
+  return 'good'
+}
+
+function getItemPreview(item: PriorityItem): string {
+  const count = item.relatedMechanics?.length ?? 0
+
+  if (count > 0) {
+    return count > 1 ? `${count} mécaniques concernées` : `${count} mécanique concernée`
+  }
+
+  return riskLevelLabels[item.level]
+}
+
+function ActionPlanNavList({
+  items,
+  activeId,
+  onNavigate,
+}: {
+  items: PriorityItem[]
+  activeId: string | null
+  onNavigate: (id: string) => void
+}) {
+  const flatIndexById = useMemo(
+    () => new Map(items.map((item, index) => [item.id, index])),
+    [items],
+  )
+  const activeIndex = activeId ? flatIndexById.get(activeId) ?? -1 : -1
+
+  return (
+    <div className="flex flex-col gap-6">
+      {PLAN_GROUP_ORDER.map((group) => {
+        const groupItems = items.filter((item) => getPlanGroup(item.level) === group)
+
+        if (groupItems.length === 0) {
+          return null
+        }
+
+        return (
+          <div key={group}>
+            <p className="mb-2 text-xs font-medium tracking-wide text-foreground/40">
+              {PLAN_GROUP_LABELS[group]} ({groupItems.length})
+            </p>
+
+            <ul className="flex flex-col gap-0.5">
+              {groupItems.map((item) => {
+                const isActive = item.id === activeId
+                const itemIndex = flatIndexById.get(item.id) ?? -1
+                const isRead = activeIndex >= 0 && itemIndex < activeIndex
+
+                return (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(item.id)}
+                      className={[
+                        'w-full rounded-md border-l-2 px-3 py-2 text-left transition-colors',
+                        isActive
+                          ? 'border-primary bg-foreground/[0.04]'
+                          : 'border-transparent hover:bg-foreground/[0.03]',
+                      ].join(' ')}
+                    >
+                      <p
+                        className={[
+                          'text-sm leading-snug',
+                          isActive
+                            ? 'font-medium text-foreground'
+                            : isRead
+                              ? 'text-foreground/40'
+                              : 'text-foreground/65',
+                        ].join(' ')}
+                      >
+                        {item.title}
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-foreground/40">
+                        {getItemPreview(item)}
+                      </p>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )
+      })}
     </div>
   )
 }
 
-function DiagnosticHero({ result }: { result: EvaluationResult }) {
-  const activeRiskThemes = getActiveRiskThemes(result)
-  const highRiskThemesCount = countThemesByLevel(result.riskThemes, [
-    'high',
-    'critical',
-  ])
+function ActionPlanNav({
+  items,
+  activeId,
+  onNavigate,
+}: {
+  items: PriorityItem[]
+  activeId: string | null
+  onNavigate: (id: string) => void
+}) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-  return (
-    <section className="rounded-[2rem] bg-secondary p-6 ring-1 ring-border sm:p-8">
-      <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-        <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">
-            Résultat principal
-          </p>
-
-          <h2 className="max-w-2xl text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
-            {result.globalOrientation.title}
-          </h2>
-
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-foreground/75">
-            {result.globalOrientation.summary}
-          </p>
-
-          <div className="mt-6 rounded-2xl bg-white/75 p-5">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary/70">
-              Prochaine étape
-            </p>
-
-            <p className="text-sm leading-relaxed text-foreground/80">
-              {result.globalOrientation.nextStep}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid content-start gap-3 sm:grid-cols-2 lg:grid-cols-1">
-          <MetricCard
-            value={result.contradictions.length}
-            label="point(s) à clarifier"
-            tone={result.contradictions.length > 0 ? 'warning' : 'default'}
-          />
-
-          <MetricCard
-            value={activeRiskThemes.length}
-            label="thématique(s) en vigilance"
-            tone={highRiskThemesCount > 0 ? 'warning' : 'default'}
-          />
-
-          <MetricCard
-            value={result.mechanicsAlternatives.length}
-            label="mécanique(s) à adapter"
-          />
-
-          <MetricCard
-            value={result.positiveRecommendations.length}
-            label="action(s) générée(s)"
-          />
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function TopPriorityCallout({ action }: { action?: ActionItem }) {
-  if (!action) {
+  if (items.length === 0) {
     return null
   }
 
-  return (
-    <section
-      aria-labelledby="top-priority-heading"
-      className="rounded-[2rem] bg-primary p-6 text-primary-foreground sm:p-8"
-    >
-      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">
-        À faire en premier - {action.eyebrow}
-      </p>
-
-      <h2
-        id="top-priority-heading"
-        className="max-w-2xl text-2xl font-semibold leading-tight sm:text-3xl"
-      >
-        {action.title}
-      </h2>
-
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-primary-foreground/80">
-        {action.why}
-      </p>
-
-      <p className="mt-3 max-w-2xl text-base font-medium leading-relaxed">
-        {action.action}
-      </p>
-
-      {action.example && (
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-primary-foreground/70">
-          Exemple : {action.example}
-        </p>
-      )}
-    </section>
-  )
-}
-
-function ActionPlanSection({ actions }: { actions: ActionItem[] }) {
-  if (actions.length === 0) {
-    return null
+  function handleNavigate(id: string) {
+    setIsMobileOpen(false)
+    onNavigate(id)
   }
 
   return (
-    <section aria-labelledby="action-plan-heading">
-      <h2
-        id="action-plan-heading"
-        className="mb-4 text-xl font-semibold text-foreground"
+    <>
+      {/* Desktop : colonne sticky, ne défile pas au-delà de la hauteur de l'écran */}
+      <nav
+        aria-label="Recommandations"
+        className="hidden lg:sticky lg:top-28 lg:block lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pb-8"
       >
-        Ensuite, à vérifier aussi
-      </h2>
+        <p className="mb-4 text-sm font-semibold text-foreground">Recommandations</p>
+        <ActionPlanNavList items={items} activeId={activeId} onNavigate={handleNavigate} />
+      </nav>
 
-      <div className="flex flex-col divide-y divide-border rounded-3xl bg-white/75 ring-1 ring-border">
-        {actions.map((action, index) => (
-          <div key={action.id} className="flex gap-4 p-5">
-            <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-foreground/70"
-              aria-hidden="true"
+      {/* Mobile : bouton discret qui ouvre un tiroir avec le même contenu */}
+      <div className="lg:hidden">
+        <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              className="mb-2 text-sm font-medium text-primary hover:opacity-80"
             >
-              {index + 2}
-            </span>
+              Recommandations
+            </button>
+          </SheetTrigger>
 
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/65">
-                {actionSourceLabels[action.source]} - {action.eyebrow}
-              </p>
-
-              <h3 className="mt-0.5 text-base font-semibold leading-snug text-foreground">
-                {action.title}
-              </h3>
-
-              <p className="mt-1 text-sm leading-relaxed text-foreground/70">
-                {action.why}{' '}
-                <span className="font-medium text-foreground">{action.action}</span>
-              </p>
-
-              {action.example && (
-                <p className="mt-1 text-sm leading-relaxed text-foreground/65">
-                  Exemple : {action.example}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
+          <SheetContent side="bottom" className="overflow-y-auto">
+            <SheetTitle className="mb-4">Recommandations</SheetTitle>
+            <ActionPlanNavList items={items} activeId={activeId} onNavigate={handleNavigate} />
+          </SheetContent>
+        </Sheet>
       </div>
-    </section>
+    </>
   )
 }
 
-function RecommendationsSection({
-  recommendations,
-  excludedIds = [],
+function PriorityItemCard({
+  item,
+  rank,
 }: {
-  recommendations: PositiveRecommendation[]
-  excludedIds?: string[]
+  item: PriorityItem
+  rank: number
 }) {
-  const [showAll, setShowAll] = useState(false)
-
-  // Triées par priorité (haute → basse) : les pistes les plus importantes
-  // restent en tête, y compris parmi les 3 affichées par défaut.
-  const filteredRecommendations = recommendations
-    .filter((recommendation) => !excludedIds.includes(recommendation.id))
-    .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-
-  const visibleRecommendations = showAll
-    ? filteredRecommendations
-    : filteredRecommendations.slice(0, INITIAL_RECOMMENDATIONS_VISIBLE)
-
-  const hasMore = filteredRecommendations.length > INITIAL_RECOMMENDATIONS_VISIBLE
-  const hiddenCount = filteredRecommendations.length - INITIAL_RECOMMENDATIONS_VISIBLE
-  const gridId = 'recommendations-grid'
+  const isTopItem = rank === 0
 
   return (
-    <section aria-labelledby="recommendations-heading">
-      <h2
-        id="recommendations-heading"
-        className="mb-1 text-xl font-semibold text-foreground"
-      >
-        Autres pistes utiles
-      </h2>
-
-      <p className="mb-4 text-sm text-foreground/65">
-        Complètent le plan d’action, sans être bloquantes.
-      </p>
-
-      {filteredRecommendations.length === 0 ? (
-        <div className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
-          <p className="text-sm leading-relaxed text-foreground/70">
-            Aucune action spécifique n’a été générée pour ces réponses.
-          </p>
-        </div>
-      ) : (
-        <>
-          <div id={gridId} className="grid gap-4 lg:grid-cols-3">
-            {visibleRecommendations.map((recommendation) => {
-              const accent = priorityAccentStyles[recommendation.priority]
-              const titleId = `rec-title-${recommendation.id}`
-
-              return (
-                <article
-                  key={recommendation.id}
-                  aria-labelledby={titleId}
-                  className={[
-                    'flex flex-col gap-2 rounded-3xl bg-white/75 p-5 ring-1 ring-border',
-                    accent.bar,
-                  ].join(' ')}
-                >
-                  <p
-                    className={[
-                      'text-xs font-semibold uppercase tracking-[0.14em]',
-                      accent.text,
-                    ].join(' ')}
-                  >
-                    {priorityLabels[recommendation.priority]}
-                  </p>
-
-                  <h3
-                    id={titleId}
-                    className="text-base font-semibold leading-snug text-foreground"
-                  >
-                    {recommendation.title}
-                  </h3>
-
-                  <p className="text-sm leading-relaxed text-foreground/70">
-                    {recommendation.insight}{' '}
-                    <span className="font-medium text-foreground">
-                      {recommendation.recommendation}
-                    </span>
-                  </p>
-
-                  {recommendation.example && (
-                    <p className="text-sm leading-relaxed text-foreground/60">
-                      Exemple : {recommendation.example}
-                    </p>
-                  )}
-                </article>
-              )
-            })}
-          </div>
-
-          {hasMore && (
-            <div className="mt-6 flex justify-center">
-              <Button
-                variant="outline"
-                onClick={() => setShowAll((current) => !current)}
-                aria-expanded={showAll}
-                aria-controls={gridId}
-                className="gap-1.5 border-primary text-primary hover:bg-secondary"
-              >
-                {showAll
-                  ? 'Afficher moins'
-                  : `Afficher ${hiddenCount} piste${hiddenCount > 1 ? 's' : ''} de plus`}
-                <ChevronDown
-                  size={16}
-                  className={[
-                    'shrink-0 transition-transform duration-200',
-                    showAll ? 'rotate-180' : '',
-                  ].join(' ')}
-                  aria-hidden="true"
-                />
-              </Button>
-            </div>
-          )}
-        </>
-      )}
-    </section>
-  )
-}
-
-function MechanicExampleCard({
-  mechanic,
-}: {
-  mechanic: MechanicAlternative
-}) {
-  const visualExample = getMechanicVisualExample(mechanic)
-
-  return (
-    <article className="rounded-[1.75rem] bg-white/75 p-5 ring-1 ring-border">
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <h3 className="text-lg font-semibold text-foreground">
-          {mechanic.mechanicLabel}
-        </h3>
+    <article
+      id={item.id}
+      data-priority-item-id={item.id}
+      className={[
+        'scroll-mt-28 rounded-2xl border p-8 sm:p-10',
+        priorityCardStyles[item.level],
+      ].join(' ')}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs font-medium tracking-wide text-foreground/45">
+          {isTopItem ? 'À faire en premier — ' : ''}
+          {item.category}
+        </p>
 
         <span
           className={[
-            'rounded-full px-3 py-1 text-xs font-semibold ring-1',
-            riskLevelStyles[mechanic.baseVigilanceLevel],
+            'rounded-md px-2.5 py-1 text-xs font-medium',
+            riskLevelStyles[item.level],
           ].join(' ')}
         >
-          {riskLevelLabels[mechanic.baseVigilanceLevel]}
+          {riskLevelLabels[item.level]}
         </span>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <p className="text-sm leading-relaxed text-foreground/70">
-          {mechanic.possibleRisk}{' '}
-          <span className="font-medium text-foreground">
-            {mechanic.ethicalAlternative}
-          </span>
-        </p>
+      <h3
+        className={[
+          'mt-3 font-semibold leading-snug text-foreground',
+          isTopItem ? 'text-2xl' : 'text-lg',
+        ].join(' ')}
+      >
+        {item.title}
+      </h3>
 
-        <div className="rounded-2xl border border-border bg-[#F8F4EF] p-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-            Exemple visuel
+      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-foreground/70">
+        {item.why} {item.action}
+      </p>
+
+      {item.plainExample && (
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-foreground/55">
+          {item.plainExample}
+        </p>
+      )}
+
+      {item.relatedMechanics && item.relatedMechanics.length > 0 && (
+        <div className="mt-6">
+          <p className="mb-2 text-xs font-medium tracking-wide text-foreground/40">
+            Mécaniques concernées
           </p>
 
-          <div className="grid gap-3">
-            <div className="rounded-2xl bg-white/80 p-4 ring-1 ring-border">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-warning)]">
-                À éviter
-              </p>
+          <div className="flex flex-wrap gap-1.5">
+            {item.relatedMechanics.map((chip) => (
+              <span
+                key={chip.label}
+                className="rounded-md bg-foreground/[0.04] px-2.5 py-1 text-xs font-medium text-foreground/65"
+              >
+                {chip.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {item.deepDive && (
+        <div className="mt-8">
+          <p className="mb-2 text-xs font-medium tracking-wide text-foreground/40">
+            Pourquoi agir
+          </p>
+
+          <p className="max-w-2xl text-[15px] leading-relaxed text-foreground/70">
+            {item.deepDive.mechanism}
+          </p>
+        </div>
+      )}
+
+      {item.deepDive && item.deepDive.alternatives.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-2 text-xs font-medium tracking-wide text-foreground/40">
+            Comment améliorer
+          </p>
+
+          <ul className="flex max-w-2xl flex-col gap-1.5">
+            {item.deepDive.alternatives.map((alternative, index) => (
+              <li
+                key={index}
+                className="text-[15px] leading-relaxed text-foreground/75"
+              >
+                {alternative}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Le comparatif visuel reste le seul élément « encadré » de la carte :
+          c'est la seule information qui gagne réellement à être mise en boîte. */}
+      {item.visualExample && (
+        <div className="mt-8">
+          <p className="mb-2 text-xs font-medium tracking-wide text-foreground/40">
+            Exemple concret
+          </p>
+
+          <div className="grid overflow-hidden rounded-lg border border-border sm:grid-cols-2">
+            <div className="p-5 sm:border-r sm:border-border">
+              <p className="mb-2 text-xs font-medium text-foreground/45">À éviter</p>
 
               <p className="text-sm leading-relaxed text-foreground/75">
-                {visualExample.before}
+                {item.visualExample.before}
               </p>
             </div>
 
-            <div className="rounded-2xl bg-white p-4 ring-1 ring-primary/20">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                Alternative
-              </p>
+            <div className="border-t border-border p-5 sm:border-t-0">
+              <p className="mb-2 text-xs font-medium text-foreground/45">Recommandé</p>
 
-              <p className="text-sm leading-relaxed text-foreground/80">
-                {visualExample.after}
+              <p className="text-sm leading-relaxed text-foreground">
+                {item.visualExample.after}
               </p>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {item.deepDive?.realWorldExample && (
+        <p className="mt-6 max-w-2xl text-sm leading-relaxed text-foreground/45">
+          {item.deepDive.realWorldExample}
+        </p>
+      )}
     </article>
   )
 }
 
-function MechanicsSection({
-  mechanicsAlternatives,
+// Format compact pour les pistes secondaires : une explication courte,
+// 2-3 actions au maximum, un exemple seulement s'il tient en peu de place.
+// Volontairement plus court qu'une fiche majeure — la taille reflète
+// l'importance plutôt que d'uniformiser toutes les cartes.
+function CompactItemCard({ item }: { item: PriorityItem }) {
+  const topAlternatives = item.deepDive?.alternatives.slice(0, 3) ?? []
+
+  return (
+    <article
+      id={item.id}
+      data-priority-item-id={item.id}
+      className="scroll-mt-28 rounded-2xl border border-border p-6"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs font-medium tracking-wide text-foreground/40">
+          {item.category}
+        </p>
+
+        <span
+          className={[
+            'rounded-md px-2 py-0.5 text-xs font-medium',
+            riskLevelStyles[item.level],
+          ].join(' ')}
+        >
+          {riskLevelLabels[item.level]}
+        </span>
+      </div>
+
+      <h3 className="mt-2 text-base font-semibold leading-snug text-foreground">
+        {item.title}
+      </h3>
+
+      <p className="mt-2 text-sm leading-relaxed text-foreground/70">
+        {item.why} {item.action}
+      </p>
+
+      {topAlternatives.length > 0 && (
+        <ul className="mt-3 flex flex-col gap-1">
+          {topAlternatives.map((alternative, index) => (
+            <li key={index} className="text-sm leading-relaxed text-foreground/70">
+              {alternative}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {item.visualExample && (
+        <div className="mt-4 grid overflow-hidden rounded-lg border border-border text-sm sm:grid-cols-2">
+          <div className="p-3 sm:border-r sm:border-border">
+            <p className="mb-1 text-xs font-medium text-foreground/45">À éviter</p>
+            <p className="text-foreground/70">{item.visualExample.before}</p>
+          </div>
+
+          <div className="border-t border-border p-3 sm:border-t-0">
+            <p className="mb-1 text-xs font-medium text-foreground/45">Recommandé</p>
+            <p className="text-foreground">{item.visualExample.after}</p>
+          </div>
+        </div>
+      )}
+    </article>
+  )
+}
+
+function PriorityListSection({
+  items,
+  showAll,
+  onShowAllChange,
 }: {
-  mechanicsAlternatives: MechanicAlternative[]
+  items: PriorityItem[]
+  showAll: boolean
+  onShowAllChange: (showAll: boolean) => void
 }) {
-  if (mechanicsAlternatives.length === 0) {
+  if (items.length === 0) {
+    return (
+      <section className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
+        <p className="text-sm leading-relaxed text-foreground/70">
+          Aucun point de vigilance n’a été détecté pour ces réponses. Les
+          recommandations générées restent utilisables comme pistes
+          d’amélioration.
+        </p>
+      </section>
+    )
+  }
+
+  const visibleItems = showAll ? items : items.slice(0, INITIAL_VISIBLE_ITEMS)
+  const hiddenCount = items.length - INITIAL_VISIBLE_ITEMS
+  const listId = 'priority-list'
+
+  return (
+    <section aria-labelledby="priority-list-heading">
+      <h2
+        id="priority-list-heading"
+        className="mb-4 text-xl font-semibold text-foreground"
+      >
+        Recommandations
+      </h2>
+
+      <div id={listId} className="flex flex-col gap-4">
+        {visibleItems.map((item, index) =>
+          item.tier === 'major' ? (
+            <PriorityItemCard key={item.id} item={item} rank={index} />
+          ) : (
+            <CompactItemCard key={item.id} item={item} />
+          ),
+        )}
+      </div>
+
+      {hiddenCount > 0 && (
+        <div className="mt-6 flex justify-center">
+          <Button
+            variant="outline"
+            onClick={() => onShowAllChange(!showAll)}
+            aria-expanded={showAll}
+            aria-controls={listId}
+            className="gap-1.5 border-primary text-primary hover:bg-secondary"
+          >
+            {showAll
+              ? 'Afficher moins'
+              : `Afficher ${hiddenCount} point${hiddenCount > 1 ? 's' : ''} de plus`}
+            <ChevronDown
+              size={16}
+              className={[
+                'shrink-0 transition-transform duration-200',
+                showAll ? 'rotate-180' : '',
+              ].join(' ')}
+              aria-hidden="true"
+            />
+          </Button>
+        </div>
+      )}
+    </section>
+  )
+}
+
+// Referme le rapport sur une synthèse actionnable plutôt que de laisser la
+// lecture s'arrêter net après la dernière carte : les 3-4 actions les plus
+// importantes, dans l'ordre où elles ont déjà été présentées.
+const CONCLUSION_ACTIONS_COUNT = 4
+
+function ActionSummarySection({
+  items,
+  copyState,
+  onCopySummary,
+  onDownloadPdf,
+  onRestart,
+}: {
+  items: PriorityItem[]
+  copyState: CopyState
+  onCopySummary: () => void
+  onDownloadPdf: () => void
+  onRestart: () => void
+}) {
+  const topItems = items.slice(0, CONCLUSION_ACTIONS_COUNT)
+
+  if (topItems.length === 0) {
     return null
   }
 
   return (
-    <section aria-labelledby="mechanics-heading">
-      <h2
-        id="mechanics-heading"
-        className="mb-1 text-xl font-semibold text-foreground"
-      >
-        Mécaniques sélectionnées
+    <section className="border-t border-border pt-10">
+      <p className="text-xs font-medium tracking-wide text-foreground/40">Conclusion</p>
+
+      <h2 className="mt-2 text-xl font-semibold text-foreground">
+        Plan d’action recommandé
       </h2>
 
-      <p className="mb-4 text-sm text-foreground/65">
-        Risque, alternative et exemple visuel pour chacune.
+      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-foreground/70">
+        {topItems.length > 1
+          ? `Les ${topItems.length} actions à traiter en priorité pour ce projet :`
+          : 'L’action à traiter en priorité pour ce projet :'}
       </p>
 
-      <div className="flex flex-col gap-5">
-        {mechanicsAlternatives.map((mechanic) => (
-          <MechanicExampleCard key={mechanic.id} mechanic={mechanic} />
+      <ol className="mt-4 flex max-w-2xl flex-col gap-2.5">
+        {topItems.map((item, index) => (
+          <li key={item.id} className="flex gap-3 text-[15px] leading-relaxed">
+            <span className="text-foreground/35 tabular-nums">{index + 1}.</span>
+            <span className="text-foreground/80">{item.action}</span>
+          </li>
         ))}
+      </ol>
+
+      {/* Les actions utilitaires arrivent ici, une fois le rapport lu — pas
+          avant, comme un PDF qu'on lit d'abord et qu'on télécharge ensuite. */}
+      <div className="mt-8 flex flex-wrap gap-3 print:hidden">
+        <Button
+          variant="ghost"
+          onClick={onCopySummary}
+          disabled={copyState === 'success'}
+          className="text-sm font-medium text-foreground/70 hover:bg-foreground/[0.04]"
+        >
+          {copyState === 'success'
+            ? 'Résumé copié'
+            : copyState === 'error'
+              ? 'Copie impossible'
+              : 'Copier le résumé'}
+        </Button>
+
+        <Button
+          variant="outline"
+          onClick={onDownloadPdf}
+          className="border-border text-foreground/70 hover:bg-foreground/[0.04]"
+        >
+          Télécharger en PDF
+        </Button>
+
+        <Button
+          variant="outline"
+          onClick={onRestart}
+          className="border-border text-foreground/70 hover:bg-foreground/[0.04]"
+        >
+          Recommencer
+        </Button>
       </div>
     </section>
   )
@@ -698,7 +976,7 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
   const [showPrompt, setShowPrompt] = useState(false)
 
   const prompt = useMemo(() => buildAiPrompt(result), [result])
-  const actionPlan = getActionPlan(result)
+  const priorityItemsCount = useMemo(() => getPriorityItems(result).length, [result])
 
   async function handleCopyPrompt() {
     try {
@@ -742,7 +1020,7 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
             <li>• {result.contradictions.length} point(s) à clarifier</li>
             <li>• {getActiveRiskThemes(result).length} thématique(s) en vigilance</li>
             <li>• {result.mechanicsAlternatives.length} mécanique(s) à adapter</li>
-            <li>• {actionPlan.length} action(s) prioritaire(s)</li>
+            <li>• {priorityItemsCount} point(s) au total dans le plan d’action</li>
           </ul>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -810,246 +1088,6 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
   )
 }
 
-function RiskDetailsSection({
-  riskThemes,
-  excludedIds = [],
-}: {
-  riskThemes: RiskThemeResult[]
-  excludedIds?: string[]
-}) {
-  const activeRiskThemes = riskThemes.filter(
-    (theme) => theme.level !== 'none' && !excludedIds.includes(theme.id),
-  )
-
-  if (activeRiskThemes.length === 0) {
-    return null
-  }
-
-  return (
-    <section aria-labelledby="risk-details-heading">
-      <h2
-        id="risk-details-heading"
-        className="mb-1 text-xl font-semibold text-foreground"
-      >
-        Pourquoi ce résultat ?
-      </h2>
-
-      <p className="mb-4 text-sm text-foreground/65">
-        Ce qui n’est pas déjà couvert plus haut. Replié par défaut.
-      </p>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        {activeRiskThemes.map((theme) => (
-          <details
-            key={theme.id}
-            className="group rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
-          >
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">
-                  {theme.label}
-                </h3>
-
-                <p className="mt-1 text-sm leading-relaxed text-foreground/65">
-                  {theme.summary}
-                </p>
-              </div>
-
-              <span className="flex shrink-0 items-center gap-2">
-                <span
-                  className={[
-                    'rounded-full px-3 py-1 text-xs font-semibold ring-1',
-                    riskLevelStyles[theme.level],
-                  ].join(' ')}
-                >
-                  {riskLevelLabels[theme.level]}
-                </span>
-
-                <ChevronDown
-                  size={18}
-                  className="shrink-0 text-foreground/40 transition-transform duration-200 group-open:rotate-180"
-                  aria-hidden="true"
-                />
-              </span>
-            </summary>
-
-            <div className="mt-4 border-t border-border pt-4">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-                Recommandation
-              </p>
-
-              <p className="text-sm leading-relaxed text-foreground/80">
-                {theme.recommendation}
-              </p>
-            </div>
-
-            {theme.signals.length > 0 && (
-              <ul className="mt-4 flex flex-col gap-2">
-                {theme.signals.map((signal) => (
-                  <li
-                    key={signal.id}
-                    className="rounded-2xl bg-white/60 p-3 text-xs leading-relaxed text-foreground/65"
-                  >
-                    {signal.message}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </details>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function ContradictionsDetailsSection({
-  contradictions,
-  excludedIds = [],
-}: {
-  contradictions: ContradictionResult[]
-  excludedIds?: string[]
-}) {
-  const visibleContradictions = contradictions.filter(
-    (contradiction) => !excludedIds.includes(contradiction.id),
-  )
-
-  if (visibleContradictions.length === 0) {
-    return null
-  }
-
-  return (
-    <section aria-labelledby="contradictions-heading">
-      <h2
-        id="contradictions-heading"
-        className="mb-1 text-xl font-semibold text-foreground"
-      >
-        Incohérences à vérifier
-      </h2>
-
-      <p className="mb-4 text-sm text-foreground/65">
-        Ces réponses vont dans des directions différentes.
-      </p>
-
-      <div className="flex flex-col gap-3">
-        {visibleContradictions.map((contradiction) => (
-          <details
-            key={contradiction.id}
-            className="group rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
-          >
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">
-                  {contradiction.title}
-                </h3>
-
-                <p className="mt-1 text-sm leading-relaxed text-foreground/65">
-                  {contradiction.message}
-                </p>
-              </div>
-
-              <span className="flex shrink-0 items-center gap-2">
-                <span className="rounded-full bg-[var(--color-warning)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-warning)] ring-1 ring-[var(--color-warning)]/30">
-                  {severityLabels[contradiction.severity]}
-                </span>
-
-                <ChevronDown
-                  size={18}
-                  className="shrink-0 text-foreground/40 transition-transform duration-200 group-open:rotate-180"
-                  aria-hidden="true"
-                />
-              </span>
-            </summary>
-
-            <div className="mt-4 border-t border-border pt-4">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-                Recommandation
-              </p>
-
-              <p className="text-sm leading-relaxed text-foreground/80">
-                {contradiction.recommendation}
-              </p>
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function SynergyDetailsSection({
-  synergyResults,
-}: {
-  synergyResults: SynergyResult[]
-}) {
-  if (synergyResults.length === 0) {
-    return null
-  }
-
-  return (
-    <section aria-labelledby="synergy-heading">
-      <h2
-        id="synergy-heading"
-        className="mb-1 text-xl font-semibold text-foreground"
-      >
-        Combinaisons de mécaniques à risque amplifié
-      </h2>
-
-      <p className="mb-4 text-sm text-foreground/65">
-        Ces combinaisons précises de réponses créent un risque plus important
-        que la somme de chaque signal pris séparément.
-      </p>
-
-      <div className="flex flex-col gap-3">
-        {synergyResults.map((synergy) => (
-          <details
-            key={synergy.id}
-            className="group rounded-3xl bg-white/75 p-5 ring-1 ring-border open:bg-white"
-          >
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">
-                  {synergy.title}
-                </h3>
-
-                <p className="mt-1 text-sm leading-relaxed text-foreground/65">
-                  {synergy.message}
-                </p>
-              </div>
-
-              <span className="flex shrink-0 items-center gap-2">
-                <span
-                  className={[
-                    'rounded-full px-3 py-1 text-xs font-semibold ring-1',
-                    riskLevelStyles[synergy.level],
-                  ].join(' ')}
-                >
-                  {riskLevelLabels[synergy.level]}
-                </span>
-
-                <ChevronDown
-                  size={18}
-                  className="shrink-0 text-foreground/40 transition-transform duration-200 group-open:rotate-180"
-                  aria-hidden="true"
-                />
-              </span>
-            </summary>
-
-            <div className="mt-4 border-t border-border pt-4">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
-                Recommandation
-              </p>
-
-              <p className="text-sm leading-relaxed text-foreground/80">
-                {synergy.recommendation}
-              </p>
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
-  )
-}
-
 function ClientArgumentSection({ result }: { result: EvaluationResult }) {
   return (
     <section
@@ -1080,6 +1118,8 @@ export function ResultsClient() {
   const [isClientContext, setIsClientContext] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [copyState, setCopyState] = useState<CopyState>('idle')
+  const [showAllItems, setShowAllItems] = useState(false)
+  const [activeItemId, setActiveItemId] = useState<string | null>(null)
 
   useEffect(() => {
     window.requestAnimationFrame(() => {
@@ -1103,13 +1143,74 @@ export function ResultsClient() {
     setHasLoaded(true)
   }, [])
 
-  const actionPlan = useMemo(() => {
+  const priorityItems = useMemo(() => {
     if (!result) {
       return []
     }
 
-    return getActionPlan(result)
+    return getPriorityItems(result)
   }, [result])
+
+  // Repère la carte actuellement la plus visible pour mettre en évidence
+  // l'élément correspondant dans le plan d'action (technique de scrollspy :
+  // une fine bande proche du haut de l'écran fait office de ligne de détection).
+  useEffect(() => {
+    if (priorityItems.length === 0) {
+      return
+    }
+
+    const elements = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-priority-item-id]'),
+    )
+
+    if (elements.length === 0) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+
+        const topEntry = visibleEntries[0]
+
+        if (topEntry) {
+          const id = topEntry.target.getAttribute('data-priority-item-id')
+
+          if (id) {
+            setActiveItemId(id)
+          }
+        }
+      },
+      { rootMargin: '-15% 0px -70% 0px', threshold: 0 },
+    )
+
+    elements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
+  }, [priorityItems, showAllItems])
+
+  function handleNavigate(id: string) {
+    const index = priorityItems.findIndex((item) => item.id === id)
+    const isHidden = index >= INITIAL_VISIBLE_ITEMS && !showAllItems
+
+    if (isHidden) {
+      setShowAllItems(true)
+    }
+
+    // Double rAF : laisse le temps au DOM de refléter l'état déplié avant
+    // de mesurer la position de la carte à atteindre (même technique que
+    // le scroll de section dans le questionnaire).
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      })
+    })
+  }
 
   async function handleCopySummary() {
     if (!result) {
@@ -1169,81 +1270,34 @@ export function ResultsClient() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
-      <DiagnosticHero result={result} />
+      <DiagnosticHero
+        result={result}
+        priorityItems={priorityItems}
+        onNavigate={handleNavigate}
+      />
 
-      {actionPlan.length > 0 ? (
-        <TopPriorityCallout action={actionPlan[0]} />
-      ) : (
-        <div className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
-          <p className="text-sm leading-relaxed text-foreground/70">
-            Aucun point prioritaire n’a été détecté. Les recommandations
-            ci-dessous peuvent être utilisées comme pistes d’amélioration.
-          </p>
-        </div>
-      )}
+      <div className="grid gap-8 lg:grid-cols-[220px_1fr] lg:items-start">
+        <ActionPlanNav
+          items={priorityItems}
+          activeId={activeItemId}
+          onNavigate={handleNavigate}
+        />
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4">
-        <p className="max-w-2xl text-sm leading-relaxed text-foreground/60">
-          Le résultat vient des réponses au questionnaire. Le prompt IA sert ensuite
-          à préparer une synthèse ou des questions, sans remplacer le résultat
-          principal.
-        </p>
-
-        <div className="flex flex-wrap gap-3 print:hidden">
-          <Button
-            variant="ghost"
-            onClick={handleCopySummary}
-            disabled={copyState === 'success'}
-            className="text-sm font-semibold text-foreground/70 hover:bg-white/60"
-          >
-            {copyState === 'success'
-              ? 'Résumé copié'
-              : copyState === 'error'
-                ? 'Copie impossible'
-                : 'Copier le résumé'}
-          </Button>
-
-          <Button
-            variant="outline"
-            onClick={handleDownloadPdf}
-            className="border-primary text-primary hover:bg-secondary"
-          >
-            Télécharger en PDF
-          </Button>
-
-          <Button
-            variant="outline"
-            onClick={handleRestart}
-            className="border-primary text-primary hover:bg-secondary"
-          >
-            Recommencer
-          </Button>
-        </div>
+        <PriorityListSection
+          items={priorityItems}
+          showAll={showAllItems}
+          onShowAllChange={setShowAllItems}
+        />
       </div>
 
-      <ActionPlanSection actions={actionPlan.slice(1)} />
-
-      <MechanicsSection mechanicsAlternatives={result.mechanicsAlternatives} />
-
-      <RecommendationsSection
-        recommendations={result.positiveRecommendations}
-        excludedIds={actionPlan.map((action) => action.id)}
+      <ActionSummarySection
+        items={priorityItems}
+        copyState={copyState}
+        onCopySummary={handleCopySummary}
+        onDownloadPdf={handleDownloadPdf}
+        onRestart={handleRestart}
       />
 
-      <RiskDetailsSection
-        riskThemes={result.riskThemes}
-        excludedIds={actionPlan.map((action) => action.id)}
-      />
-
-      <SynergyDetailsSection synergyResults={result.synergyResults} />
-
-      <ContradictionsDetailsSection
-        contradictions={result.contradictions}
-        excludedIds={actionPlan.map((action) => action.id)}
-      />
-
-      {/* Analyse IA en fin de page : c’est un outil pour aller plus loin,
-          pas un résultat en soi — le texte du bloc le dit déjà lui-même. */}
       <AiPromptSection result={result} />
 
       {isClientContext && <ClientArgumentSection result={result} />}

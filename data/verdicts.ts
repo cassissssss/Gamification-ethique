@@ -1,4 +1,4 @@
-import type { VerdictDefinition } from '@/types'
+import type { VerdictDefinition } from '@/types/principle'
 
 export const verdicts: VerdictDefinition[] = [
   {

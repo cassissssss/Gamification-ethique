@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { principles } from '@/data/principles'
 import { tagDefinitions } from '@/data/tags'
-import type { Tag } from '@/types'
+import type { Tag } from '@/types/principle'
 
 export async function generateStaticParams() {
   return principles.map((p) => ({ slug: p.slug }))
@@ -29,7 +29,7 @@ function TagBadge({ tag }: { tag: Tag }) {
       className="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold text-primary"
       style={{
         background: 'rgba(217,208,227,0.5)',
-        boxShadow:  '0 0 0 1px rgba(74,45,87,0.15)',
+        boxShadow: '0 0 0 1px rgba(74,45,87,0.15)',
       }}
     >
       {definition.label}
@@ -42,14 +42,14 @@ export default async function PrincipleDetailPage({
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const { slug }   = await params
-  const principe   = principles.find((p) => p.slug === slug)
+  const { slug } = await params
+  const principe = principles.find((p) => p.slug === slug)
   if (!principe) notFound()
 
   const currentIndex = principles.findIndex((p) => p.slug === slug)
   const prevPrincipe = principles[currentIndex - 1] ?? null
   const nextPrincipe = principles[currentIndex + 1] ?? null
-  const paragraphs   = principe.content.split('\n\n').map((p) => p.trim()).filter(Boolean)
+  const paragraphs = principe.content.split('\n\n').map((p) => p.trim()).filter(Boolean)
 
   return (
     <div className="flex flex-col">
@@ -61,20 +61,20 @@ export default async function PrincipleDetailPage({
         style={{ background: 'rgba(231,225,218,0.4)' }}
       >
         <div className="mx-auto max-w-6xl px-6 py-14">
-          <Link
-            href="/principes"
-            className={[
-              'mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-foreground/60',
-              'transition-colors hover:text-primary',
-              'focus-visible:rounded focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
-            ].join(' ')}
+
+          {/* Fil d'Ariane */}
+          <nav
+            aria-label="Fil d'Ariane"
+            className="mb-8 flex items-center gap-2 text-xs text-foreground/50"
           >
-            ← Tous les principes
-          </Link>
+            <Link href="/principes" className="transition-colors hover:text-primary">
+              Principes
+            </Link>
+            <span aria-hidden="true">›</span>
+            <span className="text-foreground/80">{principe.title}</span>
+          </nav>
+
           <div className="max-w-2xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-primary/60">
-              Principe
-            </p>
             <h1
               id="principe-heading"
               className="mb-5 text-4xl font-semibold leading-tight text-foreground md:text-5xl"
@@ -95,10 +95,10 @@ export default async function PrincipleDetailPage({
           {/* Colonne principale */}
           <div className="flex flex-col gap-14">
 
-            {/* Contenu long */}
+            {/* Comprendre le principe */}
             <section aria-labelledby="contenu-heading">
               <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground/40">
-                Ce principe signifie que…
+                Comprendre le principe
               </p>
               <div className="flex flex-col gap-4">
                 {paragraphs.map((paragraph, index) => (
@@ -109,62 +109,134 @@ export default async function PrincipleDetailPage({
               </div>
             </section>
 
-            {/* Exemples */}
-            {principe.examples && principe.examples.length > 0 && (
-              <section aria-labelledby="exemples-heading">
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground/40">
-                  Exemples de bonnes pratiques
+            {/* Pourquoi / Quand / Impact */}
+            <section className="grid gap-4 sm:grid-cols-3">
+              <div
+                className="flex flex-col gap-3 rounded-2xl p-5"
+                style={{ background: 'rgba(255,255,255,0.65)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}
+              >
+                <span className="text-xl" aria-hidden="true">🎯</span>
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  Pourquoi ?
                 </p>
-                <h2 id="exemples-heading" className="mb-6 text-2xl font-semibold text-foreground">
-                  Exemples
-                </h2>
-                <ul className="flex flex-col gap-3">
-                  {principe.examples.map((example, index) => (
-                    <li
-                      key={index}
-                      className="flex gap-4 rounded-2xl p-4"
-                      style={{ background: 'rgba(255,255,255,0.65)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}
-                    >
-                      <span className="mt-0.5 shrink-0 text-sm font-semibold text-primary" aria-hidden="true">✓</span>
-                      <p className="text-sm leading-relaxed text-foreground/80">{example}</p>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+                <p className="text-sm leading-relaxed text-foreground/80">{principe.why}</p>
+              </div>
 
-            {/* Risques */}
-            {principe.risks && principe.risks.length > 0 && (
-              <section aria-labelledby="risques-heading">
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground/40">
-                  Points de vigilance
+              <div
+                className="flex flex-col gap-3 rounded-2xl p-5"
+                style={{ background: 'rgba(255,255,255,0.65)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}
+              >
+                <span className="text-xl" aria-hidden="true">🧭</span>
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  Quand l'utiliser ?
                 </p>
-                <h2 id="risques-heading" className="mb-6 text-2xl font-semibold text-foreground">
-                  Risques à surveiller
-                </h2>
-                <ul className="flex flex-col gap-3">
-                  {principe.risks.map((risk, index) => (
-                    <li
-                      key={index}
-                      className="flex gap-4 rounded-2xl p-4"
-                      style={{
-                        background: 'rgba(181,98,10,0.06)',
-                        boxShadow:  '0 0 0 1px rgba(181,98,10,0.15)',
-                      }}
+                <p className="text-sm leading-relaxed text-foreground/80">{principe.whenToUse}</p>
+              </div>
+
+              <div
+                className="flex flex-col gap-3 rounded-2xl p-5"
+                style={{ background: 'rgba(181,98,10,0.06)', boxShadow: '0 0 0 1px rgba(181,98,10,0.15)' }}
+              >
+                <span className="text-xl" aria-hidden="true">⚡</span>
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  Impact
+                </p>
+                <p className="text-sm leading-relaxed text-foreground/80">{principe.impact}</p>
+              </div>
+            </section>
+
+            {/* Bonnes pratiques */}
+            <section aria-labelledby="pratiques-heading">
+              <h2 id="pratiques-heading" className="mb-6 text-2xl font-semibold text-foreground">
+                Bonnes pratiques
+              </h2>
+              <ul className="flex flex-col gap-3">
+                {principe.goodPractices.map((practice, index) => (
+                  <li
+                    key={index}
+                    className="flex gap-4 rounded-2xl p-4"
+                    style={{ background: 'rgba(255,255,255,0.65)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}
+                  >
+                    <span className="mt-0.5 shrink-0 text-sm font-semibold text-primary" aria-hidden="true">✓</span>
+                    <p className="text-sm leading-relaxed text-foreground/80">{practice}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* À éviter */}
+            <section aria-labelledby="eviter-heading">
+              <h2 id="eviter-heading" className="mb-6 text-2xl font-semibold text-foreground">
+                À éviter
+              </h2>
+              <ul className="flex flex-col gap-3">
+                {principe.avoid.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex gap-4 rounded-2xl p-4"
+                    style={{ background: 'rgba(181,98,10,0.06)', boxShadow: '0 0 0 1px rgba(181,98,10,0.15)' }}
+                  >
+                    <span
+                      className="mt-0.5 shrink-0 text-sm font-semibold"
+                      style={{ color: 'var(--color-warning)' }}
+                      aria-hidden="true"
                     >
-                      <span
-                        className="mt-0.5 shrink-0 text-sm font-semibold"
-                        style={{ color: 'var(--color-warning)' }}
-                        aria-hidden="true"
-                      >
-                        ⚠
-                      </span>
-                      <p className="text-sm leading-relaxed text-foreground/80">{risk}</p>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+                      ⚠
+                    </span>
+                    <p className="text-sm leading-relaxed text-foreground/80">{item}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* Question d'évaluation */}
+            <section aria-labelledby="evaluation-question-heading">
+              <div
+                className="flex gap-4 rounded-2xl p-6"
+                style={{ background: 'rgba(74,45,87,0.06)', boxShadow: '0 0 0 1px rgba(74,45,87,0.15)' }}
+              >
+                <span className="mt-0.5 shrink-0 text-2xl" aria-hidden="true">💡</span>
+                <div>
+                  <p
+                    id="evaluation-question-heading"
+                    className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary/70"
+                  >
+                    Question d'évaluation
+                  </p>
+                  <p className="text-base font-medium leading-relaxed text-foreground">
+                    {principe.evaluationQuestion}
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Références */}
+            <section aria-labelledby="references-heading">
+              <h2 id="references-heading" className="mb-4 text-lg font-semibold text-foreground">
+                Références
+              </h2>
+              <ul className="flex flex-col gap-4">
+                {principe.references.map((ref, index) => (
+                  <li key={index} className="flex flex-col gap-0.5">
+                    <span className="text-xs font-medium text-foreground/50">
+                      {ref.authors} · {ref.year}
+                    </span>
+                    {ref.url ? (
+  <a
+    href={ref.url}
+    className="text-sm font-semibold text-foreground underline decoration-foreground/20 underline-offset-2 hover:text-primary"
+    target="_blank"
+    rel="noreferrer"
+  >
+    {ref.title}
+  </a>
+) : (
+  <span className="text-sm font-semibold text-foreground">{ref.title}</span>
+)}
+                  </li>
+                ))}
+              </ul>
+            </section>
 
             {/* Navigation précédent / suivant */}
             <nav
@@ -220,8 +292,7 @@ export default async function PrincipleDetailPage({
                   {principe.relatedTags.map((tag) => <TagBadge key={tag} tag={tag} />)}
                 </div>
                 <p className="mt-4 text-xs leading-relaxed text-foreground/60">
-                  Ces tags peuvent être activés lors de l'évaluation si les
-                  réponses correspondent aux risques décrits par ce principe.
+                  Ces tags sont utilisés par le moteur d'évaluation pour générer les recommandations.
                 </p>
               </div>
             )}

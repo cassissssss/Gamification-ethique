@@ -2,6 +2,7 @@ import type {
   EvaluationAnswers,
   OptionId,
   QuestionId,
+  RecommendationDeepDive,
   RiskLevel,
   SynergyResult,
 } from './evaluation.types'
@@ -20,6 +21,7 @@ interface SynergyRule {
   level: RiskLevel
   sourceQuestionIds: QuestionId[]
   matches: (answers: EvaluationAnswers) => boolean
+  deepDive?: RecommendationDeepDive
 }
 
 function getSelectedOptionIds(
@@ -73,6 +75,15 @@ const synergyRules: SynergyRule[] = [
       hasSelectedOption(answers, 'Q12', 'ranking') &&
       hasSelectedOption(answers, 'Q12', 'streak') &&
       hasSelectedOption(answers, 'Q12', 'random_reward'),
+    deepDive: {
+      mechanism:
+        'Chaque mécanique agit sur un levier psychologique distinct — comparaison sociale (classement), obligation temporelle (série), incertitude de récompense (aléatoire). Combinées, elles ne s’additionnent pas : elles se renforcent, un schéma documenté dans la conception des jeux à mécaniques compulsives (« triple hook »). Retirer un seul des trois leviers réduit la pression globale de façon disproportionnée par rapport à l’effort fourni.',
+      alternatives: [
+        'Retirer en priorité la récompense aléatoire : c’est le levier le plus à risque des trois pris isolément (voir fiche dédiée).',
+        'Si le classement doit rester, le rendre privé (amis, équipe choisie) plutôt que public par défaut.',
+        'Si les trois éléments doivent coexister pour une raison produit forte, documenter explicitement la justification et prévoir une réévaluation après lancement avec des données réelles d’usage.',
+      ],
+    },
   },
   {
     id: 'synergy_streak_notifications_interruption_loss',
@@ -87,6 +98,15 @@ const synergyRules: SynergyRule[] = [
       hasSelectedOption(answers, 'Q12', 'streak') &&
       hasSelectedOption(answers, 'Q12', 'notifications_reminders') &&
       hasSelectedOption(answers, 'Q16', 'interruption_changes_progress'),
+    deepDive: {
+      mechanism:
+        'Un rappel actif transforme une série en obligation permanente plutôt qu’en habitude choisie ; si l’interruption a en plus une conséquence réelle (perte de statut, d’avantages), l’utilisateur-rice ne revient plus par intérêt mais par crainte de la perte — le rappel devient alors une source de stress plutôt qu’un service.',
+      alternatives: [
+        'Découpler le rappel de la menace de perte : notifier sans jamais mentionner ce qui serait perdu en cas d’absence.',
+        'Introduire un mécanisme de reprise sans pénalité (gel de série, grâce de 24-48h) avant même de notifier.',
+        'Réduire la fréquence des rappels automatiquement si l’utilisateur-rice ne les ouvre pas plusieurs fois de suite, plutôt que de les intensifier.',
+      ],
+    },
   },
   {
     id: 'synergy_health_impact_temporal_pressure',
@@ -100,6 +120,15 @@ const synergyRules: SynergyRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q8', 'health_safety_impact') &&
       hasAnySelectedOption(answers, 'Q12', temporalPressureMechanicOptionIds),
+    deepDive: {
+      mechanism:
+        'Le même mécanisme (rappel, série, récompense imprévisible) a un poids éthique différent selon l’enjeu réel de l’action : dans un contexte de loisir, il pousse à revenir sur une app de divertissement ; dans un contexte de santé, il peut pousser quelqu’un à agir contre son propre rythme physiologique ou à culpabiliser en cas de pause nécessaire (ex. repos, blessure, fatigue).',
+      alternatives: [
+        'Remplacer toute mécanique de pression temporelle par un simple rappel neutre, sans conséquence en cas de non-usage.',
+        'Faire valider la mécanique par une personne experte du domaine concerné (santé, sécurité) avant mise en production, pas seulement par l’équipe produit.',
+        'Prévoir une option explicite de mise en pause du programme sans culpabilisation, avec un message neutre plutôt qu’alarmiste.',
+      ],
+    },
   },
   {
     id: 'synergy_ranking_young_audience_visible',
@@ -114,6 +143,15 @@ const synergyRules: SynergyRule[] = [
       hasSelectedOption(answers, 'Q12', 'ranking') &&
       hasSelectedOption(answers, 'Q6', 'young_audience') &&
       hasSelectedOption(answers, 'Q17', 'ranking_comparison'),
+    deepDive: {
+      mechanism:
+        'Le contrôle des impulsions et la régulation émotionnelle face à l’échec sont encore en développement chez un public jeune ou adolescent — un classement public amplifie donc un effet déjà problématique chez les adultes (pression de performance, découragement) plutôt que de simplement le reproduire à l’identique.',
+      alternatives: [
+        'Remplacer le classement public par une progression personnelle visible uniquement par l’utilisateur-rice.',
+        'Si une dimension sociale reste souhaitée, la limiter à un groupe choisi (classe, équipe) avec accord d’un-e adulte responsable si le contexte l’exige.',
+        'Éviter tout affichage de position basse ou de retard par rapport aux autres — préférer des retours orientés progrès personnel.',
+      ],
+    },
   },
 ]
 
@@ -127,6 +165,7 @@ export function getSynergyResults(answers: EvaluationAnswers): SynergyResult[] {
       recommendation: rule.recommendation,
       level: rule.level,
       sourceQuestionIds: rule.sourceQuestionIds,
+      deepDive: rule.deepDive,
     }))
     .sort(sortSynergiesByLevel)
 }

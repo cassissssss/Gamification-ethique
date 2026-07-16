@@ -1,4 +1,4 @@
-import type { Tag, Recommendation } from '@/types'
+import type { Tag, Recommendation } from '@/types/principle'
 import { recommendations } from '@/data/recommendations'
 
 const PRIORITY_ORDER: Record<Recommendation['priority'], number> = {

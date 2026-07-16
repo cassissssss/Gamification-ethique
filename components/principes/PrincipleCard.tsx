@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Principe } from '@/types'
+import type { Principe } from '@/types/principle'
 
 interface PrincipleCardProps {
   principe: Principe

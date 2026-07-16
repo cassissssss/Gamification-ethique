@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { verdicts } from '@/data/verdicts'
-import type { VerdictTone } from '@/types'
+import type { VerdictTone } from '@/types/principle'
 
 export const metadata: Metadata = {
   title: 'Comprendre',

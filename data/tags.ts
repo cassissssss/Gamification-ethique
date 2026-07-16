@@ -1,4 +1,4 @@
-import type { TagDefinition } from '@/types'
+import type { TagDefinition } from '@/types/principle'
 
 export const tagDefinitions: TagDefinition[] = [
   {

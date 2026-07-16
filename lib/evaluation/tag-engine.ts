@@ -1,4 +1,4 @@
-import type { Answer, Tag } from '@/types'
+import type { Answer, Tag } from '@/types/principle'
 import { evaluationQuestions } from '@/data/questions'
 
 export function computeTags(answers: Answer[]): Tag[] {

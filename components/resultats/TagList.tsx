@@ -1,4 +1,4 @@
-import type { Tag } from '@/types'
+import type { Tag } from '@/types/principle'
 import { tagDefinitions } from '@/data/tags'
 
 interface TagListProps {

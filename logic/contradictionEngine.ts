@@ -4,6 +4,7 @@ import type {
   EvaluationAnswers,
   OptionId,
   QuestionId,
+  RecommendationDeepDive,
 } from './evaluation.types'
 
 interface ContradictionRule {
@@ -15,6 +16,7 @@ interface ContradictionRule {
   sourceQuestionIds: QuestionId[]
   sourceOptionIds: OptionId[]
   matches: (answers: EvaluationAnswers) => boolean
+  deepDive?: RecommendationDeepDive
 }
 
 const mechanicOptionIds: OptionId[] = [
@@ -80,6 +82,15 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q2', 'need_unclear') &&
       hasAnySelectedOption(answers, 'Q12', mechanicOptionIds),
+    deepDive: {
+      mechanism:
+        'C’est le piège classique du « solutionnisme » : partir d’une mécanique qu’on aime ou qu’un concurrent utilise, plutôt que d’un problème identifié. Une mécanique choisie avant le besoin a statistiquement plus de chances d’être mal calibrée, sur-dimensionnée ou simplement hors-sujet.',
+      alternatives: [
+        'Revenir en arrière et formuler le besoin en une phrase simple avant de continuer (« les utilisateur-rices abandonnent à l’étape 3 parce que… »).',
+        'Tester si le besoin identifié pourrait être résolu sans aucune gamification (souvent un signe que la mécanique est superflue).',
+        'Documenter explicitement le lien entre la mécanique choisie et le besoin, pour pouvoir le challenger plus tard.',
+      ],
+    },
   },
   {
     id: 'contradiction_action_undefined_mechanics_defined',
@@ -108,6 +119,15 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q7', 'personal_choice') &&
       hasSelectedOption(answers, 'Q14', 'main_path'),
+    deepDive: {
+      mechanism:
+        'Un usage volontaire implique que la personne garde la main sur son expérience. Si la mécanique gamifiée est incontournable dans le parcours principal, ce choix initial devient illusoire : on ne peut plus utiliser le service « normalement » sans traverser la couche gamifiée.',
+      alternatives: [
+        'Découpler la mécanique du parcours essentiel : elle doit rester une couche additive, jamais une étape obligatoire.',
+        'Ajouter un accès direct ou un raccourci pour les personnes qui veulent seulement utiliser le service, sans la mécanique.',
+        'Mesurer ce qui se passe réellement si quelqu’un ignore la mécanique — si l’expérience se dégrade fortement, elle n’est pas optionnelle en pratique.',
+      ],
+    },
   },
   {
     id: 'contradiction_personal_choice_dependent_elements',
@@ -136,6 +156,15 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q14', 'optional_participation') &&
       hasSelectedOption(answers, 'Q15', 'required_to_finish'),
+    deepDive: {
+      mechanism:
+        'C’est la forme la plus directe de dark pattern par contradiction : annoncer une liberté de choix qui n’existe pas dans les faits. Ce décalage entre le discours et le comportement réel du produit est précisément ce que les régulateurs (DSA, FTC) qualifient de pratique trompeuse, indépendamment de l’intention de l’équipe produit.',
+      alternatives: [
+        'Si la mécanique est vraiment indispensable, retirer la mention « optionnel » et expliquer honnêtement pourquoi elle est nécessaire.',
+        'Si elle n’est pas indispensable, retirer le blocage et permettre de terminer le parcours sans elle.',
+        'Auditer tout le parcours pour repérer d’autres endroits où « optionnel » est utilisé de façon similaire.',
+      ],
+    },
   },
   {
     id: 'contradiction_personal_choice_required_to_finish',
@@ -164,6 +193,15 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q9', 'no_personal_data') &&
       hasAnySelectedOption(answers, 'Q12', trackingMechanicOptionIds),
+    deepDive: {
+      mechanism:
+        'Un niveau, un classement ou une série n’existent techniquement que parce qu’un historique est conservé quelque part — affirmer qu’aucune donnée n’est utilisée tout en gardant ces mécaniques est souvent un simple angle mort plutôt qu’un vrai choix, ce qui pose un problème de transparence (RGPD : minimisation et information claire).',
+      alternatives: [
+        'Documenter précisément quelles données sont réellement stockées pour faire fonctionner chaque mécanique sélectionnée.',
+        'Si le volume de données doit rester minimal, privilégier un état local (non persistant, réinitialisé à chaque session) plutôt qu’un historique complet.',
+        'Ajouter une mention claire dans les CGU ou l’écran concerné sur ce qui est utilisé, même si ce n’est pas une donnée « sensible ».',
+      ],
+    },
   },
   {
     id: 'contradiction_no_regular_usage_recurring_mechanics',
@@ -206,6 +244,14 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q17', 'private') &&
       hasAnySelectedOption(answers, 'Q12', ['ranking', 'comparison_users']),
+    deepDive: {
+      mechanism:
+        'Un classement ou une comparaison n’a de sens que s’il est vu par au moins une autre personne — l’associer à une visibilité « privée » révèle souvent que la mécanique a été copiée d’un autre produit sans être adaptée au contexte réel.',
+      alternatives: [
+        'Si la visibilité doit rester privée, remplacer le classement par une progression personnelle dans le temps.',
+        'Si une dimension sociale est réellement souhaitée, la rendre explicite et opt-in plutôt que de la laisser en tension avec l’annonce de confidentialité.',
+      ],
+    },
   },
   {
     id: 'contradiction_light_role_strong_mechanics',
@@ -220,6 +266,14 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q3', 'light_marker') &&
       hasAnySelectedOption(answers, 'Q12', strongMechanicOptionIds),
+    deepDive: {
+      mechanism:
+        'Un classement, un streak ou une récompense ne sont jamais des mécaniques « légères » : ce sont parmi les plus influentes du répertoire de gamification. Les qualifier de simple repère revient à sous-estimer leur effet réel sur le comportement — un décalage qui mène souvent à ne pas leur appliquer les garde-fous nécessaires.',
+      alternatives: [
+        'Si le rôle voulu est vraiment léger, remplacer ces mécaniques par des étapes visibles ou un feedback simple, sans dimension sociale ni compulsive.',
+        'Si ces mécaniques doivent rester, ajuster le niveau de vigilance en conséquence plutôt que de les traiter comme secondaires.',
+      ],
+    },
   },
   {
     id: 'contradiction_unclear_role_central_mechanic',
@@ -259,6 +313,15 @@ const contradictionRules: ContradictionRule[] = [
         'personalized_goals',
         'levels',
       ]),
+    deepDive: {
+      mechanism:
+        'Plus une mécanique influence réellement l’expérience (accès, statut, récompense), plus l’opacité de son fonctionnement devient problématique : l’utilisateur-rice ne peut ni anticiper ni contester une règle qu’il ou elle ne connaît pas. C’est le principe de transparence algorithmique appliqué à une échelle produit, pas seulement à l’IA.',
+      alternatives: [
+        'Ajouter un écran ou une info-bulle « comment ça marche » accessible en un clic depuis la mécanique concernée.',
+        'Documenter en langage clair (pas technique) ce qui déclenche un niveau, un classement ou un objectif personnalisé.',
+        'Prioriser la transparence sur les mécaniques à fort impact d’abord (classement, objectifs) avant les plus anodines.',
+      ],
+    },
   },
   {
     id: 'contradiction_no_specific_context_with_sensitive_context',
@@ -316,6 +379,15 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasAnySelectedOption(answers, 'Q5', businessOnlyBenefitOptionIds) &&
       !hasAnySelectedOption(answers, 'Q5', userBenefitOptionIds),
+    deepDive: {
+      mechanism:
+        'Optimiser une mécanique pour un seul indicateur interne (temps passé, actions, conversion) sans bénéfice utilisateur explicite est la définition même d’un pattern manipulatoire, même sans intention malveillante — c’est le piège de la loi de Goodhart appliquée à l’UX : une métrique devient la cible et cesse de représenter ce qu’elle était censée mesurer. Le risque n’est pas seulement éthique : une fois qu’un utilisateur perçoit qu’il est « joué » plutôt que servi, la confiance s’érode durablement, souvent bien après que la métrique business ait cessé de progresser.',
+      alternatives: [
+        'Reformuler l’objectif en indicateur double (ex. « taux de complétion » ET « satisfaction post-usage »).',
+        'Impliquer la recherche UX pour identifier un vrai point de friction à résoudre, plutôt que de partir du KPI.',
+        'Tester une version sans la mécanique pour voir si le KPI business tient sans elle — si non, la mécanique masquait probablement un problème produit plus profond.',
+      ],
+    },
   },
   {
     id: 'contradiction_random_reward_young_audience',
@@ -330,6 +402,15 @@ const contradictionRules: ContradictionRule[] = [
     matches: (answers) =>
       hasSelectedOption(answers, 'Q6', 'young_audience') &&
       hasSelectedOption(answers, 'Q12', 'random_reward'),
+    deepDive: {
+      mechanism:
+        'Le contrôle des impulsions est encore en développement chez un public jeune, ce qui rend le renforcement à ratio variable (voir fiche « Récompense aléatoire ») plus efficace, et donc plus problématique, que chez un public adulte. C’est précisément cette combinaison que plusieurs régulateurs visent en premier lors de l’examen des loot boxes.',
+      alternatives: [
+        'Retirer l’aléa pour ce public spécifique, même s’il est conservé ailleurs pour un public adulte.',
+        'Documenter explicitement pourquoi la mécanique est jugée nécessaire malgré le public concerné, si elle est maintenue.',
+        'Prévoir une vérification ou une segmentation d’âge si le produit s’adresse à des publics mixtes.',
+      ],
+    },
   },
 ]
 
@@ -346,6 +427,7 @@ export function getContradictions(
       severity: rule.severity,
       sourceQuestionIds: rule.sourceQuestionIds,
       sourceOptionIds: rule.sourceOptionIds,
+      deepDive: rule.deepDive,
     }))
     .sort(sortContradictionsBySeverity)
 }

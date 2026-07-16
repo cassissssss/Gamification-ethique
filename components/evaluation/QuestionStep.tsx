@@ -2,7 +2,7 @@
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
-import type { Question } from '@/types'
+import type { Question } from '@/types/principle'
 
 interface QuestionStepProps {
   question:          Question

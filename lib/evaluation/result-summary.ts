@@ -1,4 +1,4 @@
-import type { VerdictLevel, Tag, Recommendation } from '@/types'
+import type { VerdictLevel, Tag, Recommendation } from '@/types/principle'
 import { verdicts } from '@/data/verdicts'
 import { tagDefinitions } from '@/data/tags'
 

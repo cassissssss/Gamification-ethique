@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Check, Copy, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { buildResultSummary } from '@/lib/evaluation/result-summary'
-import type { VerdictLevel, Tag, Recommendation } from '@/types'
+import type { VerdictLevel, Tag, Recommendation } from '@/types/principle'
 
 type CopyState = 'idle' | 'success' | 'error'
 

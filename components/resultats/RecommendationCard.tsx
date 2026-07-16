@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Recommendation } from '@/types'
+import type { Recommendation } from '@/types/principle'
 
 interface RecommendationCardProps {
   recommendation: Recommendation

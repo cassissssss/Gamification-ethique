@@ -2,6 +2,7 @@ import type {
   EvaluationAnswers,
   OptionId,
   QuestionId,
+  RecommendationDeepDive,
   RiskLevel,
   RiskSignal,
   RiskThemeId,
@@ -618,6 +619,7 @@ export function getRiskThemes(answers: EvaluationAnswers): RiskThemeResult[] {
       signals: themeSignals,
       summary: getThemeSummary(themeId, level),
       recommendation: getThemeRecommendation(themeId, level),
+      deepDive: getThemeDeepDive(themeId, level),
     }
   })
 }
@@ -720,4 +722,76 @@ function getThemeRecommendation(themeId: RiskThemeId, level: RiskLevel): string 
   }
 
   return recommendations[themeId]
+}
+
+function getThemeDeepDive(
+  themeId: RiskThemeId,
+  level: RiskLevel,
+): RecommendationDeepDive | undefined {
+  if (level === 'none') {
+    return undefined
+  }
+
+  const deepDives: Record<RiskThemeId, RecommendationDeepDive> = {
+    social_comparison: {
+      mechanism:
+        'Toute comparaison sociale crée mécaniquement des perdant·es : par construction, une partie des utilisateur-rices se retrouve « en dessous », quel que soit leur effort réel. L’effet motivationnel s’inverse alors pour cette partie et devient décourageant plutôt que stimulant.',
+      alternatives: [
+        'Remplacer la comparaison aux autres par une progression personnelle dans le temps.',
+        'Si une dimension collective est utile, utiliser un objectif de groupe atteint ensemble plutôt qu’un rang individuel.',
+        'Rendre tout classement optionnel (opt-in) et limité à un groupe choisi, jamais public par défaut.',
+      ],
+      realWorldExample:
+        'Fitbit propose des défis entre amis opt-in plutôt qu’un classement public par défaut de tous les utilisateurs.',
+    },
+    autonomy_control: {
+      mechanism:
+        'Dès qu’une mécanique conditionne l’accès au service principal ou qu’il devient difficile de s’en désengager, la participation cesse d’être un choix réel — même si elle est présentée comme optionnelle sur le papier.',
+      alternatives: [
+        'Garantir que le service principal reste pleinement utilisable sans passer par la mécanique gamifiée.',
+        'Ajouter un moyen simple et visible de se désengager (quitter un classement, arrêter un streak) sans pénalité disproportionnée.',
+        'Tester ce qui se passe réellement si quelqu’un ignore la mécanique — si l’expérience se dégrade fortement, elle n’est pas optionnelle en pratique.',
+      ],
+    },
+    data_profile: {
+      mechanism:
+        'Un niveau, un classement ou un objectif personnalisé n’existent techniquement que parce qu’un historique est conservé quelque part. Le risque n’est pas la donnée elle-même, mais son opacité : l’utilisateur-rice ne sait souvent pas ce qui est mesuré ni pourquoi.',
+      alternatives: [
+        'Documenter précisément quelles données sont nécessaires pour chaque mécanique sélectionnée.',
+        'Privilégier un état local, non persistant, quand un historique complet n’est pas indispensable.',
+        'Expliquer en langage clair ce qui est suivi, directement au niveau de la mécanique concernée.',
+      ],
+    },
+    temporal_pressure: {
+      mechanism:
+        'Les rappels, séries et récompenses imprévisibles combinent souvent obligation temporelle et aversion à la perte : au bout de quelques jours, ce n’est plus l’envie qui pousse à revenir, mais la peur de perdre ce qui a déjà été accumulé.',
+      alternatives: [
+        'Espacer ou réduire automatiquement les rappels si l’utilisateur-rice ne les ouvre pas, plutôt que de maintenir la même fréquence.',
+        'Proposer une reprise sans pénalité forte après une pause (gel de série, dégradation douce plutôt que remise à zéro brutale).',
+        'Rendre les rappels désactivables facilement, sans les enfouir dans un sous-menu.',
+      ],
+      realWorldExample:
+        'Duolingo propose des « streak freezes » pour absorber une pause sans perdre toute la série accumulée.',
+    },
+    commercial_conversion: {
+      mechanism:
+        'Une mécanique qui pousse vers un achat ou une conversion n’est pas problématique en soi, mais elle glisse vers la manipulation dès qu’elle crée une urgence artificielle (rareté fictive, compte à rebours non justifié) plutôt que d’aider une vraie décision.',
+      alternatives: [
+        'Vérifier que toute urgence affichée correspond à une réalité (stock réel, offre réellement limitée dans le temps), jamais fabriquée.',
+        'Séparer clairement l’information utile à la décision de l’incitation à agir immédiatement.',
+        'Tester si le taux de conversion reste acceptable sans la pression temporelle — si non, la mécanique masque probablement une proposition de valeur insuffisante.',
+      ],
+    },
+    sensitive_context: {
+      mechanism:
+        'Le même mécanisme de gamification n’a pas le même poids selon le contexte : une mécanique anodine dans une application de loisir peut avoir un impact réel sur la santé, la scolarité ou la situation professionnelle d’une personne dans un contexte plus sensible.',
+      alternatives: [
+        'Reconsidérer en priorité toute mécanique de pression temporelle ou de comparaison sociale dans ce contexte.',
+        'Faire valider les mécaniques par une personne experte du domaine concerné (santé, éducation) avant mise en production.',
+        'Prévoir une option explicite de mise en pause, avec un message neutre plutôt que culpabilisant.',
+      ],
+    },
+  }
+
+  return deepDives[themeId]
 }

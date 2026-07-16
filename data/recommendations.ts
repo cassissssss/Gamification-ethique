@@ -1,4 +1,4 @@
-import type { Recommendation } from '@/types'
+import type { Recommendation } from '@/types/principle'
 
 export const recommendations: Recommendation[] = [
   // ─── cadrage_insuffisant ────────────────────────────────────────────────────
