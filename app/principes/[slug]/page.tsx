@@ -5,13 +5,17 @@ import { principles } from '@/data/principles'
 import {
   Lightbulb,
   BookOpen,
-  BadgeCheck,
-  CircleOff,
   LibraryBig,
-  ClipboardCheck,
 } from 'lucide-react'
 import { PrincipleExample } from '@/components/principes/PrincipleExample'
 import { ProgressionShowcase } from '@/components/principes/ProgressionShowcase'
+import { RareteUrgenceShowcase } from '@/components/principes/RareteUrgenceShowcase'
+import { TransparenceShowcase } from '@/components/principes/TransparenceShowcase'
+import { AutonomieShowcase } from '@/components/principes/AutonomieShowcase'
+import { FeedbackShowcase } from '@/components/principes/FeedbackShowcase'
+import { RecompensesShowcase } from '@/components/principes/RecompensesShowcase'
+import { ComparaisonSocialeShowcase } from '@/components/principes/ComparaisonSocialeShowcase'
+import { ChoixContraintShowcase } from '@/components/principes/ChoixContraintShowcase'
 
 export async function generateStaticParams() {
   return principles.map((p) => ({ slug: p.slug }))
@@ -86,138 +90,96 @@ export default async function PrincipleDetailPage({
           {/* Colonne principale */}
           <div className="flex flex-col gap-14">
 
-            {/* Comprendre le principe — uniquement la définition (1er
-                paragraphe de content). Les §2-3 d'origine étaient une
-                reformulation en prose de À éviter / Bonnes pratiques /
-                Pourquoi, retirés pour ne pas répéter la même idée 3 fois. */}
-            <section aria-labelledby="contenu-heading">
-              <div className="mb-4 flex items-center gap-2">
+            {/* En pratique — l'élément central de la page. La définition
+                complète (3 paragraphes) est réduite à 1-2 phrases en légende
+                sous la démo : la démo montre déjà "pourquoi", le texte n'a
+                plus qu'à nommer le principe, pas à le ré-expliquer. */}
+            <section aria-labelledby="en-pratique-heading">
+              <div className="mb-2 flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-primary" />
-                <p className="text-xs font-semibold uppercase tracking-widest text-foreground/40">
-                  Définition
-                </p>
+                <h2
+                  id="en-pratique-heading"
+                  className="text-2xl font-semibold text-foreground"
+                >
+                  En pratique
+                </h2>
               </div>
-              <p className="text-base leading-relaxed text-foreground/80">
+              <p className="mb-6 max-w-2xl text-base leading-relaxed text-foreground/70">
                 {paragraphs[0]}
               </p>
+              {principe.slug === 'progression' ? (
+                <ProgressionShowcase />
+              ) : principe.slug === 'rarete-urgence' ? (
+                <RareteUrgenceShowcase />
+              ) : principe.slug === 'transparence' ? (
+                <TransparenceShowcase />
+              ) : principe.slug === 'autonomie' ? (
+                <AutonomieShowcase />
+              ) : principe.slug === 'feedback' ? (
+                <FeedbackShowcase />
+              ) : principe.slug === 'recompenses' ? (
+                <RecompensesShowcase />
+              ) : principe.slug === 'comparaison-sociale' ? (
+                <ComparaisonSocialeShowcase />
+              ) : principe.slug === 'choix-contraint' ? (
+                <ChoixContraintShowcase />
+              ) : (
+                <PrincipleExample slug={principe.slug} />
+              )}
             </section>
 
-            {/* En pratique — micro-mockup d'interface représentatif du
-                principe. Version interactive avec hotspots pour Progression
-                (style validé), mockup simple pour les 7 autres en attendant
-                de généraliser. */}
-            <section aria-labelledby="en-pratique-heading">
+            {/* Pourquoi c'est important — allégé visuellement (callout
+                compact, pas une section à part entière) : la démo a déjà
+                montré l'essentiel, ceci n'ajoute que le fondement théorique. */}
+            <section aria-labelledby="importance-heading" className="border-l-2 border-border pl-5">
               <p
-                id="en-pratique-heading"
-                className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground/40"
+                id="importance-heading"
+                className="mb-1.5 text-xs font-semibold uppercase tracking-widest text-foreground/40"
               >
-                En pratique
+                Pourquoi c'est important
               </p>
-              {principe.slug === 'progression'
-                ? <ProgressionShowcase />
-                : <PrincipleExample slug={principe.slug} />}
+              <p className="text-sm leading-relaxed text-foreground/70">{principe.why}</p>
             </section>
 
-            {/* Pourquoi c'est important — fusionne l'ancien "Son importance"
-                (why) et "Quand l'utiliser" (whenToUse, en note courte).
-                "Impact" est retiré : il redisait la même idée que why
-                (perte de confiance / sentiment d'injustice) avec d'autres mots. */}
+            {/* Passez à l'évaluation — la question d'évaluation et le CTA
+                réunis en un seul bloc de clôture, au lieu d'être éclatés
+                entre le bas de la colonne et la sidebar. */}
             <section
-              aria-labelledby="importance-heading"
+              aria-labelledby="evaluation-heading"
               className="rounded-2xl p-6"
-              style={{ background: 'rgba(255, 255, 255, 0.65)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)' }}
+              style={{ background: 'rgba(74, 45, 87, 0.06)', boxShadow: '0 0 0 1px rgba(74, 45, 87, 0.15)' }}
             >
-              <div className="mb-3 flex items-center gap-2">
-                <Lightbulb className="h-4 w-4 text-primary" />
-                <p
-                  id="importance-heading"
-                  className="text-xs font-semibold uppercase tracking-widest text-foreground/40"
-                >
-                  Pourquoi c'est important
-                </p>
-              </div>
-              <p className="text-sm leading-relaxed text-foreground/80">{principe.why}</p>
-              <p className="mt-4 text-xs leading-relaxed text-foreground/50">
-                S'applique dès que : {principe.whenToUse}
-              </p>
-            </section>
-
-            {/* Bonnes pratiques */}
-            <section aria-labelledby="pratiques-heading">
-              <div className="mb-6 flex items-center gap-2">
-                <BadgeCheck className="h-5 w-5 text-primary" />
-                <h2 id="pratiques-heading" className="text-2xl font-semibold text-foreground">
-                  Bonnes pratiques
-                </h2>
-              </div>
-              <ul className="flex flex-col gap-3">
-                {principe.goodPractices.map((practice, index) => (
-                  <li
-                    key={index}
-                    className="flex gap-4 rounded-2xl p-4"
-                    style={{ background: 'rgba(255, 255, 255, 0.65)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)' }}
+              <div className="flex gap-4">
+                <Lightbulb className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                <div>
+                  <p
+                    id="evaluation-heading"
+                    className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary/70"
                   >
-                    <span className="mt-0.5 shrink-0 text-sm font-semibold text-primary" aria-hidden="true">✓</span>
-                    <p className="text-sm leading-relaxed text-foreground/80">{practice}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            {/* À éviter */}
-            <section aria-labelledby="eviter-heading">
-              <div className="mb-6 flex items-center gap-2">
-                <CircleOff className="h-5 w-5" style={{ color: 'var(--color-warning)' }} />
-                <h2 id="eviter-heading" className="text-2xl font-semibold text-foreground">
-                  À éviter
-                </h2>
+                    Question d'évaluation
+                  </p>
+                  <p className="text-base font-medium leading-relaxed text-foreground">
+                    {principe.evaluationQuestion}
+                  </p>
+                </div>
               </div>
-              <ul className="flex flex-col gap-3">
-                {principe.avoid.map((item, index) => (
-                  <li
-                    key={index}
-                    className="flex gap-4 rounded-2xl p-4"
-                    style={{ background: 'rgba(181, 98, 10, 0.06)', boxShadow: '0 0 0 1px rgba(181, 98, 10, 0.15)' }}
-                  >
-                    <span
-                      className="mt-0.5 shrink-0 text-sm font-semibold"
-                      style={{ color: 'var(--color-warning)' }}
-                      aria-hidden="true"
-                    >
-                      ⚠
-                    </span>
-                    <p className="text-sm leading-relaxed text-foreground/80">{item}</p>
-                  </li>
-                ))}
-              </ul>
+              <Link
+                href="/evaluation"
+                className={[
+                  'mt-5 inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold',
+                  'bg-primary text-primary-foreground transition-opacity hover:opacity-90',
+                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
+                ].join(' ')}
+              >
+                Lancer l'évaluation
+              </Link>
             </section>
-
-            {/* Question d'évaluation */}
-<section aria-labelledby="evaluation-question-heading">
-  <div
-    className="flex gap-4 rounded-2xl p-6"
-    style={{ background: 'rgba(74, 45, 87, 0.06)', boxShadow: '0 0 0 1px rgba(74, 45, 87, 0.15)' }}
-  >
-    <Lightbulb className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-    <div>
-      <p
-        id="evaluation-question-heading"
-        className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary/70"
-      >
-        Question d'évaluation
-      </p>
-      <p className="text-base font-medium leading-relaxed text-foreground">
-        {principe.evaluationQuestion}
-      </p>
-    </div>
-  </div>
-</section>
 
             {/* Références */}
             <section aria-labelledby="references-heading">
               <div className="mb-4 flex items-center gap-2">
-                <LibraryBig className="h-5 w-5 text-primary" />
-                <h2 id="references-heading" className="text-2xl font-semibold text-foreground">
+                <LibraryBig className="h-4 w-4 text-primary" />
+                <h2 id="references-heading" className="text-lg font-semibold text-foreground">
                   Références
                 </h2>
               </div>
@@ -314,44 +276,6 @@ export default async function PrincipleDetailPage({
                   ))}
                 </ul>
               </nav>
-            </div>
-
-            {/* CTA */}
-            <div
-              className="rounded-2xl p-5"
-              style={{ background: 'rgba(231, 225, 218, 0.5)', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.05)' }}
-            >
-              <div className="mb-3 flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-primary" />
-                <p className="text-base font-semibold text-foreground">Évaluer votre projet</p>
-              </div>
-              <p className="mb-5 text-sm leading-relaxed text-foreground/70">
-                Ce principe est intégré dans le framework d'évaluation.
-                Répondez au questionnaire pour obtenir un verdict et des
-                recommandations adaptés à votre projet.
-              </p>
-              <div className="flex flex-col gap-2">
-                <Link
-                  href="/evaluation"
-                  className={[
-                    'inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold',
-                    'bg-primary text-primary-foreground transition-opacity hover:opacity-90',
-                    'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
-                  ].join(' ')}
-                >
-                  Lancer l'évaluation
-                </Link>
-                <Link
-                  href="/principes"
-                  className={[
-                    'inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground/70',
-                    'transition-colors hover:bg-white/50 hover:text-foreground',
-                    'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
-                  ].join(' ')}
-                >
-                  Voir tous les principes
-                </Link>
-              </div>
             </div>
           </aside>
         </div>
