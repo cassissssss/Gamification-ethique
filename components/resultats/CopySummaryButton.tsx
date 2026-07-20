@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Copy, AlertCircle } from 'lucide-react'
+import { Check,  Copy,  AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { buildResultSummary } from '@/lib/evaluation/result-summary'
-import type { VerdictLevel, Tag, Recommendation } from '@/types/principle'
+import type { VerdictLevel,  Tag,  Recommendation } from '@/types/principle'
 
 type CopyState = 'idle' | 'success' | 'error'
 
@@ -14,18 +14,18 @@ interface CopySummaryButtonProps {
   recommendations: Recommendation[]
 }
 
-export function CopySummaryButton({ verdict, tags, recommendations }: CopySummaryButtonProps) {
-  const [copyState, setCopyState] = useState<CopyState>('idle')
+export function CopySummaryButton({ verdict,  tags,  recommendations }: CopySummaryButtonProps) {
+  const [copyState,  setCopyState] = useState<CopyState>('idle')
 
   async function handleCopy() {
-    const summary = buildResultSummary(verdict, tags, recommendations)
+    const summary = buildResultSummary(verdict,  tags,  recommendations)
     try {
       await navigator.clipboard.writeText(summary)
       setCopyState('success')
     } catch {
       setCopyState('error')
     } finally {
-      setTimeout(() => setCopyState('idle'), 3000)
+      setTimeout(() => setCopyState('idle'),  3000)
     }
   }
 
@@ -36,10 +36,10 @@ export function CopySummaryButton({ verdict, tags, recommendations }: CopySummar
         onClick={handleCopy}
         disabled={copyState === 'success'}
         className={[
-          'gap-2 text-foreground/70 text-sm font-semibold',
-          'hover:bg-white/60 hover:text-foreground',
-          'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
-          'disabled:opacity-60',
+          'gap-2 text-foreground/70 text-sm font-semibold', 
+          'hover:bg-white/60 hover:text-foreground', 
+          'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary', 
+          'disabled:opacity-60', 
         ].join(' ')}
       >
         {copyState === 'success' ? (

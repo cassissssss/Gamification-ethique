@@ -1,25 +1,33 @@
 import Link from 'next/link'
+import type { LucideIcon } from 'lucide-react'
 import type { Principe } from '@/types/principle'
 
 interface PrincipleCardProps {
   principe: Principe
+  Icon: LucideIcon
 }
 
-export function PrincipleCard({ principe }: PrincipleCardProps) {
+export function PrincipleCard({ principe,  Icon }: PrincipleCardProps) {
   return (
     <Link
       href={`/principes/${principe.slug}`}
       className={[
-        'group flex flex-col gap-4 rounded-2xl p-6',
-        'bg-white/60 shadow-sm',
-        'transition-all duration-150 hover:bg-white/90 hover:shadow-md',
-        'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
+        'group flex h-full flex-col gap-3 rounded-2xl p-5', 
+        'bg-white/60 shadow-sm', 
+        'transition-all duration-150 hover:bg-white/90 hover:shadow-md', 
+        'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary', 
       ].join(' ')}
     >
-      <h2 className="text-base font-semibold text-primary">
+      <span
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+        aria-hidden="true"
+      >
+        <Icon className="h-4 w-4" aria-hidden="true" />
+      </span>
+      <h2 className="text-base font-semibold text-foreground">
         {principe.title}
       </h2>
-      <p className="flex-1 text-sm leading-relaxed text-foreground/80">
+      <p className="min-h-[4.75rem] flex-1 text-sm leading-relaxed text-foreground/70">
         {principe.shortDescription}
       </p>
       <span

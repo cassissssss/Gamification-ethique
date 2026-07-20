@@ -6,85 +6,85 @@ import { Footer } from '@/components/layout/Footer'
 import { StructuredData } from '@/components/seo/StructuredData'
 
 const lexend = Lexend({
-  subsets: ['latin'],
-  variable: '--font-lexend',
-  display: 'swap',
+  subsets: ['latin'], 
+  variable: '--font-lexend', 
+  display: 'swap', 
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gamification.espinasse.ch'),
+  metadataBase: new URL('https://gamification.espinasse.ch'), 
 
   title: {
-    default: `Gamification Éthique | Framework d'évaluation`,
-    template: '%s | Gamification Éthique',
-  },
+    default: `Gamification Éthique | Framework d'évaluation`, 
+    template: '%s | Gamification Éthique', 
+  }, 
 
   description:
-    "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
+    "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.", 
 
     verification: {
-    google: '5necrh2OF92dhKrQKsw9-gwXIZG4LiVwq70q3gXQ8PM',
-  },
+    google: '5necrh2OF92dhKrQKsw9-gwXIZG4LiVwq70q3gXQ8PM', 
+  }, 
 
-  applicationName: 'Gamification Éthique',
+  applicationName: 'Gamification Éthique', 
 
   keywords: [
-    'gamification',
-    'éthique',
-    'framework',
-    'UX',
-    'UI',
-    'dark patterns',
-    'conception éthique',
-    'interfaces numériques',
-    'travail de bachelor',
-  ],
+    'gamification', 
+    'éthique', 
+    'framework', 
+    'UX', 
+    'UI', 
+    'dark patterns', 
+    'conception éthique', 
+    'interfaces numériques', 
+    'travail de bachelor', 
+  ], 
 
   authors: [
     {
-      name: 'Christel Espinasse',
-    },
-  ],
+      name: 'Christel Espinasse', 
+    }, 
+  ], 
 
-  creator: 'Christel Espinasse',
+  creator: 'Christel Espinasse', 
 
-  publisher: 'Christel Espinasse',
+  publisher: 'Christel Espinasse', 
 
   alternates: {
-    canonical: '/',
-  },
+    canonical: '/', 
+  }, 
 
   openGraph: {
-    type: 'website',
-    locale: 'fr_CH',
-    url: 'https://gamification.espinasse.ch',
-    siteName: 'Gamification Éthique',
-    title: `Gamification Éthique | Framework d'évaluation`,
+    type: 'website', 
+    locale: 'fr_CH', 
+    url: 'https://gamification.espinasse.ch', 
+    siteName: 'Gamification Éthique', 
+    title: `Gamification Éthique | Framework d'évaluation`, 
     description:
-      "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
+      "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.", 
     images: [
     {
-      url: '/og-image.png',
-      width: 1200,
-      height: 630,
-      alt: 'Gamification Éthique',
-    },
-  ],
-},
+      url: '/og-image.png', 
+      width: 1200, 
+      height: 630, 
+      alt: 'Gamification Éthique', 
+    }, 
+  ], 
+}, 
   
 
   twitter: {
-  card: 'summary_large_image',
-  title: "Gamification Éthique | Framework d'évaluation",
+  card: 'summary_large_image', 
+  title: "Gamification Éthique | Framework d'évaluation", 
   description:
-    "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.",
-  images: ['/og-image.png'],
-},
+    "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.", 
+  images: ['/og-image.png'], 
+}, 
 
   robots: {
-    index: true,
-    follow: true,
-  },
+    index: true, 
+    follow: true, 
+  }, 
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -94,11 +94,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="flex min-h-screen flex-col"
         style={{
           background: `
-            radial-gradient(circle at top left, rgba(217,208,227,0.65) 0%, transparent 36%),
-            radial-gradient(circle at bottom right, rgba(231,225,218,0.85) 0%, transparent 42%),
+            radial-gradient(circle at top left,  rgba(217, 208, 227, 0.65) 0%,  transparent 36%), 
+            radial-gradient(circle at bottom right,  rgba(231, 225, 218, 0.85) 0%,  transparent 42%), 
             #F8F4EF
-          `,
-          backgroundAttachment: 'fixed',
+          `, 
+          backgroundAttachment: 'fixed', 
         }}
       >
         <StructuredData />

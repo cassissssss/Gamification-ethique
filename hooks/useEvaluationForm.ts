@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { evaluationQuestions, evaluationSections } from "../data/questions";
+import { useEffect,  useMemo,  useState } from "react";
+import { evaluationQuestions,  evaluationSections } from "../data/questions";
 import {
-  getVisibleQuestions,
-  removeHiddenAnswers,
+  getVisibleQuestions, 
+  removeHiddenAnswers, 
 } from "@/logic/visibilityEngine";
 import type {
-  EvaluationAnswers,
-  EvaluationQuestion,
-  OptionId,
-  QuestionId,
+  EvaluationAnswers, 
+  EvaluationQuestion, 
+  OptionId, 
+  QuestionId, 
 } from "@/logic/evaluation.types";
 
 const toArray = (value: EvaluationAnswers[QuestionId]): OptionId[] => {
@@ -22,20 +22,20 @@ const toArray = (value: EvaluationAnswers[QuestionId]): OptionId[] => {
 };
 
 export const useEvaluationForm = (initialAnswers: EvaluationAnswers = {}) => {
-  const [answers, setAnswers] = useState<EvaluationAnswers>(initialAnswers);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [answers,  setAnswers] = useState<EvaluationAnswers>(initialAnswers);
+  const [currentSectionIndex,  setCurrentSectionIndex] = useState(0);
 
   const visibleQuestions = useMemo(() => {
     return getVisibleQuestions(answers);
-  }, [answers]);
+  },  [answers]);
 
   const visibleSections = useMemo(() => {
     const sections = new Set(
-      visibleQuestions.map((question) => question.section),
+      visibleQuestions.map((question) => question.section), 
     );
 
     return evaluationSections.filter((section) => sections.has(section));
-  }, [visibleQuestions]);
+  },  [visibleQuestions]);
 
   useEffect(() => {
     setCurrentSectionIndex((currentIndex) => {
@@ -43,36 +43,36 @@ export const useEvaluationForm = (initialAnswers: EvaluationAnswers = {}) => {
         return 0;
       }
 
-      return Math.min(currentIndex, visibleSections.length - 1);
+      return Math.min(currentIndex,  visibleSections.length - 1);
     });
-  }, [visibleSections.length]);
+  },  [visibleSections.length]);
 
   const currentSection =
     visibleSections[currentSectionIndex] ?? visibleSections[0];
 
   const currentQuestions = useMemo(() => {
     return visibleQuestions.filter(
-      (question) => question.section === currentSection,
+      (question) => question.section === currentSection, 
     );
-  }, [currentSection, visibleQuestions]);
+  },  [currentSection,  visibleQuestions]);
 
-  const setRadioAnswer = (questionId: QuestionId, optionId: OptionId) => {
+  const setRadioAnswer = (questionId: QuestionId,  optionId: OptionId) => {
     setAnswers((previousAnswers) =>
       removeHiddenAnswers({
-        ...previousAnswers,
-        [questionId]: optionId,
-      }),
+        ...previousAnswers, 
+        [questionId]: optionId, 
+      }), 
     );
   };
 
   const toggleCheckboxAnswer = (
-    question: EvaluationQuestion,
-    optionId: OptionId,
+    question: EvaluationQuestion, 
+    optionId: OptionId, 
   ) => {
     setAnswers((previousAnswers) => {
       const currentValues = toArray(previousAnswers[question.id]);
       const selectedOption = question.options.find(
-        (option) => option.id === optionId,
+        (option) => option.id === optionId, 
       );
       const alreadySelected = currentValues.includes(optionId);
 
@@ -88,7 +88,7 @@ export const useEvaluationForm = (initialAnswers: EvaluationAnswers = {}) => {
           .map((option) => option.id);
 
         const valuesWithoutExclusiveOptions = currentValues.filter(
-          (value) => !exclusiveOptionIds.includes(value),
+          (value) => !exclusiveOptionIds.includes(value), 
         );
 
         const hasReachedMaxSelections =
@@ -99,43 +99,43 @@ export const useEvaluationForm = (initialAnswers: EvaluationAnswers = {}) => {
           return previousAnswers;
         }
 
-        nextValues = [...valuesWithoutExclusiveOptions, optionId];
+        nextValues = [...valuesWithoutExclusiveOptions,  optionId];
       }
 
       return removeHiddenAnswers({
-        ...previousAnswers,
-        [question.id]: nextValues,
+        ...previousAnswers, 
+        [question.id]: nextValues, 
       });
     });
   };
 
   const goToNextSection = () => {
     setCurrentSectionIndex((index) =>
-      Math.min(index + 1, visibleSections.length - 1),
+      Math.min(index + 1,  visibleSections.length - 1), 
     );
   };
 
   const goToPreviousSection = () => {
-    setCurrentSectionIndex((index) => Math.max(index - 1, 0));
+    setCurrentSectionIndex((index) => Math.max(index - 1,  0));
   };
 
   return {
-    answers,
-    currentSection,
-    currentSectionIndex,
-    currentQuestions,
-    setRadioAnswer,
-    toggleCheckboxAnswer,
-    goToNextSection,
-    goToPreviousSection,
-    isFirstSection: currentSectionIndex === 0,
-    isLastSection: currentSectionIndex === visibleSections.length - 1,
+    answers, 
+    currentSection, 
+    currentSectionIndex, 
+    currentQuestions, 
+    setRadioAnswer, 
+    toggleCheckboxAnswer, 
+    goToNextSection, 
+    goToPreviousSection, 
+    isFirstSection: currentSectionIndex === 0, 
+    isLastSection: currentSectionIndex === visibleSections.length - 1, 
     progress:
       visibleSections.length === 0
         ? 0
-        : (currentSectionIndex + 1) / visibleSections.length,
-    questions: evaluationQuestions,
-    visibleQuestions,
-    visibleSections,
+        : (currentSectionIndex + 1) / visibleSections.length, 
+    questions: evaluationQuestions, 
+    visibleQuestions, 
+    visibleSections, 
   };
 };

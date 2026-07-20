@@ -1,12 +1,12 @@
 import type {
-  EvaluationAnswers,
-  OptionId,
-  QuestionId,
-  RecommendationDeepDive,
-  RiskLevel,
-  RiskSignal,
-  RiskThemeId,
-  RiskThemeResult,
+  EvaluationAnswers, 
+  OptionId, 
+  QuestionId, 
+  RecommendationDeepDive, 
+  RiskLevel, 
+  RiskSignal, 
+  RiskThemeId, 
+  RiskThemeResult, 
 } from './evaluation.types'
 
 interface RiskSignalRule {
@@ -18,587 +18,587 @@ interface RiskSignalRule {
   message: string
 }
 
-const riskThemeLabels: Record<RiskThemeId, string> = {
-  social_comparison: 'Comparaison sociale',
-  autonomy_control: 'Autonomie et contrôle',
-  data_profile: 'Données et profilage',
-  temporal_pressure: 'Pression temporelle',
-  commercial_conversion: 'Finalité commerciale / conversion',
-  sensitive_context: 'Public ou contexte sensible',
+const riskThemeLabels: Record<RiskThemeId,  string> = {
+  social_comparison: 'Comparaison sociale', 
+  autonomy_control: 'Autonomie et contrôle', 
+  data_profile: 'Données et profilage', 
+  temporal_pressure: 'Pression temporelle', 
+  commercial_conversion: 'Finalité commerciale / conversion', 
+  sensitive_context: 'Public ou contexte sensible', 
 }
 
 const riskSignalRules: RiskSignalRule[] = [
   // ─── Comparaison sociale ────────────────────────────────────────────────────
   {
-    id: 'risk_social_young_audience',
-    themeId: 'social_comparison',
-    questionId: 'Q6',
-    optionId: 'young_audience',
-    weight: 1,
+    id: 'risk_social_young_audience', 
+    themeId: 'social_comparison', 
+    questionId: 'Q6', 
+    optionId: 'young_audience', 
+    weight: 1, 
     message:
-      'Un public jeune peut être plus sensible aux effets de comparaison, de statut ou de classement.',
-  },
+      'Un public jeune peut être plus sensible aux effets de comparaison,  de statut ou de classement.', 
+  }, 
   {
-    id: 'risk_social_ranking_data',
-    themeId: 'social_comparison',
-    questionId: 'Q9',
-    optionId: 'ranking_data',
-    weight: 2,
+    id: 'risk_social_ranking_data', 
+    themeId: 'social_comparison', 
+    questionId: 'Q9', 
+    optionId: 'ranking_data', 
+    weight: 2, 
     message:
-      'Le suivi servant à situer ou classer les utilisateur-rices augmente la vigilance sur la comparaison sociale.',
-  },
+      'Le suivi servant à situer ou classer les utilisateur-rices augmente la vigilance sur la comparaison sociale.', 
+  }, 
   {
-    id: 'risk_social_ranking_mechanic',
-    themeId: 'social_comparison',
-    questionId: 'Q12',
-    optionId: 'ranking',
-    weight: 2,
+    id: 'risk_social_ranking_mechanic', 
+    themeId: 'social_comparison', 
+    questionId: 'Q12', 
+    optionId: 'ranking', 
+    weight: 2, 
     message:
-      'Un classement peut générer de la pression, du découragement ou une focalisation excessive sur le rang.',
-  },
+      'Un classement peut générer de la pression,  du découragement ou une focalisation excessive sur le rang.', 
+  }, 
   {
-    id: 'risk_social_comparison_mechanic',
-    themeId: 'social_comparison',
-    questionId: 'Q12',
-    optionId: 'comparison_users',
-    weight: 2,
+    id: 'risk_social_comparison_mechanic', 
+    themeId: 'social_comparison', 
+    questionId: 'Q12', 
+    optionId: 'comparison_users', 
+    weight: 2, 
     message:
-      'La comparaison entre utilisateur-rices peut déplacer l’attention de la progression personnelle vers la performance relative.',
-  },
+      'La comparaison entre utilisateur-rices peut déplacer l’attention de la progression personnelle vers la performance relative.', 
+  }, 
   {
-    id: 'risk_social_badges',
-    themeId: 'social_comparison',
-    questionId: 'Q12',
-    optionId: 'badges_trophies',
-    weight: 1,
+    id: 'risk_social_badges', 
+    themeId: 'social_comparison', 
+    questionId: 'Q12', 
+    optionId: 'badges_trophies', 
+    weight: 1, 
     message:
-      'Les badges ou trophées peuvent devenir des marqueurs de statut s’ils sont trop visibles ou trop fréquents.',
-  },
+      'Les badges ou trophées peuvent devenir des marqueurs de statut s’ils sont trop visibles ou trop fréquents.', 
+  }, 
   {
-    id: 'risk_social_motivation_comparison',
-    themeId: 'social_comparison',
-    questionId: 'Q10',
-    optionId: 'social_comparison',
-    weight: 2,
+    id: 'risk_social_motivation_comparison', 
+    themeId: 'social_comparison', 
+    questionId: 'Q10', 
+    optionId: 'social_comparison', 
+    weight: 2, 
     message:
-      'Une motivation basée sur la comparaison avec les autres demande une vigilance élevée.',
-  },
+      'Une motivation basée sur la comparaison avec les autres demande une vigilance élevée.', 
+  }, 
   {
-    id: 'risk_social_visibility_limited_group',
-    themeId: 'social_comparison',
-    questionId: 'Q17',
-    optionId: 'limited_group',
-    weight: 1,
+    id: 'risk_social_visibility_limited_group', 
+    themeId: 'social_comparison', 
+    questionId: 'Q17', 
+    optionId: 'limited_group', 
+    weight: 1, 
     message:
-      'Une visibilité à un groupe limité peut créer une pression sociale selon le contexte.',
-  },
+      'Une visibilité à un groupe limité peut créer une pression sociale selon le contexte.', 
+  }, 
   {
-    id: 'risk_social_visibility_concerned_users',
-    themeId: 'social_comparison',
-    questionId: 'Q17',
-    optionId: 'visible_to_concerned_users',
-    weight: 1,
+    id: 'risk_social_visibility_concerned_users', 
+    themeId: 'social_comparison', 
+    questionId: 'Q17', 
+    optionId: 'visible_to_concerned_users', 
+    weight: 1, 
     message:
-      'Une visibilité auprès des autres utilisateur-rices concerné-es peut renforcer les effets de comparaison.',
-  },
+      'Une visibilité auprès des autres utilisateur-rices concerné-es peut renforcer les effets de comparaison.', 
+  }, 
   {
-    id: 'risk_social_visibility_ranking',
-    themeId: 'social_comparison',
-    questionId: 'Q17',
-    optionId: 'ranking_comparison',
-    weight: 2,
+    id: 'risk_social_visibility_ranking', 
+    themeId: 'social_comparison', 
+    questionId: 'Q17', 
+    optionId: 'ranking_comparison', 
+    weight: 2, 
     message:
-      'L’utilisation des résultats dans un classement ou une comparaison augmente fortement la vigilance.',
-  },
+      'L’utilisation des résultats dans un classement ou une comparaison augmente fortement la vigilance.', 
+  }, 
 
   // ─── Autonomie et contrôle ──────────────────────────────────────────────────
   {
-    id: 'risk_autonomy_evaluative_context',
-    themeId: 'autonomy_control',
-    questionId: 'Q6',
-    optionId: 'evaluative_context',
-    weight: 2,
+    id: 'risk_autonomy_evaluative_context', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q6', 
+    optionId: 'evaluative_context', 
+    weight: 2, 
     message:
-      'Un cadre scolaire, professionnel ou évaluatif réduit souvent la liberté réelle de participation.',
-  },
+      'Un cadre scolaire,  professionnel ou évaluatif réduit souvent la liberté réelle de participation.', 
+  }, 
   {
-    id: 'risk_autonomy_important_service',
-    themeId: 'autonomy_control',
-    questionId: 'Q6',
-    optionId: 'important_service_access',
-    weight: 2,
+    id: 'risk_autonomy_important_service', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q6', 
+    optionId: 'important_service_access', 
+    weight: 2, 
     message:
-      'Quand l’expérience donne accès à un service important, la mécanique ne devrait pas devenir un obstacle.',
-  },
+      'Quand l’expérience donne accès à un service important,  la mécanique ne devrait pas devenir un obstacle.', 
+  }, 
   {
-    id: 'risk_autonomy_work_context',
-    themeId: 'autonomy_control',
-    questionId: 'Q7',
-    optionId: 'work_context',
-    weight: 1,
+    id: 'risk_autonomy_work_context', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q7', 
+    optionId: 'work_context', 
+    weight: 1, 
     message:
-      'Dans un cadre professionnel, la participation peut être moins volontaire qu’elle ne paraît.',
-  },
+      'Dans un cadre professionnel,  la participation peut être moins volontaire qu’elle ne paraît.', 
+  }, 
   {
-    id: 'risk_autonomy_school_context',
-    themeId: 'autonomy_control',
-    questionId: 'Q7',
-    optionId: 'school_training_context',
-    weight: 2,
+    id: 'risk_autonomy_school_context', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q7', 
+    optionId: 'school_training_context', 
+    weight: 2, 
     message:
-      'Dans un cadre scolaire ou de formation, la mécanique doit préserver la possibilité de comprendre et d’agir sans pression excessive.',
-  },
+      'Dans un cadre scolaire ou de formation,  la mécanique doit préserver la possibilité de comprendre et d’agir sans pression excessive.', 
+  }, 
   {
-    id: 'risk_autonomy_important_service_usage',
-    themeId: 'autonomy_control',
-    questionId: 'Q7',
-    optionId: 'important_service',
-    weight: 2,
+    id: 'risk_autonomy_important_service_usage', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q7', 
+    optionId: 'important_service', 
+    weight: 2, 
     message:
-      'L’accès à un service important demande une attention particulière à l’optionnalité et à l’accès non bloquant.',
-  },
+      'L’accès à un service important demande une attention particulière à l’optionnalité et à l’accès non bloquant.', 
+  }, 
   {
-    id: 'risk_autonomy_rules_low_visibility',
-    themeId: 'autonomy_control',
-    questionId: 'Q13',
-    optionId: 'rules_low_visibility',
-    weight: 1,
+    id: 'risk_autonomy_rules_low_visibility', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q13', 
+    optionId: 'rules_low_visibility', 
+    weight: 1, 
     message:
-      'Un fonctionnement peu visible limite la capacité de l’utilisateur-rice à comprendre ce qui influence son expérience.',
-  },
+      'Un fonctionnement peu visible limite la capacité de l’utilisateur-rice à comprendre ce qui influence son expérience.', 
+  }, 
   {
-    id: 'risk_autonomy_transparency_undefined',
-    themeId: 'autonomy_control',
-    questionId: 'Q13',
-    optionId: 'transparency_undefined',
-    weight: 1,
+    id: 'risk_autonomy_transparency_undefined', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q13', 
+    optionId: 'transparency_undefined', 
+    weight: 1, 
     message:
-      'Si l’explication du fonctionnement n’est pas définie, le niveau de contrôle perçu peut être insuffisant.',
-  },
+      'Si l’explication du fonctionnement n’est pas définie,  le niveau de contrôle perçu peut être insuffisant.', 
+  }, 
   {
-    id: 'risk_autonomy_main_path',
-    themeId: 'autonomy_control',
-    questionId: 'Q14',
-    optionId: 'main_path',
-    weight: 2,
+    id: 'risk_autonomy_main_path', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q14', 
+    optionId: 'main_path', 
+    weight: 2, 
     message:
-      'Une mécanique intégrée au parcours principal doit être justifiée par une vraie utilité utilisateur.',
-  },
+      'Une mécanique intégrée au parcours principal doit être justifiée par une vraie utilité utilisateur.', 
+  }, 
   {
-    id: 'risk_autonomy_dependent_elements',
-    themeId: 'autonomy_control',
-    questionId: 'Q14',
-    optionId: 'dependent_elements',
-    weight: 2,
+    id: 'risk_autonomy_dependent_elements', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q14', 
+    optionId: 'dependent_elements', 
+    weight: 2, 
     message:
-      'Si certains éléments dépendent de la mécanique, il faut vérifier qu’une alternative reste possible.',
-  },
+      'Si certains éléments dépendent de la mécanique,  il faut vérifier qu’une alternative reste possible.', 
+  }, 
   {
-    id: 'risk_autonomy_control_undefined',
-    themeId: 'autonomy_control',
-    questionId: 'Q14',
-    optionId: 'control_undefined',
-    weight: 1,
+    id: 'risk_autonomy_control_undefined', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q14', 
+    optionId: 'control_undefined', 
+    weight: 1, 
     message:
-      'Le niveau de contrôle utilisateur doit être clarifié avant de finaliser la mécanique.',
-  },
+      'Le niveau de contrôle utilisateur doit être clarifié avant de finaliser la mécanique.', 
+  }, 
   {
-    id: 'risk_autonomy_hard_to_disengage',
-    themeId: 'autonomy_control',
-    questionId: 'Q14',
-    optionId: 'hard_to_disengage',
-    weight: 2,
+    id: 'risk_autonomy_hard_to_disengage', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q14', 
+    optionId: 'hard_to_disengage', 
+    weight: 2, 
     message:
-      'Une mécanique facile à rejoindre mais difficile à quitter (classement qu’on ne peut pas abandonner, streak qu’on ne peut pas arrêter sans tout perdre) déplace le problème de l’entrée vers la sortie.',
-  },
+      'Une mécanique facile à rejoindre mais difficile à quitter (classement qu’on ne peut pas abandonner,  streak qu’on ne peut pas arrêter sans tout perdre) déplace le problème de l’entrée vers la sortie.', 
+  }, 
   {
-    id: 'risk_autonomy_required_to_finish',
-    themeId: 'autonomy_control',
-    questionId: 'Q15',
-    optionId: 'required_to_finish',
-    weight: 2,
+    id: 'risk_autonomy_required_to_finish', 
+    themeId: 'autonomy_control', 
+    questionId: 'Q15', 
+    optionId: 'required_to_finish', 
+    weight: 2, 
     message:
-      'Une mécanique nécessaire pour terminer le parcours peut réduire l’autonomie réelle.',
-  },
+      'Une mécanique nécessaire pour terminer le parcours peut réduire l’autonomie réelle.', 
+  }, 
 
   // ─── Données et profilage ───────────────────────────────────────────────────
   {
-    id: 'risk_data_sensitive_personal_data',
-    themeId: 'data_profile',
-    questionId: 'Q6',
-    optionId: 'sensitive_personal_data',
-    weight: 2,
+    id: 'risk_data_sensitive_personal_data', 
+    themeId: 'data_profile', 
+    questionId: 'Q6', 
+    optionId: 'sensitive_personal_data', 
+    weight: 2, 
     message:
-      'La présence de données personnelles ou sensibles demande une logique de minimisation et d’explication claire.',
-  },
+      'La présence de données personnelles ou sensibles demande une logique de minimisation et d’explication claire.', 
+  }, 
   {
-    id: 'risk_data_personal_progress',
-    themeId: 'data_profile',
-    questionId: 'Q9',
-    optionId: 'personal_progress_data',
-    weight: 1,
+    id: 'risk_data_personal_progress', 
+    themeId: 'data_profile', 
+    questionId: 'Q9', 
+    optionId: 'personal_progress_data', 
+    weight: 1, 
     message:
-      'Une progression personnelle implique un suivi individuel, même si celui-ci reste limité.',
-  },
+      'Une progression personnelle implique un suivi individuel,  même si celui-ci reste limité.', 
+  }, 
   {
-    id: 'risk_data_personalization',
-    themeId: 'data_profile',
-    questionId: 'Q9',
-    optionId: 'personalization_data',
-    weight: 2,
+    id: 'risk_data_personalization', 
+    themeId: 'data_profile', 
+    questionId: 'Q9', 
+    optionId: 'personalization_data', 
+    weight: 2, 
     message:
-      'La personnalisation peut être utile, mais elle doit rester compréhensible et proportionnée.',
-  },
+      'La personnalisation peut être utile,  mais elle doit rester compréhensible et proportionnée.', 
+  }, 
   {
-    id: 'risk_data_ranking',
-    themeId: 'data_profile',
-    questionId: 'Q9',
-    optionId: 'ranking_data',
-    weight: 2,
+    id: 'risk_data_ranking', 
+    themeId: 'data_profile', 
+    questionId: 'Q9', 
+    optionId: 'ranking_data', 
+    weight: 2, 
     message:
-      'Le suivi utilisé pour classer ou comparer les utilisateur-rices augmente fortement la vigilance liée aux données.',
-  },
+      'Le suivi utilisé pour classer ou comparer les utilisateur-rices augmente fortement la vigilance liée aux données.', 
+  }, 
   {
-    id: 'risk_data_undefined',
-    themeId: 'data_profile',
-    questionId: 'Q9',
-    optionId: 'data_undefined',
-    weight: 1,
+    id: 'risk_data_undefined', 
+    themeId: 'data_profile', 
+    questionId: 'Q9', 
+    optionId: 'data_undefined', 
+    weight: 1, 
     message:
-      'Le traitement des données doit être clarifié avant de choisir une mécanique personnalisée ou comparative.',
-  },
+      'Le traitement des données doit être clarifié avant de choisir une mécanique personnalisée ou comparative.', 
+  }, 
   {
-    id: 'risk_data_levels',
-    themeId: 'data_profile',
-    questionId: 'Q12',
-    optionId: 'levels',
-    weight: 1,
+    id: 'risk_data_levels', 
+    themeId: 'data_profile', 
+    questionId: 'Q12', 
+    optionId: 'levels', 
+    weight: 1, 
     message:
-      'Les niveaux supposent souvent de mémoriser une progression ou un statut utilisateur.',
-  },
+      'Les niveaux supposent souvent de mémoriser une progression ou un statut utilisateur.', 
+  }, 
   {
-    id: 'risk_data_progress_bar',
-    themeId: 'data_profile',
-    questionId: 'Q12',
-    optionId: 'progress_bar',
-    weight: 1,
+    id: 'risk_data_progress_bar', 
+    themeId: 'data_profile', 
+    questionId: 'Q12', 
+    optionId: 'progress_bar', 
+    weight: 1, 
     message:
-      'Une barre de progression peut impliquer un suivi individuel de l’avancement.',
-  },
+      'Une barre de progression peut impliquer un suivi individuel de l’avancement.', 
+  }, 
   {
-    id: 'risk_data_personalized_goals',
-    themeId: 'data_profile',
-    questionId: 'Q12',
-    optionId: 'personalized_goals',
-    weight: 2,
+    id: 'risk_data_personalized_goals', 
+    themeId: 'data_profile', 
+    questionId: 'Q12', 
+    optionId: 'personalized_goals', 
+    weight: 2, 
     message:
-      'Les objectifs personnalisés nécessitent de clarifier quelles données sont utilisées et pourquoi.',
-  },
+      'Les objectifs personnalisés nécessitent de clarifier quelles données sont utilisées et pourquoi.', 
+  }, 
 
   // ─── Pression temporelle ────────────────────────────────────────────────────
   {
-    id: 'risk_temporal_return_need',
-    themeId: 'temporal_pressure',
-    questionId: 'Q2',
-    optionId: 'return_experience',
-    weight: 1,
+    id: 'risk_temporal_return_need', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q2', 
+    optionId: 'return_experience', 
+    weight: 1, 
     message:
-      'Chercher à encourager le retour demande de distinguer rappel utile et pression au retour.',
-  },
+      'Chercher à encourager le retour demande de distinguer rappel utile et pression au retour.', 
+  }, 
   {
-    id: 'risk_temporal_return_action',
-    themeId: 'temporal_pressure',
-    questionId: 'Q4',
-    optionId: 'return_regularly',
-    weight: 1,
+    id: 'risk_temporal_return_action', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q4', 
+    optionId: 'return_regularly', 
+    weight: 1, 
     message:
-      'Une action principale basée sur le retour régulier doit éviter les pénalités ou rappels trop insistants.',
-  },
+      'Une action principale basée sur le retour régulier doit éviter les pénalités ou rappels trop insistants.', 
+  }, 
   {
-    id: 'risk_temporal_notifications',
-    themeId: 'temporal_pressure',
-    questionId: 'Q12',
-    optionId: 'notifications_reminders',
-    weight: 1,
+    id: 'risk_temporal_notifications', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q12', 
+    optionId: 'notifications_reminders', 
+    weight: 1, 
     message:
-      'Les notifications ou rappels peuvent capter l’attention s’ils sont fréquents, non paramétrables ou peu utiles.',
-  },
+      'Les notifications ou rappels peuvent capter l’attention s’ils sont fréquents,  non paramétrables ou peu utiles.', 
+  }, 
   {
-    id: 'risk_temporal_streak',
-    themeId: 'temporal_pressure',
-    questionId: 'Q12',
-    optionId: 'streak',
-    weight: 2,
+    id: 'risk_temporal_streak', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q12', 
+    optionId: 'streak', 
+    weight: 2, 
     message:
-      'Les streaks peuvent créer une peur de perdre la série ou une pression de continuité.',
-  },
+      'Les streaks peuvent créer une peur de perdre la série ou une pression de continuité.', 
+  }, 
   {
-    id: 'risk_temporal_rewards',
-    themeId: 'temporal_pressure',
-    questionId: 'Q12',
-    optionId: 'rewards_benefits',
-    weight: 1,
+    id: 'risk_temporal_rewards', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q12', 
+    optionId: 'rewards_benefits', 
+    weight: 1, 
     message:
-      'Les récompenses liées à une présence ou une action répétée peuvent encourager un usage sous pression.',
-  },
+      'Les récompenses liées à une présence ou une action répétée peuvent encourager un usage sous pression.', 
+  }, 
   {
-    id: 'risk_temporal_frequent_return',
-    themeId: 'temporal_pressure',
-    questionId: 'Q10',
-    optionId: 'frequent_return',
-    weight: 2,
+    id: 'risk_temporal_frequent_return', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q10', 
+    optionId: 'frequent_return', 
+    weight: 2, 
     message:
-      'Une motivation basée sur le retour fréquent nécessite de prévoir des limites et une reprise sans pénalité forte.',
-  },
+      'Une motivation basée sur le retour fréquent nécessite de prévoir des limites et une reprise sans pénalité forte.', 
+  }, 
   {
-    id: 'risk_temporal_regular_encouraged',
-    themeId: 'temporal_pressure',
-    questionId: 'Q16',
-    optionId: 'regularity_encouraged',
-    weight: 1,
+    id: 'risk_temporal_regular_encouraged', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q16', 
+    optionId: 'regularity_encouraged', 
+    weight: 1, 
     message:
-      'L’usage régulier encouragé peut être pertinent, mais doit rester modéré et non culpabilisant.',
-  },
+      'L’usage régulier encouragé peut être pertinent,  mais doit rester modéré et non culpabilisant.', 
+  }, 
   {
-    id: 'risk_temporal_regular_valued',
-    themeId: 'temporal_pressure',
-    questionId: 'Q16',
-    optionId: 'regularity_valued',
-    weight: 2,
+    id: 'risk_temporal_regular_valued', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q16', 
+    optionId: 'regularity_valued', 
+    weight: 2, 
     message:
-      'Valoriser la régularité peut créer une pression à maintenir un rythme.',
-  },
+      'Valoriser la régularité peut créer une pression à maintenir un rythme.', 
+  }, 
   {
-    id: 'risk_temporal_interruption_progress',
-    themeId: 'temporal_pressure',
-    questionId: 'Q16',
-    optionId: 'interruption_changes_progress',
-    weight: 2,
+    id: 'risk_temporal_interruption_progress', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q16', 
+    optionId: 'interruption_changes_progress', 
+    weight: 2, 
     message:
-      'Une interruption qui modifie la progression, le statut ou les avantages peut créer une pression au retour.',
-  },
+      'Une interruption qui modifie la progression,  le statut ou les avantages peut créer une pression au retour.', 
+  }, 
   {
-    id: 'risk_temporal_interruption_status',
-    themeId: 'temporal_pressure',
-    questionId: 'Q18',
-    optionId: 'interruption_changes_status',
-    weight: 2,
+    id: 'risk_temporal_interruption_status', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q18', 
+    optionId: 'interruption_changes_status', 
+    weight: 2, 
     message:
-      'La perte de progression, de statut ou d’avantages après une pause augmente la vigilance.',
-  },
+      'La perte de progression,  de statut ou d’avantages après une pause augmente la vigilance.', 
+  }, 
   {
-    id: 'risk_temporal_random_reward',
-    themeId: 'temporal_pressure',
-    questionId: 'Q12',
-    optionId: 'random_reward',
-    weight: 2,
+    id: 'risk_temporal_random_reward', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q12', 
+    optionId: 'random_reward', 
+    weight: 2, 
     message:
-      'Le renforcement à ratio variable (récompense imprévisible) est un des mécanismes les plus documentés de dépendance comportementale.',
-  },
+      'Le renforcement à ratio variable (récompense imprévisible) est un des mécanismes les plus documentés de dépendance comportementale.', 
+  }, 
   {
-    id: 'risk_temporal_no_resume_behavior',
-    themeId: 'temporal_pressure',
-    questionId: 'Q18',
-    optionId: 'no_specific_behavior',
-    weight: 1,
+    id: 'risk_temporal_no_resume_behavior', 
+    themeId: 'temporal_pressure', 
+    questionId: 'Q18', 
+    optionId: 'no_specific_behavior', 
+    weight: 1, 
     message:
-      'Si aucun comportement de reprise n’est prévu, l’expérience peut devenir frustrante après une absence.',
-  },
+      'Si aucun comportement de reprise n’est prévu,  l’expérience peut devenir frustrante après une absence.', 
+  }, 
 
   // ─── Finalité commerciale / conversion ──────────────────────────────────────
   {
-    id: 'risk_commercial_increase_actions',
-    themeId: 'commercial_conversion',
-    questionId: 'Q5',
-    optionId: 'increase_actions',
-    weight: 1,
+    id: 'risk_commercial_increase_actions', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q5', 
+    optionId: 'increase_actions', 
+    weight: 1, 
     message:
-      'Vérifier que ce KPI ne prime pas sur un bénéfice réel pour l’utilisateur-rice.',
-  },
+      'Vérifier que ce KPI ne prime pas sur un bénéfice réel pour l’utilisateur-rice.', 
+  }, 
   {
-    id: 'risk_commercial_increase_time_spent',
-    themeId: 'commercial_conversion',
-    questionId: 'Q5',
-    optionId: 'increase_time_spent',
-    weight: 1,
+    id: 'risk_commercial_increase_time_spent', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q5', 
+    optionId: 'increase_time_spent', 
+    weight: 1, 
     message:
-      'Le temps passé n’est pas un indicateur neutre : vérifier qu’il traduit une valeur réelle et non une captation d’attention.',
-  },
+      'Le temps passé n’est pas un indicateur neutre : vérifier qu’il traduit une valeur réelle et non une captation d’attention.', 
+  }, 
   {
-    id: 'risk_commercial_objective',
-    themeId: 'commercial_conversion',
-    questionId: 'Q5',
-    optionId: 'commercial_objective',
-    weight: 1,
+    id: 'risk_commercial_objective', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q5', 
+    optionId: 'commercial_objective', 
+    weight: 1, 
     message:
-      'Légitime en soi ; vérifier qu’il est équilibré par au moins un bénéfice explicite pour l’utilisateur-rice.',
-  },
+      'Légitime en soi ; vérifier qu’il est équilibré par au moins un bénéfice explicite pour l’utilisateur-rice.', 
+  }, 
   {
-    id: 'risk_commercial_convert_action',
-    themeId: 'commercial_conversion',
-    questionId: 'Q4',
-    optionId: 'convert',
-    weight: 2,
+    id: 'risk_commercial_convert_action', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q4', 
+    optionId: 'convert', 
+    weight: 2, 
     message:
-      'Une mécanique liée à l’achat, la réservation ou la conversion doit aider à décider sans créer de pression artificielle.',
-  },
+      'Une mécanique liée à l’achat,  la réservation ou la conversion doit aider à décider sans créer de pression artificielle.', 
+  }, 
   {
-    id: 'risk_commercial_promotional_context',
-    themeId: 'commercial_conversion',
-    questionId: 'Q6',
-    optionId: 'commercial_promotional_context',
-    weight: 2,
+    id: 'risk_commercial_promotional_context', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q6', 
+    optionId: 'commercial_promotional_context', 
+    weight: 2, 
     message:
-      'Un contexte commercial ou promotionnel demande de vérifier que la mécanique sert aussi l’intérêt de l’utilisateur-rice.',
-  },
+      'Un contexte commercial ou promotionnel demande de vérifier que la mécanique sert aussi l’intérêt de l’utilisateur-rice.', 
+  }, 
   {
-    id: 'risk_commercial_usage_context',
-    themeId: 'commercial_conversion',
-    questionId: 'Q7',
-    optionId: 'commercial_context',
-    weight: 1,
+    id: 'risk_commercial_usage_context', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q7', 
+    optionId: 'commercial_context', 
+    weight: 1, 
     message:
-      'Dans un contexte commercial, les mécaniques de récompense, urgence ou rappel doivent rester proportionnées.',
-  },
+      'Dans un contexte commercial,  les mécaniques de récompense,  urgence ou rappel doivent rester proportionnées.', 
+  }, 
   {
-    id: 'risk_commercial_rewards',
-    themeId: 'commercial_conversion',
-    questionId: 'Q12',
-    optionId: 'rewards_benefits',
-    weight: 2,
+    id: 'risk_commercial_rewards', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q12', 
+    optionId: 'rewards_benefits', 
+    weight: 2, 
     message:
-      'Les récompenses ou avantages peuvent influencer la décision au-delà de la valeur réelle du service.',
-  },
+      'Les récompenses ou avantages peuvent influencer la décision au-delà de la valeur réelle du service.', 
+  }, 
   {
-    id: 'risk_commercial_notifications',
-    themeId: 'commercial_conversion',
-    questionId: 'Q12',
-    optionId: 'notifications_reminders',
-    weight: 1,
+    id: 'risk_commercial_notifications', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q12', 
+    optionId: 'notifications_reminders', 
+    weight: 1, 
     message:
-      'Les rappels dans un contexte commercial doivent éviter de pousser uniquement à l’action immédiate.',
-  },
+      'Les rappels dans un contexte commercial doivent éviter de pousser uniquement à l’action immédiate.', 
+  }, 
   {
-    id: 'risk_commercial_concrete_reward',
-    themeId: 'commercial_conversion',
-    questionId: 'Q10',
-    optionId: 'concrete_reward',
-    weight: 2,
+    id: 'risk_commercial_concrete_reward', 
+    themeId: 'commercial_conversion', 
+    questionId: 'Q10', 
+    optionId: 'concrete_reward', 
+    weight: 2, 
     message:
-      'Une récompense concrète peut déplacer la motivation vers l’avantage obtenu plutôt que vers l’utilité de l’action.',
-  },
+      'Une récompense concrète peut déplacer la motivation vers l’avantage obtenu plutôt que vers l’utilité de l’action.', 
+  }, 
 
   // ─── Public ou contexte sensible ────────────────────────────────────────────
   {
-    id: 'risk_sensitive_young_audience',
-    themeId: 'sensitive_context',
-    questionId: 'Q6',
-    optionId: 'young_audience',
-    weight: 2,
+    id: 'risk_sensitive_young_audience', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q6', 
+    optionId: 'young_audience', 
+    weight: 2, 
     message:
-      'Un public jeune ou adolescent demande une attention particulière aux mécaniques de statut, comparaison et récompense.',
-  },
+      'Un public jeune ou adolescent demande une attention particulière aux mécaniques de statut,  comparaison et récompense.', 
+  }, 
   {
-    id: 'risk_sensitive_health_performance',
-    themeId: 'sensitive_context',
-    questionId: 'Q6',
-    optionId: 'health_wellbeing_performance',
-    weight: 2,
+    id: 'risk_sensitive_health_performance', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q6', 
+    optionId: 'health_wellbeing_performance', 
+    weight: 2, 
     message:
-      'Dans un contexte de santé, bien-être ou performance, il faut éviter les mécaniques qui renforcent la culpabilisation ou la pression.',
-  },
+      'Dans un contexte de santé,  bien-être ou performance,  il faut éviter les mécaniques qui renforcent la culpabilisation ou la pression.', 
+  }, 
   {
-    id: 'risk_sensitive_evaluative_context',
-    themeId: 'sensitive_context',
-    questionId: 'Q6',
-    optionId: 'evaluative_context',
-    weight: 2,
+    id: 'risk_sensitive_evaluative_context', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q6', 
+    optionId: 'evaluative_context', 
+    weight: 2, 
     message:
-      'Un cadre scolaire, professionnel ou évaluatif peut renforcer la pression ressentie.',
-  },
+      'Un cadre scolaire,  professionnel ou évaluatif peut renforcer la pression ressentie.', 
+  }, 
   {
-    id: 'risk_sensitive_important_service',
-    themeId: 'sensitive_context',
-    questionId: 'Q6',
-    optionId: 'important_service_access',
-    weight: 2,
+    id: 'risk_sensitive_important_service', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q6', 
+    optionId: 'important_service_access', 
+    weight: 2, 
     message:
-      'L’accès à un service important demande une conception particulièrement claire, accessible et non bloquante.',
-  },
+      'L’accès à un service important demande une conception particulièrement claire,  accessible et non bloquante.', 
+  }, 
   {
-    id: 'risk_sensitive_work',
-    themeId: 'sensitive_context',
-    questionId: 'Q7',
-    optionId: 'work_context',
-    weight: 1,
+    id: 'risk_sensitive_work', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q7', 
+    optionId: 'work_context', 
+    weight: 1, 
     message:
-      'Dans un cadre de travail, la participation peut être liée à des attentes implicites.',
-  },
+      'Dans un cadre de travail,  la participation peut être liée à des attentes implicites.', 
+  }, 
   {
-    id: 'risk_sensitive_school',
-    themeId: 'sensitive_context',
-    questionId: 'Q7',
-    optionId: 'school_training_context',
-    weight: 2,
+    id: 'risk_sensitive_school', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q7', 
+    optionId: 'school_training_context', 
+    weight: 2, 
     message:
-      'Dans un cadre scolaire ou de formation, il faut éviter les mécaniques qui exposent ou comparent trop fortement les résultats.',
-  },
+      'Dans un cadre scolaire ou de formation,  il faut éviter les mécaniques qui exposent ou comparent trop fortement les résultats.', 
+  }, 
   {
-    id: 'risk_sensitive_health',
-    themeId: 'sensitive_context',
-    questionId: 'Q7',
-    optionId: 'health_wellbeing_context',
-    weight: 2,
+    id: 'risk_sensitive_health', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q7', 
+    optionId: 'health_wellbeing_context', 
+    weight: 2, 
     message:
-      'Pour la santé ou le bien-être, les objectifs, rappels et comparaisons doivent rester prudents et non culpabilisants.',
-  },
+      'Pour la santé ou le bien-être,  les objectifs,  rappels et comparaisons doivent rester prudents et non culpabilisants.', 
+  }, 
   {
-    id: 'risk_sensitive_service',
-    themeId: 'sensitive_context',
-    questionId: 'Q7',
-    optionId: 'important_service',
-    weight: 2,
+    id: 'risk_sensitive_service', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q7', 
+    optionId: 'important_service', 
+    weight: 2, 
     message:
-      'Pour accéder à un service important, la mécanique ne doit pas conditionner inutilement l’accès ou la compréhension.',
-  },
+      'Pour accéder à un service important,  la mécanique ne doit pas conditionner inutilement l’accès ou la compréhension.', 
+  }, 
   {
-    id: 'risk_sensitive_organizational_financial_impact',
-    themeId: 'sensitive_context',
-    questionId: 'Q8',
-    optionId: 'organizational_financial_impact',
-    weight: 1,
+    id: 'risk_sensitive_organizational_financial_impact', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q8', 
+    optionId: 'organizational_financial_impact', 
+    weight: 1, 
     message:
-      'Vérifier que la mécanique n’introduit pas de pénalité disproportionnée par rapport à l’enjeu réel.',
-  },
+      'Vérifier que la mécanique n’introduit pas de pénalité disproportionnée par rapport à l’enjeu réel.', 
+  }, 
   {
-    id: 'risk_sensitive_school_professional_impact',
-    themeId: 'sensitive_context',
-    questionId: 'Q8',
-    optionId: 'school_professional_impact',
-    weight: 2,
+    id: 'risk_sensitive_school_professional_impact', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q8', 
+    optionId: 'school_professional_impact', 
+    weight: 2, 
     message:
-      'Signal fort : vérifier que la mécanique ne pénalise jamais un parcours scolaire ou professionnel réel.',
-  },
+      'Signal fort : vérifier que la mécanique ne pénalise jamais un parcours scolaire ou professionnel réel.', 
+  }, 
   {
-    id: 'risk_sensitive_health_safety_impact',
-    themeId: 'sensitive_context',
-    questionId: 'Q8',
-    optionId: 'health_safety_impact',
-    weight: 2,
+    id: 'risk_sensitive_health_safety_impact', 
+    themeId: 'sensitive_context', 
+    questionId: 'Q8', 
+    optionId: 'health_safety_impact', 
+    weight: 2, 
     message:
-      'Signal fort : dans ce contexte, toute mécanique de pression temporelle ou de comparaison sociale doit être reconsidérée en priorité.',
-  },
+      'Signal fort : dans ce contexte,  toute mécanique de pression temporelle ou de comparaison sociale doit être reconsidérée en priorité.', 
+  }, 
 
-  // ─── Données et profilage (Q12 — récompense aléatoire) ──────────────────────
+  // ─── Données et profilage (Q12, récompense aléatoire) ──────────────────────
   {
-    id: 'risk_data_random_reward_tracking',
-    themeId: 'data_profile',
-    questionId: 'Q12',
-    optionId: 'random_reward',
-    weight: 1,
+    id: 'risk_data_random_reward_tracking', 
+    themeId: 'data_profile', 
+    questionId: 'Q12', 
+    optionId: 'random_reward', 
+    weight: 1, 
     message:
-      'Une récompense aléatoire nécessite souvent de suivre l’historique des tirages pour éviter les répétitions ou en garantir l’équité.',
-  },
+      'Une récompense aléatoire nécessite souvent de suivre l’historique des tirages pour éviter les répétitions ou en garantir l’équité.', 
+  }, 
 ]
 
 export function getRiskThemes(answers: EvaluationAnswers): RiskThemeResult[] {
@@ -608,38 +608,38 @@ export function getRiskThemes(answers: EvaluationAnswers): RiskThemeResult[] {
 
   return themeIds.map((themeId) => {
     const themeSignals = activeSignals.filter((signal) => signal.themeId === themeId)
-    const score = themeSignals.reduce((total, signal) => total + signal.weight, 0)
+    const score = themeSignals.reduce((total,  signal) => total + signal.weight,  0)
     const level = getRiskLevel(score)
 
     return {
-      id: themeId,
-      label: riskThemeLabels[themeId],
-      score,
-      level,
-      signals: themeSignals,
-      summary: getThemeSummary(themeId, level),
-      recommendation: getThemeRecommendation(themeId, level),
-      deepDive: getThemeDeepDive(themeId, level),
+      id: themeId, 
+      label: riskThemeLabels[themeId], 
+      score, 
+      level, 
+      signals: themeSignals, 
+      summary: getThemeSummary(themeId,  level), 
+      recommendation: getThemeRecommendation(themeId,  level), 
+      deepDive: getThemeDeepDive(themeId,  level), 
     }
   })
 }
 
 export function getActiveRiskSignals(answers: EvaluationAnswers): RiskSignal[] {
   return riskSignalRules
-    .filter((rule) => hasSelectedOption(answers, rule.questionId, rule.optionId))
+    .filter((rule) => hasSelectedOption(answers,  rule.questionId,  rule.optionId))
     .map((rule) => ({
-      id: rule.id,
-      themeId: rule.themeId,
-      questionId: rule.questionId,
-      optionId: rule.optionId,
-      weight: rule.weight,
-      message: rule.message,
+      id: rule.id, 
+      themeId: rule.themeId, 
+      questionId: rule.questionId, 
+      optionId: rule.optionId, 
+      weight: rule.weight, 
+      message: rule.message, 
     }))
 }
 
 function getSelectedOptionIds(
-  answers: EvaluationAnswers,
-  questionId: QuestionId,
+  answers: EvaluationAnswers, 
+  questionId: QuestionId, 
 ): OptionId[] {
   const answer = answers[questionId]
 
@@ -651,11 +651,11 @@ function getSelectedOptionIds(
 }
 
 function hasSelectedOption(
-  answers: EvaluationAnswers,
-  questionId: QuestionId,
-  optionId: OptionId,
+  answers: EvaluationAnswers, 
+  questionId: QuestionId, 
+  optionId: OptionId, 
 ): boolean {
-  return getSelectedOptionIds(answers, questionId).includes(optionId)
+  return getSelectedOptionIds(answers,  questionId).includes(optionId)
 }
 
 function getRiskLevel(score: number): RiskLevel {
@@ -678,119 +678,119 @@ function getRiskLevel(score: number): RiskLevel {
   return 'critical'
 }
 
-function getThemeSummary(themeId: RiskThemeId, level: RiskLevel): string {
+function getThemeSummary(themeId: RiskThemeId,  level: RiskLevel): string {
   if (level === 'none') {
     return 'Aucun signal particulier n’a été détecté pour cette thématique.'
   }
 
-  const summaries: Record<RiskThemeId, string> = {
+  const summaries: Record<RiskThemeId,  string> = {
     social_comparison:
-      'Des éléments peuvent exposer les utilisateur-rices à une comparaison, un classement ou une logique de statut.',
+      'Des éléments peuvent exposer les utilisateur-rices à une comparaison,  un classement ou une logique de statut.', 
     autonomy_control:
-      'Certains éléments peuvent réduire la marge de choix, de compréhension ou de contrôle de l’utilisateur-rice.',
+      'Certains éléments peuvent réduire la marge de choix,  de compréhension ou de contrôle de l’utilisateur-rice.', 
     data_profile:
-      'La mécanique semble impliquer un suivi individuel, une personnalisation ou une utilisation de données à clarifier.',
+      'La mécanique semble impliquer un suivi individuel,  une personnalisation ou une utilisation de données à clarifier.', 
     temporal_pressure:
-      'Certains éléments peuvent encourager un retour fréquent, une continuité forcée ou une pression liée au temps.',
+      'Certains éléments peuvent encourager un retour fréquent,  une continuité forcée ou une pression liée au temps.', 
     commercial_conversion:
-      'La mécanique peut influencer une action commerciale, une réservation, un achat ou une conversion.',
+      'La mécanique peut influencer une action commerciale,  une réservation,  un achat ou une conversion.', 
     sensitive_context:
-      'Le public ou le contexte d’usage demande une attention renforcée.',
+      'Le public ou le contexte d’usage demande une attention renforcée.', 
   }
 
   return summaries[themeId]
 }
 
-function getThemeRecommendation(themeId: RiskThemeId, level: RiskLevel): string {
+function getThemeRecommendation(themeId: RiskThemeId,  level: RiskLevel): string {
   if (level === 'none') {
     return 'Aucune adaptation spécifique n’est nécessaire pour cette thématique à ce stade.'
   }
 
-  const recommendations: Record<RiskThemeId, string> = {
+  const recommendations: Record<RiskThemeId,  string> = {
     social_comparison:
-      'Privilégier une progression personnelle, un feedback privé ou un objectif collectif plutôt qu’un classement individuel visible.',
+      'Privilégier une progression personnelle,  un feedback privé ou un objectif collectif plutôt qu’un classement individuel visible.', 
     autonomy_control:
-      'Prévoir une participation réellement optionnelle, une explication claire et un accès non bloquant au service principal.',
+      'Prévoir une participation réellement optionnelle,  une explication claire et un accès non bloquant au service principal.', 
     data_profile:
-      'Limiter les données collectées, expliquer leur usage et éviter le suivi individuel lorsqu’il n’est pas nécessaire.',
+      'Limiter les données collectées,  expliquer leur usage et éviter le suivi individuel lorsqu’il n’est pas nécessaire.', 
     temporal_pressure:
-      'Prévoir des rappels modérés, désactivables et une reprise sans pénalité excessive après une pause.',
+      'Prévoir des rappels modérés,  désactivables et une reprise sans pénalité excessive après une pause.', 
     commercial_conversion:
-      'Vérifier que la mécanique aide réellement la décision et ne crée pas une pression artificielle à l’achat ou à l’action immédiate.',
+      'Vérifier que la mécanique aide réellement la décision et ne crée pas une pression artificielle à l’achat ou à l’action immédiate.', 
     sensitive_context:
-      'Adapter la mécanique au public concerné, éviter la culpabilisation, la comparaison excessive et les récompenses trop incitatives.',
+      'Adapter la mécanique au public concerné,  éviter la culpabilisation,  la comparaison excessive et les récompenses trop incitatives.', 
   }
 
   return recommendations[themeId]
 }
 
 function getThemeDeepDive(
-  themeId: RiskThemeId,
-  level: RiskLevel,
+  themeId: RiskThemeId, 
+  level: RiskLevel, 
 ): RecommendationDeepDive | undefined {
   if (level === 'none') {
     return undefined
   }
 
-  const deepDives: Record<RiskThemeId, RecommendationDeepDive> = {
+  const deepDives: Record<RiskThemeId,  RecommendationDeepDive> = {
     social_comparison: {
       mechanism:
-        'Toute comparaison sociale crée mécaniquement des perdant·es : par construction, une partie des utilisateur-rices se retrouve « en dessous », quel que soit leur effort réel. L’effet motivationnel s’inverse alors pour cette partie et devient décourageant plutôt que stimulant.',
+        'Toute comparaison sociale crée mécaniquement des perdant·es : par construction,  une partie des utilisateur-rices se retrouve « en dessous »,  quel que soit leur effort réel. L’effet motivationnel s’inverse alors pour cette partie et devient décourageant plutôt que stimulant.', 
       alternatives: [
-        'Remplacer la comparaison aux autres par une progression personnelle dans le temps.',
-        'Si une dimension collective est utile, utiliser un objectif de groupe atteint ensemble plutôt qu’un rang individuel.',
-        'Rendre tout classement optionnel (opt-in) et limité à un groupe choisi, jamais public par défaut.',
-      ],
+        'Remplacer la comparaison aux autres par une progression personnelle dans le temps.', 
+        'Si une dimension collective est utile,  utiliser un objectif de groupe atteint ensemble plutôt qu’un rang individuel.', 
+        'Rendre tout classement optionnel (opt-in) et limité à un groupe choisi,  jamais public par défaut.', 
+      ], 
       realWorldExample:
-        'Fitbit propose des défis entre amis opt-in plutôt qu’un classement public par défaut de tous les utilisateurs.',
-    },
+        'Fitbit propose des défis entre amis opt-in plutôt qu’un classement public par défaut de tous les utilisateurs.', 
+    }, 
     autonomy_control: {
       mechanism:
-        'Dès qu’une mécanique conditionne l’accès au service principal ou qu’il devient difficile de s’en désengager, la participation cesse d’être un choix réel — même si elle est présentée comme optionnelle sur le papier.',
+        'Dès qu’une mécanique conditionne l’accès au service principal ou qu’il devient difficile de s’en désengager,  la participation cesse d’être un choix réel, même si elle est présentée comme optionnelle sur le papier.', 
       alternatives: [
-        'Garantir que le service principal reste pleinement utilisable sans passer par la mécanique gamifiée.',
-        'Ajouter un moyen simple et visible de se désengager (quitter un classement, arrêter un streak) sans pénalité disproportionnée.',
-        'Tester ce qui se passe réellement si quelqu’un ignore la mécanique — si l’expérience se dégrade fortement, elle n’est pas optionnelle en pratique.',
-      ],
-    },
+        'Garantir que le service principal reste pleinement utilisable sans passer par la mécanique gamifiée.', 
+        'Ajouter un moyen simple et visible de se désengager (quitter un classement,  arrêter un streak) sans pénalité disproportionnée.', 
+        'Tester ce qui se passe réellement si quelqu’un ignore la mécanique, si l’expérience se dégrade fortement,  elle n’est pas optionnelle en pratique.', 
+      ], 
+    }, 
     data_profile: {
       mechanism:
-        'Un niveau, un classement ou un objectif personnalisé n’existent techniquement que parce qu’un historique est conservé quelque part. Le risque n’est pas la donnée elle-même, mais son opacité : l’utilisateur-rice ne sait souvent pas ce qui est mesuré ni pourquoi.',
+        'Un niveau,  un classement ou un objectif personnalisé n’existent techniquement que parce qu’un historique est conservé quelque part. Le risque n’est pas la donnée elle-même,  mais son opacité : l’utilisateur-rice ne sait souvent pas ce qui est mesuré ni pourquoi.', 
       alternatives: [
-        'Documenter précisément quelles données sont nécessaires pour chaque mécanique sélectionnée.',
-        'Privilégier un état local, non persistant, quand un historique complet n’est pas indispensable.',
-        'Expliquer en langage clair ce qui est suivi, directement au niveau de la mécanique concernée.',
-      ],
-    },
+        'Documenter précisément quelles données sont nécessaires pour chaque mécanique sélectionnée.', 
+        'Privilégier un état local,  non persistant,  quand un historique complet n’est pas indispensable.', 
+        'Expliquer en langage clair ce qui est suivi,  directement au niveau de la mécanique concernée.', 
+      ], 
+    }, 
     temporal_pressure: {
       mechanism:
-        'Les rappels, séries et récompenses imprévisibles combinent souvent obligation temporelle et aversion à la perte : au bout de quelques jours, ce n’est plus l’envie qui pousse à revenir, mais la peur de perdre ce qui a déjà été accumulé.',
+        'Les rappels,  séries et récompenses imprévisibles combinent souvent obligation temporelle et aversion à la perte : au bout de quelques jours,  ce n’est plus l’envie qui pousse à revenir,  mais la peur de perdre ce qui a déjà été accumulé.', 
       alternatives: [
-        'Espacer ou réduire automatiquement les rappels si l’utilisateur-rice ne les ouvre pas, plutôt que de maintenir la même fréquence.',
-        'Proposer une reprise sans pénalité forte après une pause (gel de série, dégradation douce plutôt que remise à zéro brutale).',
-        'Rendre les rappels désactivables facilement, sans les enfouir dans un sous-menu.',
-      ],
+        'Espacer ou réduire automatiquement les rappels si l’utilisateur-rice ne les ouvre pas,  plutôt que de maintenir la même fréquence.', 
+        'Proposer une reprise sans pénalité forte après une pause (gel de série,  dégradation douce plutôt que remise à zéro brutale).', 
+        'Rendre les rappels désactivables facilement,  sans les enfouir dans un sous-menu.', 
+      ], 
       realWorldExample:
-        'Duolingo propose des « streak freezes » pour absorber une pause sans perdre toute la série accumulée.',
-    },
+        'Duolingo propose des « streak freezes » pour absorber une pause sans perdre toute la série accumulée.', 
+    }, 
     commercial_conversion: {
       mechanism:
-        'Une mécanique qui pousse vers un achat ou une conversion n’est pas problématique en soi, mais elle glisse vers la manipulation dès qu’elle crée une urgence artificielle (rareté fictive, compte à rebours non justifié) plutôt que d’aider une vraie décision.',
+        'Une mécanique qui pousse vers un achat ou une conversion n’est pas problématique en soi,  mais elle glisse vers la manipulation dès qu’elle crée une urgence artificielle (rareté fictive,  compte à rebours non justifié) plutôt que d’aider une vraie décision.', 
       alternatives: [
-        'Vérifier que toute urgence affichée correspond à une réalité (stock réel, offre réellement limitée dans le temps), jamais fabriquée.',
-        'Séparer clairement l’information utile à la décision de l’incitation à agir immédiatement.',
-        'Tester si le taux de conversion reste acceptable sans la pression temporelle — si non, la mécanique masque probablement une proposition de valeur insuffisante.',
-      ],
-    },
+        'Vérifier que toute urgence affichée correspond à une réalité (stock réel,  offre réellement limitée dans le temps),  jamais fabriquée.', 
+        'Séparer clairement l’information utile à la décision de l’incitation à agir immédiatement.', 
+        'Tester si le taux de conversion reste acceptable sans la pression temporelle, si non,  la mécanique masque probablement une proposition de valeur insuffisante.', 
+      ], 
+    }, 
     sensitive_context: {
       mechanism:
-        'Le même mécanisme de gamification n’a pas le même poids selon le contexte : une mécanique anodine dans une application de loisir peut avoir un impact réel sur la santé, la scolarité ou la situation professionnelle d’une personne dans un contexte plus sensible.',
+        'Le même mécanisme de gamification n’a pas le même poids selon le contexte : une mécanique anodine dans une application de loisir peut avoir un impact réel sur la santé,  la scolarité ou la situation professionnelle d’une personne dans un contexte plus sensible.', 
       alternatives: [
-        'Reconsidérer en priorité toute mécanique de pression temporelle ou de comparaison sociale dans ce contexte.',
-        'Faire valider les mécaniques par une personne experte du domaine concerné (santé, éducation) avant mise en production.',
-        'Prévoir une option explicite de mise en pause, avec un message neutre plutôt que culpabilisant.',
-      ],
-    },
+        'Reconsidérer en priorité toute mécanique de pression temporelle ou de comparaison sociale dans ce contexte.', 
+        'Faire valider les mécaniques par une personne experte du domaine concerné (santé,  éducation) avant mise en production.', 
+        'Prévoir une option explicite de mise en pause,  avec un message neutre plutôt que culpabilisant.', 
+      ], 
+    }, 
   }
 
   return deepDives[themeId]

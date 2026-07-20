@@ -121,7 +121,7 @@
   }
 
   /* ── Focus visible global ─────────────────────────────────────────────
-     Règle unique, cohérente, suffisamment visible (3px + offset 2px).
+     Règle unique,  cohérente,  suffisamment visible (3px + offset 2px).
      Couvre tous les éléments interactifs natifs et Shadcn.
   ──────────────────────────────────────────────────────────────────── */
   :focus-visible {

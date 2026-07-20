@@ -19,15 +19,15 @@ function SheetClose(props: React.ComponentProps<typeof SheetPrimitive.Close>) {
 }
 
 function SheetOverlay({
-  className,
+  className, 
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
   return (
     <SheetPrimitive.Overlay
       className={cn(
-        "fixed inset-0 z-50 bg-black/30",
-        "data-[state=open]:animate-in data-[state=open]:fade-in-0",
-        "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
+        "fixed inset-0 z-50 bg-black/30", 
+        "data-[state=open]:animate-in data-[state=open]:fade-in-0", 
+        "data-[state=closed]:animate-out data-[state=closed]:fade-out-0", 
         className
       )}
       {...props}
@@ -36,9 +36,9 @@ function SheetOverlay({
 }
 
 function SheetContent({
-  className,
-  children,
-  side = "bottom",
+  className, 
+  children, 
+  side = "bottom", 
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "bottom" | "right"
@@ -46,11 +46,11 @@ function SheetContent({
   const sideClasses =
     side === "bottom"
       ? cn(
-          "inset-x-0 bottom-0 max-h-[80vh] rounded-t-2xl border-t border-border",
+          "inset-x-0 bottom-0 max-h-[80vh] rounded-t-2xl border-t border-border", 
           "data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom"
         )
       : cn(
-          "inset-y-0 right-0 h-full w-full max-w-xs border-l border-border",
+          "inset-y-0 right-0 h-full w-full max-w-xs border-l border-border", 
           "data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right"
         )
 
@@ -59,10 +59,10 @@ function SheetContent({
       <SheetOverlay />
       <SheetPrimitive.Content
         className={cn(
-          "fixed z-50 flex flex-col bg-background p-6 shadow-lg outline-none",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out",
-          "duration-200",
-          sideClasses,
+          "fixed z-50 flex flex-col bg-background p-6 shadow-lg outline-none", 
+          "data-[state=open]:animate-in data-[state=closed]:animate-out", 
+          "duration-200", 
+          sideClasses, 
           className
         )}
         {...props}
@@ -79,15 +79,15 @@ function SheetContent({
 }
 
 function SheetTitle({
-  className,
+  className, 
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Title>) {
   return (
     <SheetPrimitive.Title
-      className={cn("text-sm font-semibold text-foreground", className)}
+      className={cn("text-sm font-semibold text-foreground",  className)}
       {...props}
     />
   )
 }
 
-export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetTitle }
+export { Sheet,  SheetTrigger,  SheetClose,  SheetContent,  SheetTitle }

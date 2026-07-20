@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertCircle, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
+import { AlertCircle,  ChevronDown,  ChevronUp,  Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { EvaluationResult } from '@/logic/evaluation.types'
 
@@ -12,17 +12,17 @@ interface AiAnalysisProps {
 type AnalysisState = 'idle' | 'loading' | 'success' | 'error'
 
 const SECTION_TITLES = [
-  'Lecture du résultat',
-  'Angles morts possibles',
-  'Questions à poser',
-  'Ajustements UX',
-  'Points à vérifier',
+  'Lecture du résultat', 
+  'Angles morts possibles', 
+  'Questions à poser', 
+  'Ajustements UX', 
+  'Points à vérifier', 
 ]
 
-function parseSection(text: string, sectionNumber: number): string | null {
+function parseSection(text: string,  sectionNumber: number): string | null {
   const patterns = [
-    new RegExp(`${sectionNumber}\\..+?\\n([\\s\\S]*?)(?=\\n${sectionNumber + 1}\\.|$)`),
-    new RegExp(`${sectionNumber}\\..+?\\n([\\s\\S]*?)(?=\\n\\n${sectionNumber + 1}|$)`),
+    new RegExp(`${sectionNumber}\\..+?\\n([\\s\\S]*?)(?=\\n${sectionNumber + 1}\\.|$)`), 
+    new RegExp(`${sectionNumber}\\..+?\\n([\\s\\S]*?)(?=\\n\\n${sectionNumber + 1}|$)`), 
   ]
 
   for (const pattern of patterns) {
@@ -37,8 +37,8 @@ function parseSection(text: string, sectionNumber: number): string | null {
 }
 
 function AnalysisSection({
-  title,
-  content,
+  title, 
+  content, 
 }: {
   title: string
   content: string
@@ -55,21 +55,21 @@ function AnalysisSection({
 }
 
 export function AiAnalysis({ result }: AiAnalysisProps) {
-  const [state, setState] = useState<AnalysisState>('idle')
-  const [analysis, setAnalysis] = useState<string | null>(null)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [isMock, setIsMock] = useState(false)
-  const [collapsed, setCollapsed] = useState(false)
+  const [state,  setState] = useState<AnalysisState>('idle')
+  const [analysis,  setAnalysis] = useState<string | null>(null)
+  const [errorMsg,  setErrorMsg] = useState<string | null>(null)
+  const [isMock,  setIsMock] = useState(false)
+  const [collapsed,  setCollapsed] = useState(false)
 
   async function handleLaunch() {
     setState('loading')
     setErrorMsg(null)
 
     try {
-      const response = await fetch('/api/analyse-ia', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ result }),
+      const response = await fetch('/api/analyse-ia',  {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ result }), 
       })
 
       const data = await response.json()
@@ -91,9 +91,9 @@ export function AiAnalysis({ result }: AiAnalysisProps) {
   }
 
   const sections = analysis
-    ? SECTION_TITLES.map((title, index) => ({
-        title,
-        content: parseSection(analysis, index + 1) ?? '',
+    ? SECTION_TITLES.map((title,  index) => ({
+        title, 
+        content: parseSection(analysis,  index + 1) ?? '', 
       })).filter((section) => section.content.length > 0)
     : []
 
@@ -118,7 +118,7 @@ export function AiAnalysis({ result }: AiAnalysisProps) {
 
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
             L’IA intervient après le résultat du questionnaire. Elle peut aider à
-            reformuler les points importants, préparer une synthèse client et
+            reformuler les points importants,  préparer une synthèse client et
             proposer des questions à vérifier.
           </p>
         </div>

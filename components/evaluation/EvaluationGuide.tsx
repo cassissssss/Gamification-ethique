@@ -1,19 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect,  useState } from 'react'
 import { BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { hasSeenGuide } from '@/lib/storage'
 import { GuideModal } from './GuideModal'
 
 export function EvaluationGuide() {
-  const [guideOpen, setGuideOpen] = useState(false)
+  const [guideOpen,  setGuideOpen] = useState(false)
 
   useEffect(() => {
     if (!hasSeenGuide()) {
       setGuideOpen(true)
     }
-  }, [])
+  },  [])
 
   return (
     <>

@@ -5,7 +5,7 @@ interface ProgressBarProps {
   totalSteps: number
 }
 
-export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
+export function ProgressBar({ currentStep,  totalSteps }: ProgressBarProps) {
   const percentage = Math.round((currentStep / totalSteps) * 100)
 
   return (

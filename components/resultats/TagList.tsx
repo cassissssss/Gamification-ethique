@@ -5,28 +5,28 @@ interface TagListProps {
   tags: Tag[]
 }
 
-const POSITIVE_TAGS: Tag[] = ['objectif_aligne', 'progression_claire', 'feedback_adequat']
+const POSITIVE_TAGS: Tag[] = ['objectif_aligne',  'progression_claire',  'feedback_adequat']
 const NEUTRAL_TAGS:  Tag[] = ['cadrage_insuffisant']
 
 function getTagStyle(tag: Tag): { background: string; color: string; boxShadow: string } {
   if (POSITIVE_TAGS.includes(tag)) {
     return {
-      background: 'rgba(45,106,79,0.10)',
-      color:      'var(--color-positive)',
-      boxShadow:  '0 0 0 1px rgba(45,106,79,0.25)',
+      background: 'rgba(45, 106, 79, 0.10)', 
+      color:      'var(--color-positive)', 
+      boxShadow:  '0 0 0 1px rgba(45, 106, 79, 0.25)', 
     }
   }
   if (NEUTRAL_TAGS.includes(tag)) {
     return {
-      background: 'rgba(74,74,74,0.08)',
-      color:      'var(--color-neutral)',
-      boxShadow:  '0 0 0 1px rgba(74,74,74,0.2)',
+      background: 'rgba(74, 74, 74, 0.08)', 
+      color:      'var(--color-neutral)', 
+      boxShadow:  '0 0 0 1px rgba(74, 74, 74, 0.2)', 
     }
   }
   return {
-    background: 'rgba(181,98,10,0.08)',
-    color:      'var(--color-warning)',
-    boxShadow:  '0 0 0 1px rgba(181,98,10,0.25)',
+    background: 'rgba(181, 98, 10, 0.08)', 
+    color:      'var(--color-warning)', 
+    boxShadow:  '0 0 0 1px rgba(181, 98, 10, 0.25)', 
   }
 }
 
@@ -36,7 +36,7 @@ export function TagList({ tags }: TagListProps) {
   const definitions = tags
     .map((tag) => {
       const def = tagDefinitions.find((d) => d.tag === tag)
-      return def ? { ...def, tag } : null
+      return def ? { ...def,  tag } : null
     })
     .filter(Boolean) as (typeof tagDefinitions[number] & { tag: Tag })[]
 
@@ -49,7 +49,7 @@ export function TagList({ tags }: TagListProps) {
         Ces éléments ont été identifiés à partir de vos réponses.
       </p>
       <ul className="flex flex-wrap gap-2" aria-label="Tags activés">
-        {definitions.map(({ tag, label, description }) => {
+        {definitions.map(({ tag,  label,  description }) => {
           const style = getTagStyle(tag)
           return (
             <li key={tag}>

@@ -1,6 +1,6 @@
 'use client'
 
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup,  RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import type { Question } from '@/types/principle'
 
@@ -10,19 +10,19 @@ interface QuestionStepProps {
   onChange:          (selectedOptionIds: string[]) => void
 }
 
-export function QuestionStep({ question, selectedOptionIds, onChange }: QuestionStepProps) {
+export function QuestionStep({ question,  selectedOptionIds,  onChange }: QuestionStepProps) {
 
   function handleSingleChange(optionId: string) {
     onChange([optionId])
   }
 
-  function handleMultipleChange(optionId: string, checked: boolean) {
+  function handleMultipleChange(optionId: string,  checked: boolean) {
     if (checked) {
       if (
         question.maxSelections !== undefined &&
         selectedOptionIds.length >= question.maxSelections
       ) return
-      onChange([...selectedOptionIds, optionId])
+      onChange([...selectedOptionIds,  optionId])
     } else {
       onChange(selectedOptionIds.filter((id) => id !== optionId))
     }
@@ -64,7 +64,7 @@ export function QuestionStep({ question, selectedOptionIds, onChange }: Question
         </p>
       )}
 
-      {/* Options — single */}
+      {/* Options, single */}
       {question.type === 'single' && (
         <RadioGroup
           value={selectedOptionIds[0] ?? ''}
@@ -80,12 +80,12 @@ export function QuestionStep({ question, selectedOptionIds, onChange }: Question
                 key={option.id}
                 htmlFor={option.id}
                 className={[
-                  'flex cursor-pointer items-start gap-4 rounded-xl p-4 transition-all duration-150',
-                  'focus-within:outline focus-within:outline-3 focus-within:outline-offset-1 focus-within:outline-primary',
+                  'flex cursor-pointer items-start gap-4 rounded-xl p-4 transition-all duration-150', 
+                  'focus-within:outline focus-within:outline-3 focus-within:outline-offset-1 focus-within:outline-primary', 
                   isSelected
                     // Sélectionné : fond lavande + texte prune + ombre douce
                     ? 'bg-[#D9D0E3]/50 shadow-sm ring-1 ring-[#4A2D57]/25'
-                    : 'bg-[#F8F4EF]/80 hover:bg-white/80 hover:shadow-sm',
+                    : 'bg-[#F8F4EF]/80 hover:bg-white/80 hover:shadow-sm', 
                 ].join(' ')}
               >
                 <RadioGroupItem
@@ -97,8 +97,8 @@ export function QuestionStep({ question, selectedOptionIds, onChange }: Question
                 {/* text-base minimum pour les options */}
                 <span
                   className={[
-                    'text-base leading-relaxed',
-                    isSelected ? 'font-semibold text-primary' : 'text-foreground',
+                    'text-base leading-relaxed', 
+                    isSelected ? 'font-semibold text-primary' : 'text-foreground', 
                   ].join(' ')}
                 >
                   {option.label}
@@ -109,7 +109,7 @@ export function QuestionStep({ question, selectedOptionIds, onChange }: Question
         </RadioGroup>
       )}
 
-      {/* Options — multiple */}
+      {/* Options, multiple */}
       {question.type === 'multiple' && (
         <div
           role="group"
@@ -125,16 +125,16 @@ export function QuestionStep({ question, selectedOptionIds, onChange }: Question
                 key={option.id}
                 htmlFor={option.id}
                 className={[
-                  'flex items-start gap-4 rounded-xl p-4 transition-all duration-150',
-                  'focus-within:outline focus-within:outline-3 focus-within:outline-offset-1 focus-within:outline-primary',
+                  'flex items-start gap-4 rounded-xl p-4 transition-all duration-150', 
+                  'focus-within:outline focus-within:outline-3 focus-within:outline-offset-1 focus-within:outline-primary', 
                   isDisabled
                     ? 'cursor-not-allowed opacity-40 bg-[#F8F4EF]/60'
-                    : 'cursor-pointer',
+                    : 'cursor-pointer', 
                   !isDisabled && isSelected
                     ? 'bg-[#D9D0E3]/50 shadow-sm ring-1 ring-[#4A2D57]/25'
                     : !isDisabled
                       ? 'bg-[#F8F4EF]/80 hover:bg-white/80 hover:shadow-sm'
-                      : '',
+                      : '', 
                 ].join(' ')}
               >
                 <Checkbox
@@ -142,19 +142,19 @@ export function QuestionStep({ question, selectedOptionIds, onChange }: Question
                   checked={isSelected}
                   disabled={isDisabled}
                   onCheckedChange={(checked) =>
-                    handleMultipleChange(option.id, checked === true)
+                    handleMultipleChange(option.id,  checked === true)
                   }
                   className="mt-0.5 shrink-0 border-foreground/30"
                   aria-label={option.label}
                 />
                 <span
                   className={[
-                    'text-base leading-relaxed',
+                    'text-base leading-relaxed', 
                     isDisabled
                       ? 'text-foreground/40'
                       : isSelected
                         ? 'font-semibold text-primary'
-                        : 'text-foreground',
+                        : 'text-foreground', 
                   ].join(' ')}
                 >
                   {option.label}

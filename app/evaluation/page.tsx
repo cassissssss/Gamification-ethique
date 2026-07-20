@@ -3,17 +3,14 @@ import { EvaluationGuide } from '@/components/evaluation/EvaluationGuide'
 import { Questionnaire }   from '@/components/evaluation/Questionnaire'
 
 export const metadata: Metadata = {
-  title: 'Évaluation éthique',
-  description: `Évaluez les mécaniques de gamification de votre projet à travers un questionnaire structuré par sections.`,
+  title: 'Évaluation éthique', 
+  description: `Évaluez les mécaniques de gamification de votre projet à travers un questionnaire structuré par sections.`, 
 }
 
 export default function EvaluationPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <section aria-labelledby="evaluation-heading" className="mb-14">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-primary/60">
-          Outil d'évaluation
-        </p>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="max-w-xl">
             <h1

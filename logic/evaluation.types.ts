@@ -35,7 +35,7 @@ export type OptionId = string;
 
 export type EvaluationAnswerValue = OptionId | OptionId[] | undefined;
 
-export type EvaluationAnswers = Partial<Record<QuestionId, EvaluationAnswerValue>>;
+export type EvaluationAnswers = Partial<Record<QuestionId,  EvaluationAnswerValue>>;
 
 export interface EvaluationOption {
   id: OptionId;
@@ -102,16 +102,16 @@ export interface RiskSignal {
 }
 
 /**
- * Contenu approfondi, affiché derrière un "En savoir plus" plutôt que toujours
- * visible — pour rester scannable tout en donnant accès à une vraie expertise
+ * Contenu approfondi,  affiché derrière un "En savoir plus" plutôt que toujours
+ * visible, pour rester scannable tout en donnant accès à une vraie expertise
  * pour qui veut creuser. Le cœur de la valeur est `alternatives` : plusieurs
- * solutions concrètes et directement applicables, pas une seule reformulation
+ * solutions concrètes et directement applicables,  pas une seule reformulation
  * de la recommandation courte.
  */
 export interface RecommendationDeepDive {
-  /** Le mécanisme en jeu : pourquoi ce problème existe, brièvement (2-4 phrases). */
+  /** Le mécanisme en jeu : pourquoi ce problème existe,  brièvement (2-4 phrases). */
   mechanism: string;
-  /** Plusieurs alternatives concrètes, copiables telles quelles dans un produit. */
+  /** Plusieurs alternatives concrètes,  copiables telles quelles dans un produit. */
   alternatives: string[];
   /** Référence à un produit connu illustrant une bonne pratique (optionnel). */
   realWorldExample?: string;
@@ -133,7 +133,7 @@ export interface RiskThemeResult {
 
 /**
  * Recommandation positive générée par les réponses.
- * Elle sert à proposer une piste utile, même sans risque élevé.
+ * Elle sert à proposer une piste utile,  même sans risque élevé.
  */
 export interface PositiveRecommendation {
   id: string;
@@ -188,7 +188,7 @@ export interface MechanicAlternative {
  * des signaux pris séparément (effet multiplicatif plutôt qu'additif).
  * Distinct de la matrice de pondération thématique et de la détection de
  * contradictions logiques : une règle de synergie ne signale pas une
- * incohérence, mais une amplification de risque entre mécaniques ou réponses
+ * incohérence,  mais une amplification de risque entre mécaniques ou réponses
  * par ailleurs cohérentes entre elles.
  */
 export interface SynergyResult {
@@ -203,7 +203,7 @@ export interface SynergyResult {
 
 /**
  * Orientation globale donnée à la fin de l'analyse.
- * Elle ne dit pas "éthique" ou "pas éthique", mais donne une direction actionnable.
+ * Elle ne dit pas "éthique" ou "pas éthique",  mais donne une direction actionnable.
  */
 export type GlobalOrientationId =
   | "clarify_before_deciding"

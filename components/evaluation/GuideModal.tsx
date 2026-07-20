@@ -1,40 +1,40 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect,  useState } from 'react'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription, 
 } from '@/components/ui/dialog'
 import { Button }    from '@/components/ui/button'
 import { Checkbox }  from '@/components/ui/checkbox'
 import { Label }     from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { hasSeenGuide, markGuideAsSeen } from '@/lib/storage'
+import { hasSeenGuide,  markGuideAsSeen } from '@/lib/storage'
 
 const steps = [
   {
-    number: '01',
-    title: 'Répondez selon votre projet',
-    description: `Les questions portent sur l'objectif de l'expérience, le public visé, les mécaniques envisagées et le contexte d'utilisation. Il n'y a pas de bonne ou mauvaise réponse : l'objectif est de faire émerger les risques potentiels.`,
-  },
+    number: '01', 
+    title: 'Répondez selon votre projet', 
+    description: `Les questions portent sur l'objectif de l'expérience,  le public visé,  les mécaniques envisagées et le contexte d'utilisation. Il n'y a pas de bonne ou mauvaise réponse : l'objectif est de faire émerger les risques potentiels.`, 
+  }, 
   {
-    number: '02',
-    title: 'Comprenez les recommandations',
-    description: `Vos réponses génèrent des tags, qui activent des règles de priorité. Le résultat propose un verdict général, des points de vigilance et des recommandations concrètes.`,
-  },
+    number: '02', 
+    title: 'Comprenez les recommandations', 
+    description: `Vos réponses génèrent des tags,  qui activent des règles de priorité. Le résultat propose un verdict général,  des points de vigilance et des recommandations concrètes.`, 
+  }, 
   {
-    number: '03',
-    title: 'Utilisez le résultat comme support de discussion',
-    description: `Les recommandations ne remplacent pas une décision de projet, un test utilisateur ou une analyse juridique. Elles servent à préparer une discussion avec l'équipe ou le client.`,
-  },
+    number: '03', 
+    title: 'Utilisez le résultat comme support de discussion', 
+    description: `Les recommandations ne remplacent pas une décision de projet,  un test utilisateur ou une analyse juridique. Elles servent à préparer une discussion avec l'équipe ou le client.`, 
+  }, 
   {
-    number: '04',
-    title: 'Analyse IA complémentaire',
-    description: `Une analyse IA peut aider à reformuler ou approfondir les résultats, mais elle intervient après la logique du framework. Elle ne remplace pas les règles définies dans l'outil.`,
-  },
+    number: '04', 
+    title: 'Analyse IA complémentaire', 
+    description: `Une analyse IA peut aider à reformuler ou approfondir les résultats,  mais elle intervient après la logique du framework. Elle ne remplace pas les règles définies dans l'outil.`, 
+  }, 
 ]
 
 interface GuideModalProps {
@@ -42,15 +42,15 @@ interface GuideModalProps {
   onOpenChange?: (open: boolean) => void
 }
 
-export function GuideModal({ open, onOpenChange }: GuideModalProps) {
-  const [internalOpen, setInternalOpen] = useState(false)
-  const [doNotShow, setDoNotShow]       = useState(false)
+export function GuideModal({ open,  onOpenChange }: GuideModalProps) {
+  const [internalOpen,  setInternalOpen] = useState(false)
+  const [doNotShow,  setDoNotShow]       = useState(false)
 
   useEffect(() => {
     if (open === undefined && !hasSeenGuide()) {
       setInternalOpen(true)
     }
-  }, [open])
+  },  [open])
 
   const isControlled = open !== undefined
   const isOpen       = isControlled ? open : internalOpen
@@ -79,7 +79,7 @@ export function GuideModal({ open, onOpenChange }: GuideModalProps) {
           <DialogDescription className="text-sm leading-relaxed text-foreground/70">
             Cette évaluation aide à identifier les points de vigilance éthiques
             d'une expérience gamifiée. Elle s'adresse aux professionnel-les qui
-            souhaitent questionner une idée, une mécanique ou une interface avant
+            souhaitent questionner une idée,  une mécanique ou une interface avant
             sa conception ou sa mise en production.
           </DialogDescription>
         </DialogHeader>
