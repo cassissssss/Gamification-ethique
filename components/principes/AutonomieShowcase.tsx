@@ -1,73 +1,101 @@
-import { Flame } from 'lucide-react'
+import { Target, ArrowRight, CircleDot, Circle } from 'lucide-react'
 import { PhoneStatusBar } from '@/components/principes/PhoneStatusBar'
 import { ShowcaseShell } from '@/components/principes/ShowcaseShell'
 import { Hotspot } from '@/components/principes/Hotspot'
 
-function Toggle({ on }: { on: boolean }) {
+function Card({ children }: { children: React.ReactNode }) {
   return (
-    <span
-      className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 ${on ? 'bg-primary/60' : 'bg-foreground/15'}`}
-      aria-hidden="true"
+    <div className="flex h-[460px] w-[260px] shrink-0 flex-col rounded-[28px] border-[3px] border-primary bg-[#FAF6F0] p-5">
+      <PhoneStatusBar />
+      <div className="flex flex-col items-center gap-1 py-0.5 text-center">
+        <Target className="h-7 w-7 text-foreground" aria-hidden="true" />
+        <p className="text-base font-semibold text-foreground">Votre objectif</p>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function OptionRow({
+  label,
+  sublabel,
+  selected = false,
+}: {
+  label: string
+  sublabel: string
+  selected?: boolean
+}) {
+  return (
+    <div
+      className="flex items-center gap-2.5 rounded-xl border p-3"
+      style={
+        selected
+          ? { borderColor: 'var(--color-positive)', background: 'rgba(45,106,79,0.08)' }
+          : { borderColor: 'var(--border, rgba(0,0,0,0.1))' }
+      }
     >
-      <span className={`h-5 w-5 rounded-full bg-white shadow ${on ? 'ml-auto' : ''}`} />
-    </span>
+      {selected ? (
+        <CircleDot className="h-4 w-4 shrink-0" style={{ color: 'var(--color-positive)' }} aria-hidden="true" />
+      ) : (
+        <Circle className="h-4 w-4 shrink-0 text-foreground/25" aria-hidden="true" />
+      )}
+      <div>
+        <p className="text-xs font-semibold text-foreground">{label}</p>
+        <p className="text-[11px] text-foreground/50">{sublabel}</p>
+      </div>
+    </div>
   )
 }
 
 export function AutonomieShowcase() {
   return (
     <ShowcaseShell
+      extraBottomSpace
       intro="Comparez ces deux versions d'un même écran, puis survolez leurs éléments pour comprendre ce que change ce principe."
       before={
-        <div className="h-[360px] w-[320px] overflow-hidden rounded-t-[36px] border-[3px] border-b-0 border-primary bg-[#FAF6F0] p-[22px]">
-          <PhoneStatusBar />
-          <p className="mb-4 text-[19px] font-semibold text-foreground">Votre activité</p>
-
-          <div className="mb-4 flex items-center gap-2 rounded-2xl bg-[var(--color-danger)]/10 p-3">
-            <Flame className="h-4 w-4 shrink-0 text-[var(--color-danger)]" aria-hidden="true" />
-            <p className="text-sm font-medium text-[var(--color-danger)]">
-              Reviens avant 20h ou tu perds ta série de 12 jours !
-            </p>
-          </div>
-
+        <Card>
           <Hotspot
             principle="autonomie"
-            message="Un réglage verrouillé retire à l'utilisateur la possibilité de désengager la mécanique. À terme, un service utile devient une source de sollicitation subie."
+            message="La durée est imposée, sans possibilité de l'adapter. L'utilisateur doit se conformer au rythme prévu par le système, pas l'inverse."
           >
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-border p-4">
-              <div>
-                <p className="text-sm font-semibold text-foreground">Rappels quotidiens</p>
-                <p className="text-xs text-foreground/50">Ne peut pas être désactivé</p>
-              </div>
-              <Toggle on />
+            <div className="mt-4 flex flex-col items-center gap-1.5 rounded-xl border border-border p-4 text-center">
+              <p className="text-2xl font-bold text-primary">30 min</p>
+              <div className="my-0.5 h-px w-full bg-border" />
+              <p className="text-sm text-foreground">Bonne session !</p>
             </div>
           </Hotspot>
-        </div>
+
+          <button className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-xs font-semibold text-primary-foreground">
+            Commencer <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </Card>
       }
       after={
-        <div className="h-[360px] w-[320px] overflow-hidden rounded-t-[36px] border-[3px] border-b-0 border-primary bg-[#FAF6F0] p-[22px]">
-          <PhoneStatusBar />
-          <p className="mb-4 text-[19px] font-semibold text-foreground">Votre activité</p>
-
-          <div className="mb-4 flex items-center gap-2 rounded-2xl bg-primary/5 p-3">
-            <Flame className="h-4 w-4 shrink-0 text-primary/60" aria-hidden="true" />
-            <p className="text-sm font-medium text-foreground/70">Série actuelle : 12 jours</p>
-          </div>
+        <Card>
+          <p className="mt-1 text-center text-xs text-foreground/60">
+            Adaptez votre objectif à votre disponibilité.
+          </p>
 
           <Hotspot
             principle="autonomie"
-            message="Le contrôle reste entre les mains de l'utilisateur à tout moment, sans avoir à chercher une option cachée pour retrouver de la tranquillité."
+            message="L'utilisateur choisit lui-même son niveau d'engagement, et sait qu'il peut en changer. La mécanique s'adapte à sa vie, pas l'inverse."
             tint
           >
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-border p-4">
-              <div>
-                <p className="text-sm font-semibold text-foreground">Rappels quotidiens</p>
-                <p className="text-xs text-foreground/50">Modifiable à tout moment</p>
-              </div>
-              <Toggle on={false} />
+            <div className="mt-3 flex flex-col gap-2">
+              <OptionRow label="10 minutes" sublabel="Découverte" />
+              <OptionRow label="20 minutes" sublabel="Équilibré" selected />
+              <OptionRow label="30 minutes" sublabel="Approfondi" />
             </div>
           </Hotspot>
-        </div>
+
+          <p className="mt-2.5 text-center text-[11px] text-foreground/50">
+            Vous pourrez changer votre sélection à tout moment
+          </p>
+
+          <button className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-xs font-semibold text-primary-foreground">
+            Commencer <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </Card>
       }
     />
   )

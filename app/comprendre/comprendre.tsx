@@ -1,45 +1,45 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
-  Target,  Users,  Globe,  Gamepad2,  Eye,  SlidersHorizontal,  Timer,  Sparkles, 
-  Check,  X, 
+  Target, Users, Globe, Gamepad2, Eye, SlidersHorizontal, Timer, Sparkles,
+  Check, X,
 } from 'lucide-react'
 import { VerdictsAccordion } from '@/components/comprendre/VerdictsAccordion'
 
 export const metadata: Metadata = {
-  title: 'Comprendre', 
-  description: `Comprendre la démarche,  la logique du framework d'évaluation éthique et le rôle limité de l'analyse IA.`, 
+  title: 'Comprendre',
+  description: `Comprendre la démarche, la logique de l'outil d'évaluation éthique et le rôle limité de l'analyse IA.`,
 }
 
 const dimensions = [
-  { id: 'objectif',       label: `Objectif de l'expérience`,       text: `Pourquoi intégrer une gamification ? Engagement,  apprentissage,  conversion,  changement de comportement ?`,  Icon: Target }, 
-  { id: 'public',         label: 'Public concerné',                 text: `À qui s'adresse l'expérience ? Des mineur-es,  des personnes vulnérables,  des professionnel-les ?`,  Icon: Users }, 
-  { id: 'contexte',       label: `Contexte d'utilisation`,          text: `Le projet s'inscrit-il dans un domaine sensible : santé,  éducation,  finance,  ressources humaines ?`,  Icon: Globe }, 
-  { id: 'mecaniques',     label: 'Mécaniques envisagées',           text: `Points,  badges,  classements,  streaks,  récompenses aléatoires,  rareté, chaque mécanique porte ses propres risques.`,  Icon: Gamepad2 }, 
-  { id: 'transparence',   label: 'Transparence',                    text: `Les règles du système sont-elles clairement communiquées ? L'utilisateur-rice sait-il ou elle comment fonctionne le système ?`,  Icon: Eye }, 
-  { id: 'controle',       label: `Contrôle utilisateur`,            text: `L'utilisateur-rice peut-il ou elle désactiver les mécaniques,  masquer sa progression,  ou quitter le système ?`,  Icon: SlidersHorizontal }, 
-  { id: 'pression',       label: 'Pression temporelle ou sociale',  text: `Le système exerce-t-il une pression via des comptes à rebours,  des pénalités d'inactivité ou des classements publics ?`,  Icon: Timer }, 
-  { id: 'motivation',     label: 'Type de motivation',              text: `Le système cherche-t-il à renforcer une motivation intrinsèque ou à la remplacer par des récompenses externes ?`,  Icon: Sparkles }, 
+  { id: 'objectif',      label: `Objectif de l'expérience`,      text: `Pourquoi intégrer une gamification ? Engagement, apprentissage, conversion, changement de comportement ?`, Icon: Target },
+  { id: 'public',        label: 'Public concerné',                text: `À qui s'adresse l'expérience ? Des mineur-es, des personnes vulnérables, des professionnel-les ?`, Icon: Users },
+  { id: 'contexte',      label: `Contexte d'utilisation`,         text: `Le projet s'inscrit-il dans un domaine sensible : santé, éducation, finance, ressources humaines ?`, Icon: Globe },
+  { id: 'mecaniques',    label: 'Mécaniques envisagées',          text: `Points, badges, classements, streaks, récompenses aléatoires, rareté — chaque mécanique porte ses propres risques.`, Icon: Gamepad2 },
+  { id: 'transparence',  label: 'Transparence',                   text: `Les règles du système sont-elles clairement communiquées ? L'utilisateur-rice sait-il ou elle comment fonctionne le système ?`, Icon: Eye },
+  { id: 'controle',      label: `Contrôle utilisateur`,           text: `L'utilisateur-rice peut-il ou elle désactiver les mécaniques, masquer sa progression, ou quitter le système ?`, Icon: SlidersHorizontal },
+  { id: 'pression',      label: 'Pression temporelle ou sociale', text: `Le système exerce-t-il une pression via des comptes à rebours, des pénalités d'inactivité ou des classements publics ?`, Icon: Timer },
+  { id: 'motivation',    label: 'Type de motivation',             text: `Le système cherche-t-il à renforcer une motivation intrinsèque ou à la remplacer par des récompenses externes ?`, Icon: Sparkles },
 ]
 
 const frameworkSteps = [
-  { id: 'reponses',         number: '01',  label: 'Réponses',             text: `Vos réponses au questionnaire décrivent le projet selon huit dimensions clés.` }, 
-  { id: 'tags',             number: '02',  label: 'Tags',                 text: `Chaque réponse peut activer un ou plusieurs tags techniques qui qualifient les risques ou les atouts détectés.` }, 
-  { id: 'regles',           number: '03',  label: `Règles de priorité`,   text: `Les tags sont évalués selon des règles explicites. Leur combinaison détermine la gravité globale du profil.` }, 
-  { id: 'verdict',          number: '04',  label: 'Verdict',              text: `Un verdict est produit parmi cinq niveaux possibles. Il reflète l'analyse du système,  pas une opinion subjective.` }, 
-  { id: 'recommandations',  number: '05',  label: 'Recommandations',      text: `Chaque tag activé génère une ou plusieurs recommandations concrètes,  triées par niveau de priorité.` }, 
+  { id: 'reponses',        number: '01', label: 'Réponses',            text: `Vos réponses au questionnaire décrivent le projet selon huit dimensions clés.` },
+  { id: 'tags',            number: '02', label: 'Tags',                text: `Chaque réponse peut activer un ou plusieurs tags techniques qui qualifient les risques ou les atouts détectés.` },
+  { id: 'regles',          number: '03', label: `Règles de priorité`,  text: `Les tags sont évalués selon des règles explicites. Leur combinaison détermine la gravité globale du profil.` },
+  { id: 'verdict',         number: '04', label: 'Verdict',             text: `Un verdict est produit parmi cinq niveaux possibles. Il reflète l'analyse du système, pas une opinion subjective.` },
+  { id: 'recommandations', number: '05', label: 'Recommandations',     text: `Chaque tag activé génère une ou plusieurs recommandations concrètes, triées par niveau de priorité.` },
 ]
 
 const aiDoes = [
-  `Elle aide à identifier des angles morts que le questionnaire ne peut pas couvrir en raison de son format structuré.`, 
-  `Elle propose des questions à poser à l'équipe ou au client pour affiner la compréhension du projet.`, 
-  `Elle suggère des ajustements UX possibles,  en lien avec les risques identifiés par l'évaluation'.`, 
+  `Elle aide à identifier des angles morts que le questionnaire ne peut pas couvrir en raison de son format structuré.`,
+  `Elle propose des questions à poser à l'équipe ou au client pour affiner la compréhension du projet.`,
+  `Elle suggère des ajustements UX possibles, en lien avec les risques identifiés par l'outil.`,
 ]
 
 const aiDoesNot = [
-  `Elle ne décide pas du verdict, il est toujours produit par le framework,  avant toute intervention de l'IA.`, 
-  `Elle ne remplace pas les règles définies dans l'outil ; son rôle est complémentaire,  pas substituable.`, 
-  `Elle ne remplace pas un test utilisateur,  une revue juridique ou une décision d'équipe.`, 
+  `Elle ne décide pas du verdict — il est toujours produit par l'outil, avant toute intervention de l'IA.`,
+  `Elle ne remplace pas les règles définies dans l'outil ; son rôle est complémentaire, pas substituable.`,
+  `Elle ne remplace pas un test utilisateur, une revue juridique ou une décision d'équipe.`,
 ]
 
 export default function ComprendrePage() {
@@ -59,17 +59,17 @@ export default function ComprendrePage() {
           </h1>
           <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground/80">
             <p>
-              La gamification peut rendre une expérience plus engageante, 
+              La gamification peut rendre une expérience plus engageante,
               encourager l'apprentissage ou soutenir des comportements positifs.
-              Mais quand elle est mal conçue,  elle peut aussi créer des effets
-              indésirables : pression,  dépendance,  sentiment de manipulation ou
+              Mais quand elle est mal conçue, elle peut aussi créer des effets
+              indésirables : pression, dépendance, sentiment de manipulation ou
               perte d'autonomie.
             </p>
             <p>
               Ces effets sont rarement intentionnels. Ils résultent souvent de
-              décisions de conception prises sans cadre éthique,  ou sans recul
+              décisions de conception prises sans cadre éthique, ou sans recul
               suffisant sur l'impact des mécaniques envisagées. Cet outil aide
-              à prendre ce recul avant la conception,  pas après.
+              à prendre ce recul avant la conception, pas après.
             </p>
           </div>
         </div>
@@ -110,12 +110,12 @@ export default function ComprendrePage() {
       </section>
 
       {/* ── Comment le verdict est produit ────────────────────────────────── */}
-      {/* Section mise en avant : c'est le cœur du framework,  elle mérite un
-          traitement plus fort que les autres, fond accent + flux relié, 
+      {/* Section mise en avant : c'est le cœur du framework, elle mérite un
+          traitement plus fort que les autres — fond accent + flux relié,
           plutôt qu'une rangée de cartes isolées de plus. */}
       <section aria-labelledby="framework-heading" className="w-full py-4">
         <div className="mx-auto max-w-[66rem] px-6">
-          <div className="rounded-[2rem] p-8 sm:p-12" style={{ background: 'rgba(74, 45, 87, 0.05)' }}>
+          <div className="rounded-[2rem] p-8 sm:p-12" style={{ background: 'rgba(74,45,87,0.05)' }}>
             <div className="mb-10 max-w-2xl">
               <h2 id="framework-heading" className="mb-3 text-3xl font-semibold text-foreground">
                 Comment le verdict est produit
@@ -128,7 +128,7 @@ export default function ComprendrePage() {
             </div>
 
             <ol className="mt-2 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-0">
-              {frameworkSteps.map((step,  index) => (
+              {frameworkSteps.map((step, index) => (
                 <li key={step.id} className="flex flex-1 flex-col items-center gap-3 text-center">
                   <div className="flex w-full items-center">
                     <div
@@ -164,7 +164,7 @@ export default function ComprendrePage() {
           Les verdicts possibles
         </h2>
         <p className="mb-10 max-w-xl text-base leading-relaxed text-foreground/70">
-          L'évaluation produit l'un de ces cinq verdicts,  du plus préoccupant
+          L'évaluation produit l'un de ces cinq verdicts, du plus préoccupant
           au plus favorable. Cliquez sur un verdict pour en lire le détail.
         </p>
 
@@ -172,7 +172,7 @@ export default function ComprendrePage() {
       </section>
 
       {/* ── Rôle de l'IA ─────────────────────────────────────────────────── */}
-      {/* Fond légèrement teinté : jusqu'ici la page était entièrement blanche, 
+      {/* Fond légèrement teinté : jusqu'ici la page était entièrement blanche,
           cette section mérite de se distinguer visuellement. */}
       <section aria-labelledby="ia-heading" className="w-full py-4">
         <div className="mx-auto max-w-[62rem] px-6 py-16">
@@ -182,7 +182,7 @@ export default function ComprendrePage() {
             </h2>
             <p className="mb-10 text-base leading-relaxed text-foreground/70">
               Une analyse IA complémentaire est disponible sur la page résultats.
-              Son rôle est strictement limité : elle intervient après le framework,  pas à sa place.
+              Son rôle est strictement limité : elle intervient après l'outil, pas à sa place.
             </p>
           </div>
 
@@ -223,7 +223,7 @@ export default function ComprendrePage() {
         <div className="mx-auto max-w-[56rem] px-6">
           <div
             className="rounded-[2rem] px-8 py-16 text-center sm:px-16"
-            style={{ background: 'rgba(74, 45, 87, 0.06)' }}
+            style={{ background: 'rgba(74,45,87,0.06)' }}
           >
             <h2 id="cta-comprendre-heading" className="text-3xl font-semibold leading-tight text-foreground md:text-4xl">
               Vous avez un projet
@@ -231,15 +231,15 @@ export default function ComprendrePage() {
               à analyser ?
             </h2>
             <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-foreground/70">
-              Le questionnaire prend environ cinq minutes. Aucune inscription requise.
+              Le questionnaire prend 15 minutes maximum. Aucune inscription requise.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 href="/evaluation"
                 className={[
-                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold', 
-                  'bg-primary text-primary-foreground transition-opacity hover:opacity-90', 
-                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary', 
+                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold',
+                  'bg-primary text-primary-foreground transition-opacity hover:opacity-90',
+                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
                 ].join(' ')}
               >
                 Lancer l'évaluation
@@ -247,11 +247,11 @@ export default function ComprendrePage() {
               <Link
                 href="/principes"
                 className={[
-                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold text-primary', 
-                  'transition-all hover:bg-white/60', 
-                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary', 
+                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold text-primary',
+                  'transition-all hover:bg-white/60',
+                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
                 ].join(' ')}
-                style={{ boxShadow: '0 0 0 1.5px rgba(74, 45, 87, 0.4)' }}
+                style={{ boxShadow: '0 0 0 1.5px rgba(74,45,87,0.4)' }}
               >
                 Voir les principes
               </Link>

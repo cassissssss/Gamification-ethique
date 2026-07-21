@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const limits = [
   { id: 'test',      label: 'Un test utilisateur',      text: `Seul un test avec de vraies personnes permet de valider l'impact réel des mécaniques sur le comportement et le ressenti des utilisateur-rices.` },
-  { id: 'expertise', label: 'Une expertise sectorielle', text: `Certains domaines — santé, éducation, finance — impliquent des réglementations ou des enjeux spécifiques qu'une expertise juridique ou métier doit couvrir : le framework ne la remplace pas.` },
+  { id: 'expertise', label: 'Une expertise sectorielle', text: `Certains domaines — santé, éducation, finance — impliquent des réglementations ou des enjeux spécifiques qu'une expertise juridique ou métier doit couvrir : l'outil ne la remplace pas.` },
   { id: 'decision',  label: `Une décision d'équipe`,     text: `L'outil produit un support de discussion, pas une décision. L'arbitrage final appartient à l'équipe projet.` },
 ]
 
@@ -139,8 +139,8 @@ export default function AProposPage() {
               Le verdict est produit par un système de règles explicite et
               traçable, pas par une intelligence artificielle : chaque réponse
               au questionnaire est confrontée à des critères documentés, liés
-              aux huit principes du framework. L'IA n'intervient qu'en
-              complément, après le framework, jamais à sa place.
+              aux huit principes de l'outil. L'IA n'intervient qu'en
+              complément, après l'outil, jamais à sa place.
             </p>
           </div>
           <Link

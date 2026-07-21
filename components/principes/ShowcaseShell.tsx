@@ -21,6 +21,12 @@ interface ShowcaseShellProps {
   flush?: boolean
   /** Largeur des écrans en px, utilisée pour centrer les labels au-dessus en mode flush. */
   cardWidth?: number
+  /**
+   * Ajoute un padding bas symétrique au padding haut (mode par défaut
+   * uniquement) — à activer au cas par cas quand l'écran a besoin de plus
+   * d'air en dessous, sans changer le comportement des autres fiches.
+   */
+  extraBottomSpace?: boolean
 }
 
 /**
@@ -38,6 +44,7 @@ export function ShowcaseShell({
   legend,
   flush = false,
   cardWidth = 320,
+  extraBottomSpace = false,
 }: ShowcaseShellProps) {
   if (flush) {
     return (
@@ -77,7 +84,7 @@ export function ShowcaseShell({
       {intro && <p className="mb-4 max-w-lg text-sm leading-relaxed text-foreground/70">{intro}</p>}
       {legend && <div className="mb-5">{legend}</div>}
 
-      <div className="flex flex-nowrap items-start justify-center gap-6 rounded-3xl bg-[rgba(217,208,227,0.4)] px-6 pt-8">
+      <div className={`flex flex-nowrap items-start justify-center gap-6 rounded-3xl bg-[rgba(217,208,227,0.4)] px-6 pt-8 ${extraBottomSpace ? 'pb-8' : ''}`}>
         <div className="shrink-0">
           <p className="mb-3 text-center text-xs font-medium tracking-wide text-foreground/40">
             {beforeLabel}
