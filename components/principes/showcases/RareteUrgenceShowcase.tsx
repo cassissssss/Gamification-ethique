@@ -1,6 +1,6 @@
 import { Flame, X, ArrowRight } from 'lucide-react'
-import { ShowcaseShell } from '@/components/principes/ShowcaseShell'
-import { Hotspot } from '@/components/principes/Hotspot'
+import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
+import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 
 const DAYS = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']
 
@@ -29,7 +29,13 @@ function WeekRow({
               <Flame className="h-6 w-6 fill-orange-400 text-orange-400" aria-hidden="true" />
             </span>
           ) : (
-            <span className={`h-8 w-8 rounded-full ${i === hotspotIndex ? 'bg-primary/20' : 'bg-primary/10'}`} />
+            <span
+              className={
+                i === hotspotIndex
+                  ? 'inline-block h-8 w-8 rounded-full border-2 border-primary/40 bg-primary/10'
+                  : 'inline-block h-8 w-8 rounded-full bg-primary/10'
+              }
+            />
           )
 
         return (

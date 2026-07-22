@@ -182,7 +182,7 @@ export default function ComprendrePage() {
             </h2>
             <p className="mb-10 text-base leading-relaxed text-foreground/70">
               Une analyse IA complémentaire est disponible sur la page résultats.
-              Son rôle est strictement limité : elle intervient après le framework,  pas à sa place.
+              Son rôle est strictement limité : elle intervient après le questionnaire,  pas à sa place.
             </p>
           </div>
 

@@ -2,20 +2,21 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { principles } from '@/data/principles'
+import { resources } from '@/data/resources'
 import {
   Lightbulb,
   BookOpen,
   LibraryBig,
 } from 'lucide-react'
 import { PrincipleExample } from '@/components/principes/PrincipleExample'
-import { ProgressionShowcase } from '@/components/principes/ProgressionShowcase'
-import { RareteUrgenceShowcase } from '@/components/principes/RareteUrgenceShowcase'
-import { TransparenceShowcase } from '@/components/principes/TransparenceShowcase'
-import { AutonomieShowcase } from '@/components/principes/AutonomieShowcase'
-import { FeedbackShowcase } from '@/components/principes/FeedbackShowcase'
-import { RecompensesShowcase } from '@/components/principes/RecompensesShowcase'
-import { ComparaisonSocialeShowcase } from '@/components/principes/ComparaisonSocialeShowcase'
-import { ChoixContraintShowcase } from '@/components/principes/ChoixContraintShowcase'
+import { ProgressionShowcase } from '@/components/principes/showcases/ProgressionShowcase'
+import { RareteUrgenceShowcase } from '@/components/principes/showcases/RareteUrgenceShowcase'
+import { TransparenceShowcase } from '@/components/principes/showcases/TransparenceShowcase'
+import { AutonomieShowcase } from '@/components/principes/showcases/AutonomieShowcase'
+import { FeedbackShowcase } from '@/components/principes/showcases/FeedbackShowcase'
+import { RecompensesShowcase } from '@/components/principes/showcases/RecompensesShowcase'
+import { ComparaisonSocialeShowcase } from '@/components/principes/showcases/ComparaisonSocialeShowcase'
+import { ChoixContraintShowcase } from '@/components/principes/showcases/ChoixContraintShowcase'
 
 export async function generateStaticParams() {
   return principles.map((p) => ({ slug: p.slug }))
@@ -42,6 +43,10 @@ export default async function PrincipleDetailPage({
   if (!principe) notFound()
 
   const currentIndex = principles.findIndex((p) => p.slug === slug)
+  const citedTitles = new Set(principe.references.map((ref) => ref.title.toLowerCase()))
+  const relatedResources = resources.filter(
+    (r) => r.relatedPrinciples?.includes(slug) && !citedTitles.has(r.title.toLowerCase()),
+  )
   const prevPrincipe = principles[currentIndex - 1] ?? null
   const nextPrincipe = principles[currentIndex + 1] ?? null
   const paragraphs = principe.content.split('\n\n').map((p) => p.trim()).filter(Boolean)
@@ -50,41 +55,35 @@ export default async function PrincipleDetailPage({
     <div className="flex flex-col">
 
       {/* ── En-tête ───────────────────────────────────────────────────────── */}
-      <section
-        aria-labelledby="principe-heading"
-        className="w-full"
-        style={{ background: 'rgba(231, 225, 218, 0.4)' }}
-      >
-        <div className="mx-auto max-w-6xl px-6 py-14">
+      <section aria-labelledby="principe-heading" className="mx-auto w-full max-w-[68rem] px-6 py-14">
 
-          {/* Fil d'Ariane */}
-          <nav
-            aria-label="Fil d'Ariane"
-            className="mb-8 flex items-center gap-2 text-xs text-foreground/50"
+        {/* Fil d'Ariane */}
+        <nav
+          aria-label="Fil d'Ariane"
+          className="mb-8 flex items-center gap-2 text-xs text-foreground/50"
+        >
+          <Link href="/principes" className="transition-colors hover:text-primary">
+            Principes
+          </Link>
+          <span aria-hidden="true">›</span>
+          <span className="text-foreground/80">{principe.title}</span>
+        </nav>
+
+        <div className="max-w-2xl">
+          <h1
+            id="principe-heading"
+            className="mb-5 text-4xl font-semibold leading-tight text-foreground md:text-5xl"
           >
-            <Link href="/principes" className="transition-colors hover:text-primary">
-              Principes
-            </Link>
-            <span aria-hidden="true">›</span>
-            <span className="text-foreground/80">{principe.title}</span>
-          </nav>
-
-          <div className="max-w-2xl">
-            <h1
-              id="principe-heading"
-              className="mb-5 text-4xl font-semibold leading-tight text-foreground md:text-5xl"
-            >
-              {principe.title}
-            </h1>
-            <p className="text-lg leading-relaxed text-foreground/80">
-              {principe.shortDescription}
-            </p>
-          </div>
+            {principe.title}
+          </h1>
+          <p className="text-lg leading-relaxed text-foreground/80">
+            {principe.shortDescription}
+          </p>
         </div>
       </section>
 
       {/* ── Contenu ───────────────────────────────────────────────────────── */}
-      <div className="mx-auto w-full max-w-6xl px-6 py-16">
+      <div className="mx-auto w-full max-w-[68rem] px-6 py-16">
         <div className="grid gap-16 lg:grid-cols-[1fr_300px] lg:items-start">
 
           {/* Colonne principale */}
@@ -205,6 +204,46 @@ export default async function PrincipleDetailPage({
                 ))}
               </ul>
             </section>
+
+            {/* Pour aller plus loin — simple teaser vers la bibliothèque de
+                ressources, pas une seconde bibliographie : liens cliquables
+                seulement, sans dupliquer le format auteur/année déjà utilisé
+                dans Références. Affichée seulement si une ressource distincte
+                (non déjà citée) y est rattachée. */}
+            {relatedResources.length > 0 && (
+              <section aria-labelledby="ressources-liees-heading">
+                <div className="mb-3 flex items-center gap-2">
+                  <LibraryBig className="h-4 w-4 text-primary" />
+                  <h2 id="ressources-liees-heading" className="text-lg font-semibold text-foreground">
+                    Pour aller plus loin
+                  </h2>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {relatedResources.map((resource) => (
+                    <li key={resource.id}>
+                      <a
+                        href={resource.url}
+                        className="text-sm font-semibold text-foreground underline decoration-foreground/20 underline-offset-2 hover:text-primary"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {resource.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/ressources"
+                  className={[
+                    'mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline underline-offset-2',
+                    'transition-opacity hover:opacity-70',
+                    'focus-visible:rounded focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
+                  ].join(' ')}
+                >
+                  Voir toutes les ressources →
+                </Link>
+              </section>
+            )}
 
             {/* Navigation précédent / suivant */}
             <nav

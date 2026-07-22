@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Flame, TriangleAlert, Clock } from 'lucide-react'
-import { ProgressionShowcase } from '@/components/principes/ProgressionShowcase'
+import { ProgressionShowcase } from '@/components/principes/showcases/ProgressionShowcase'
 
 const howItWorks = [
   {
@@ -131,11 +131,11 @@ export default function HomePage() {
             id="demo-heading"
             className="mb-4 text-3xl font-semibold text-foreground"
           >
-            Voyez l'outil à l'œuvre
+            Pas une simple checklist
           </h2>
           <p className="text-base leading-relaxed text-foreground/70">
-            Contrairement à une checklist statique, chaque recommandation s'observe
-            directement sur une interface. Survolez les éléments pour voir ce qui change.
+            Chaque recommandation s'observe directement sur une interface,
+            pas dans une liste à cocher. Survolez les éléments pour voir ce qui change.
           </p>
         </div>
 

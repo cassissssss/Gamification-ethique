@@ -1,6 +1,6 @@
 import { X, Check, ArrowRight } from 'lucide-react'
-import { ShowcaseShell } from '@/components/principes/ShowcaseShell'
-import { Hotspot } from '@/components/principes/Hotspot'
+import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
+import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 
 function IconBadge({ tone }: { tone: 'danger' | 'positive' }) {
   const Icon = tone === 'danger' ? X : Check

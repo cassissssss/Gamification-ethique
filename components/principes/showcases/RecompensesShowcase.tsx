@@ -1,7 +1,7 @@
 import { Gift, Trophy } from 'lucide-react'
-import { PhoneStatusBar } from '@/components/principes/PhoneStatusBar'
-import { ShowcaseShell } from '@/components/principes/ShowcaseShell'
-import { Hotspot } from '@/components/principes/Hotspot'
+import { PhoneStatusBar } from '@/components/principes/showcases/shared/PhoneStatusBar'
+import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
+import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 
 export function RecompensesShowcase() {
   return (

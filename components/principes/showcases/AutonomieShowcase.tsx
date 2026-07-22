@@ -1,7 +1,7 @@
 import { Target, ArrowRight, CircleDot, Circle } from 'lucide-react'
-import { PhoneStatusBar } from '@/components/principes/PhoneStatusBar'
-import { ShowcaseShell } from '@/components/principes/ShowcaseShell'
-import { Hotspot } from '@/components/principes/Hotspot'
+import { PhoneStatusBar } from '@/components/principes/showcases/shared/PhoneStatusBar'
+import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
+import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 
 function Card({ children }: { children: React.ReactNode }) {
   return (

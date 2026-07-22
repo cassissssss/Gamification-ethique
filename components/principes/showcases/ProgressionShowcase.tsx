@@ -1,7 +1,7 @@
 import { ArrowRight, Book, ChevronRight } from 'lucide-react'
-import { PhoneStatusBar } from '@/components/principes/PhoneStatusBar'
-import { ShowcaseShell } from '@/components/principes/ShowcaseShell'
-import { Hotspot, PrincipleLegend } from '@/components/principes/Hotspot'
+import { PhoneStatusBar } from '@/components/principes/showcases/shared/PhoneStatusBar'
+import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
+import { Hotspot, PrincipleLegend } from '@/components/principes/showcases/shared/Hotspot'
 
 export function ProgressionShowcase({ compact = false }: { compact?: boolean } = {}) {
   return (

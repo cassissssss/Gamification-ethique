@@ -66,7 +66,7 @@ export function Hotspot({
       </div>
       <div
         className={[
-          'pointer-events-none absolute z-10 w-[200px] rounded-xl bg-white p-3 opacity-0 shadow-lg',
+          'pointer-events-none absolute z-10 w-[200px] rounded-xl bg-white p-3 text-left opacity-0 shadow-lg',
           'transition-all duration-150',
           direction === 'up' ? 'bottom-full mb-2 translate-y-1' : 'top-full mt-2 translate-y-0.5',
           'group-hover/hz:translate-y-0 group-hover/hz:opacity-100',

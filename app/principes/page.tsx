@@ -2,30 +2,30 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import type { LucideIcon } from 'lucide-react'
 import {
-  Eye,  Unlock,  TrendingUp,  MessageCircle,  Gift,  Users,  Zap,  Scale, 
-  Flame,  CircleCheck,  ArrowDown, 
+  Eye, Unlock, TrendingUp, MessageCircle, Gift, Users, Zap, Scale,
 } from 'lucide-react'
 import { principles } from '@/data/principles'
 import { PrincipleCard } from '@/components/principes/PrincipleCard'
+import { RareteUrgenceShowcase } from '@/components/principes/showcases/RareteUrgenceShowcase'
 
 export const metadata: Metadata = {
-  title: 'Principes', 
-  description: `Les huit principes d'une gamification éthique qui servent de repères concrets pour la conception et les recommandations.`, 
+  title: 'Principes',
+  description: `Les huit principes d'une gamification éthique qui servent de repères concrets pour la conception et les recommandations.`,
 }
 
-const PRINCIPLE_ICONS: Record<string,  LucideIcon> = {
-  'transparence':          Eye, 
-  'autonomie':             Unlock, 
-  'progression':           TrendingUp, 
-  'feedback':              MessageCircle, 
-  'recompenses':           Gift, 
-  'comparaison-sociale':   Users, 
-  'rarete-urgence':        Zap, 
-  'choix-contraint':       Scale, 
+const PRINCIPLE_ICONS: Record<string, LucideIcon> = {
+  'transparence':          Eye,
+  'autonomie':             Unlock,
+  'progression':           TrendingUp,
+  'feedback':              MessageCircle,
+  'recompenses':           Gift,
+  'comparaison-sociale':   Users,
+  'rarete-urgence':        Zap,
+  'choix-contraint':       Scale,
 }
 
 // Exemple concret tiré des données réelles du principe (pas un exemple
-// inventé), répond au manque de preuves relevé sur cette page.
+// inventé) — répond au manque de preuves relevé sur cette page.
 const exampleSlug = 'rarete-urgence'
 const examplePrinciple = principles.find((p) => p.slug === exampleSlug)!
 
@@ -46,7 +46,7 @@ export default function PrincipesPage() {
           </h1>
           <p className="text-base leading-relaxed text-foreground/80">
             Les huit principes ci-dessous constituent le cadre éthique utilisé
-            par le framework pour analyser les mécaniques de gamification et
+            par l'outil pour analyser les mécaniques de gamification et
             formuler ses recommandations. Chacun relie un risque identifié à
             un repère concret de conception.
           </p>
@@ -67,11 +67,11 @@ export default function PrincipesPage() {
 
       {/* ── Exemple concret ───────────────────────────────────────────────── */}
       {/* Répond au manque de preuves de la page : montre comment un principe
-          se traduit concrètement,  avec le vrai contenu du principe choisi. */}
+          se traduit concrètement, avec le vrai contenu du principe choisi. */}
       <section aria-labelledby="exemple-heading" className="mx-auto w-full max-w-[62rem] px-6 py-16">
         <div className="max-w-2xl">
           <h2 id="exemple-heading" className="mb-3 text-3xl font-semibold text-foreground">
-            Un principe,  en pratique
+            Un principe, en pratique
           </h2>
           <p className="mb-10 text-base leading-relaxed text-foreground/70">
             Voici comment le principe « {examplePrinciple.title} » se traduit
@@ -79,34 +79,7 @@ export default function PrincipesPage() {
           </p>
         </div>
 
-        <div className="max-w-md rounded-3xl border border-border bg-white/60 p-6">
-          <p className="mb-4 text-xs font-medium tracking-wide text-foreground/40">
-            {examplePrinciple.title}
-          </p>
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-full rounded-2xl bg-[var(--color-danger)]/5 p-4">
-              <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-[var(--color-danger)]">
-                <Flame className="h-3.5 w-3.5" aria-hidden="true" />
-                À éviter
-              </p>
-              <p className="text-sm leading-relaxed text-foreground/80">
-                « {examplePrinciple.avoid[0]} »
-              </p>
-            </div>
-
-            <ArrowDown className="h-4 w-4 shrink-0 text-foreground/30" aria-hidden="true" />
-
-            <div className="w-full rounded-2xl bg-[var(--color-positive)]/5 p-4">
-              <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-[var(--color-positive)]">
-                <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                À privilégier
-              </p>
-              <p className="text-sm leading-relaxed text-foreground/80">
-                « {examplePrinciple.goodPractices[0]} »
-              </p>
-            </div>
-          </div>
-        </div>
+        <RareteUrgenceShowcase />
       </section>
 
       {/* ── Pourquoi ──────────────────────────────────────────────────────── */}
@@ -118,13 +91,13 @@ export default function PrincipesPage() {
           <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground/80">
             <p>
               Ces principes ne sont pas des règles absolues à suivre à la
-              lettre. Ils servent de repères pour nommer les risques,  arbitrer
+              lettre. Ils servent de repères pour nommer les risques, arbitrer
               les choix d'interface et justifier les recommandations auprès
               d'une équipe ou d'un client.
             </p>
             <p>
               Les principes sont aussi utiles en dehors de l'outil : ils peuvent
-              servir de base pour une revue de conception,  un brief client ou
+              servir de base pour une revue de conception, un brief client ou
               une discussion en équipe sur les compromis à faire.
             </p>
           </div>
@@ -136,7 +109,7 @@ export default function PrincipesPage() {
         <div className="mx-auto max-w-[56rem] px-6">
           <div
             className="rounded-[2rem] px-8 py-16 text-center sm:px-16"
-            style={{ background: 'rgba(74, 45, 87, 0.06)' }}
+            style={{ background: 'rgba(74,45,87,0.06)' }}
           >
             <h2
               id="cta-principes-heading"
@@ -154,9 +127,9 @@ export default function PrincipesPage() {
               <Link
                 href="/evaluation"
                 className={[
-                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold', 
-                  'bg-primary text-primary-foreground transition-opacity hover:opacity-90', 
-                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary', 
+                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold',
+                  'bg-primary text-primary-foreground transition-opacity hover:opacity-90',
+                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
                 ].join(' ')}
               >
                 Lancer l'évaluation
@@ -164,11 +137,11 @@ export default function PrincipesPage() {
               <Link
                 href="/comprendre"
                 className={[
-                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold text-primary', 
-                  'transition-all hover:bg-white/60', 
-                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary', 
+                  'inline-flex items-center rounded-xl px-8 py-4 text-base font-semibold text-primary',
+                  'transition-all hover:bg-white/60',
+                  'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary',
                 ].join(' ')}
-                style={{ boxShadow: '0 0 0 1.5px rgba(74, 45, 87, 0.4)' }}
+                style={{ boxShadow: '0 0 0 1.5px rgba(74,45,87,0.4)' }}
               >
                 Comprendre la démarche
               </Link>

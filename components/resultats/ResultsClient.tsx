@@ -1,25 +1,25 @@
 'use client'
 
-import { useEffect,  useMemo,  useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Sheet,  SheetContent,  SheetTitle,  SheetTrigger } from '@/components/ui/sheet'
-import { clearAnswers,  loadAnswers } from '@/lib/storage'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { clearAnswers, loadAnswers } from '@/lib/storage'
 import { evaluateAnswers } from '@/logic/evaluationEngine'
 import { buildAiPrompt } from '@/lib/evaluation/ai-prompt'
 import type {
-  ContradictionResult, 
-  EvaluationAnswers, 
-  EvaluationResult, 
-  GlobalOrientationId, 
-  MechanicAlternative, 
-  OptionId, 
-  PositiveRecommendation, 
-  QuestionId, 
-  RecommendationDeepDive, 
-  RiskLevel, 
-  RiskThemeResult, 
+  ContradictionResult,
+  EvaluationAnswers,
+  EvaluationResult,
+  GlobalOrientationId,
+  MechanicAlternative,
+  OptionId,
+  PositiveRecommendation,
+  QuestionId,
+  RecommendationDeepDive,
+  RiskLevel,
+  RiskThemeResult,
 } from '@/logic/evaluation.types'
 
 interface StoredAnswer {
@@ -36,12 +36,12 @@ interface MechanicVisualExample {
 
 // ─── Liste unifiée de priorités ───────────────────────────────────────────────
 //
-// Contradictions,  thématiques de vigilance,  mécaniques à adapter,  synergies et
+// Contradictions, thématiques de vigilance, mécaniques à adapter, synergies et
 // recommandations positives sont fondamentalement la même chose du point de
-// vue de la lecture : un point à connaître,  avec un niveau,  un pourquoi et une
-// action. On les combine donc dans UNE seule liste,  triée par niveau,  plutôt
-// que de leur donner chacun un gabarit visuel différent (bloc plein écran, 
-// liste numérotée,  grille de cartes,  accordéons séparés).
+// vue de la lecture : un point à connaître, avec un niveau, un pourquoi et une
+// action. On les combine donc dans UNE seule liste, triée par niveau, plutôt
+// que de leur donner chacun un gabarit visuel différent (bloc plein écran,
+// liste numérotée, grille de cartes, accordéons séparés).
 
 interface MechanicChipInfo {
   label: string
@@ -65,12 +65,12 @@ interface PriorityItem {
   tier: PriorityItemTier
 }
 
-// Une thématique de risque,  une contradiction ou une synergie sont toujours
+// Une thématique de risque, une contradiction ou une synergie sont toujours
 // de vrais enjeux de conception : elles restent des fiches complètes quel
-// que soit leur niveau. Une mécanique ou une recommandation positive,  en
-// revanche,  ne devient une fiche complète que si sa vigilance est élevée , 
-// sinon elle reste une piste compacte,  plus proche d'une bonne pratique.
-function getItemTier(source: PriorityItemSource,  level: RiskLevel): PriorityItemTier {
+// que soit leur niveau. Une mécanique ou une recommandation positive, en
+// revanche, ne devient une fiche complète que si sa vigilance est élevée —
+// sinon elle reste une piste compacte, plus proche d'une bonne pratique.
+function getItemTier(source: PriorityItemSource, level: RiskLevel): PriorityItemTier {
   if (source === 'contradiction' || source === 'risk' || source === 'synergy') {
     return 'major'
   }
@@ -78,101 +78,140 @@ function getItemTier(source: PriorityItemSource,  level: RiskLevel): PriorityIte
   return level === 'critical' || level === 'high' ? 'major' : 'secondary'
 }
 
-// Libellé court par mécanique,  affiché comme un tag discret (sans icône , 
-// la hiérarchie vient de la typographie,  pas de la décoration).
-const MECHANIC_CHIP_INFO: Partial<Record<OptionId,  MechanicChipInfo>> = {
-  points_score: { label: 'Points' }, 
-  badges_trophies: { label: 'Badges' }, 
-  levels: { label: 'Niveaux' }, 
-  progress_bar: { label: 'Progression' }, 
-  challenges_missions: { label: 'Défis' }, 
-  ranking: { label: 'Classement' }, 
-  rewards_benefits: { label: 'Récompenses' }, 
-  notifications_reminders: { label: 'Rappels' }, 
-  streak: { label: 'Série' }, 
-  personalized_goals: { label: 'Objectifs personnalisés' }, 
-  visual_feedback: { label: 'Feedback' }, 
-  comparison_users: { label: 'Comparaison' }, 
-  random_reward: { label: 'Récompense aléatoire' }, 
+// Un point est soit un risque structurel (contradiction, thématique,
+// synergie), soit une mécanique à adapter, soit une bonne pratique déjà en
+// place — cette distinction sert de critère de filtre par type.
+type SourceGroup = 'structural' | 'mechanic' | 'recommendation'
+
+const SOURCE_GROUP_LABELS: Record<SourceGroup, string> = {
+  structural: 'Risques structurels',
+  mechanic: 'Mécaniques à adapter',
+  recommendation: 'Bonnes pratiques',
+}
+
+function getSourceGroup(source: PriorityItemSource): SourceGroup {
+  if (source === 'mechanic') return 'mechanic'
+  if (source === 'recommendation') return 'recommendation'
+  return 'structural'
+}
+
+// ─── Filtres ───────────────────────────────────────────────────────────────
+//
+// Réduisent la liste affichée, sur deux critères qui existent réellement
+// dans les données (niveau de vigilance, type de point) — pas de donnée
+// fabriquée pour l'occasion.
+type LevelFilter = 'all' | RiskLevel
+type TypeFilter = 'all' | SourceGroup
+
+const LEVEL_FILTER_ORDER: RiskLevel[] = ['critical', 'high', 'moderate', 'low', 'none']
+
+function filterPriorityItems(
+  items: PriorityItem[],
+  levelFilter: LevelFilter,
+  typeFilter: TypeFilter,
+): PriorityItem[] {
+  return items.filter((item) => {
+    const matchesLevel = levelFilter === 'all' || item.level === levelFilter
+    const matchesType = typeFilter === 'all' || getSourceGroup(item.source) === typeFilter
+    return matchesLevel && matchesType
+  })
+}
+
+// Libellé court par mécanique, affiché comme un tag discret (sans icône —
+// la hiérarchie vient de la typographie, pas de la décoration).
+const MECHANIC_CHIP_INFO: Partial<Record<OptionId, MechanicChipInfo>> = {
+  points_score: { label: 'Points' },
+  badges_trophies: { label: 'Badges' },
+  levels: { label: 'Niveaux' },
+  progress_bar: { label: 'Progression' },
+  challenges_missions: { label: 'Défis' },
+  ranking: { label: 'Classement' },
+  rewards_benefits: { label: 'Récompenses' },
+  notifications_reminders: { label: 'Rappels' },
+  streak: { label: 'Série' },
+  personalized_goals: { label: 'Objectifs personnalisés' },
+  visual_feedback: { label: 'Feedback' },
+  comparison_users: { label: 'Comparaison' },
+  random_reward: { label: 'Récompense aléatoire' },
 }
 
 const INITIAL_VISIBLE_ITEMS = 8
 
-const riskLevelLabels: Record<RiskLevel,  string> = {
-  none: 'Aucun signal', 
-  low: 'Vigilance faible', 
-  moderate: 'Vigilance modérée', 
-  high: 'Vigilance élevée', 
-  critical: 'Vigilance critique', 
+const riskLevelLabels: Record<RiskLevel, string> = {
+  none: 'Aucun signal',
+  low: 'Vigilance faible',
+  moderate: 'Vigilance modérée',
+  high: 'Vigilance élevée',
+  critical: 'Vigilance critique',
 }
 
-// Le diagnostic global ne connaît que 5 issues (jamais "critique", ce niveau
+// Le diagnostic global ne connaît que 5 issues (jamais "critique" — ce niveau
 // n'existe qu'au niveau d'une thématique ou d'une mécanique précise). On
-// mappe donc chaque id vers le niveau qui reflète fidèlement son intitulé, 
+// mappe donc chaque id vers le niveau qui reflète fidèlement son intitulé,
 // plutôt que de reprendre la sévérité du pire point du détail.
-const GLOBAL_ORIENTATION_LEVEL: Record<GlobalOrientationId,  RiskLevel> = {
-  clarify_before_deciding: 'moderate', 
-  high_vigilance_required: 'high', 
-  adapt_mechanics: 'high', 
-  gamification_under_conditions: 'moderate', 
-  light_gamification_recommended: 'low', 
+const GLOBAL_ORIENTATION_LEVEL: Record<GlobalOrientationId, RiskLevel> = {
+  clarify_before_deciding: 'moderate',
+  high_vigilance_required: 'high',
+  adapt_mechanics: 'high',
+  gamification_under_conditions: 'moderate',
+  light_gamification_recommended: 'low',
 }
 
-// Badges de niveau très discrets (esprit Linear/Notion) : fond quasi neutre, 
-// pas de contour,  la couleur n'apparaît que sur le texte et seulement à
+// Badges de niveau très discrets (esprit Linear/Notion) : fond quasi neutre,
+// pas de contour, la couleur n'apparaît que sur le texte et seulement à
 // partir du niveau élevé.
-const riskLevelStyles: Record<RiskLevel,  string> = {
-  none: 'bg-foreground/5 text-foreground/60', 
-  low: 'bg-foreground/5 text-foreground/60', 
-  moderate: 'bg-foreground/5 text-foreground/70', 
-  high: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]', 
-  critical: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]', 
+const riskLevelStyles: Record<RiskLevel, string> = {
+  none: 'bg-foreground/5 text-foreground/60',
+  low: 'bg-foreground/5 text-foreground/60',
+  moderate: 'bg-foreground/5 text-foreground/70',
+  high: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]',
+  critical: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]',
 }
 
-// Fond de carte neutre,  avec une teinte à peine perceptible pour les niveaux
-// élevés, la couleur de vigilance reste la seule variation chromatique.
-const priorityCardStyles: Record<RiskLevel,  string> = {
-  critical: 'bg-[var(--color-danger)]/[0.025] border-border', 
-  high: 'bg-[var(--color-warning)]/[0.03] border-border', 
-  moderate: 'bg-transparent border-border', 
-  low: 'bg-transparent border-border', 
-  none: 'bg-transparent border-border', 
+// Fond de carte neutre, avec une teinte à peine perceptible pour les niveaux
+// élevés — la couleur de vigilance reste la seule variation chromatique.
+const priorityCardStyles: Record<RiskLevel, string> = {
+  critical: 'bg-[var(--color-danger)]/[0.025] border-border',
+  high: 'bg-[var(--color-warning)]/[0.03] border-border',
+  moderate: 'bg-transparent border-border',
+  low: 'bg-transparent border-border',
+  none: 'bg-transparent border-border',
 }
 
-const priorityLevelWeight: Record<RiskLevel,  number> = {
-  critical: 5, 
-  high: 4, 
-  moderate: 3, 
-  low: 2, 
-  none: 1, 
+const priorityLevelWeight: Record<RiskLevel, number> = {
+  critical: 5,
+  high: 4,
+  moderate: 3,
+  low: 2,
+  none: 1,
 }
 
-const priorityLabels: Record<PositiveRecommendation['priority'],  string> = {
-  high: 'Priorité haute', 
-  medium: 'Priorité moyenne', 
-  low: 'Priorité basse', 
+const priorityLabels: Record<PositiveRecommendation['priority'], string> = {
+  high: 'Priorité haute',
+  medium: 'Priorité moyenne',
+  low: 'Priorité basse',
 }
 
-const priorityToLevel: Record<PositiveRecommendation['priority'],  RiskLevel> = {
-  high: 'high', 
-  medium: 'moderate', 
-  low: 'low', 
+const priorityToLevel: Record<PositiveRecommendation['priority'], RiskLevel> = {
+  high: 'high',
+  medium: 'moderate',
+  low: 'low',
 }
 
-const severityLabels: Record<ContradictionResult['severity'],  string> = {
-  blocking: 'À clarifier en priorité', 
-  warning: 'Point de vigilance', 
-  info: 'Information', 
+const severityLabels: Record<ContradictionResult['severity'], string> = {
+  blocking: 'À clarifier en priorité',
+  warning: 'Point de vigilance',
+  info: 'Information',
 }
 
-const severityToLevel: Record<ContradictionResult['severity'],  RiskLevel> = {
-  blocking: 'critical', 
-  warning: 'high', 
-  info: 'low', 
+const severityToLevel: Record<ContradictionResult['severity'], RiskLevel> = {
+  blocking: 'critical',
+  warning: 'high',
+  info: 'low',
 }
 
 function toEvaluationAnswers(storedAnswers: StoredAnswer[]): EvaluationAnswers {
-  return storedAnswers.reduce<EvaluationAnswers>((accumulator,  answer) => {
+  return storedAnswers.reduce<EvaluationAnswers>((accumulator, answer) => {
     if (!answer.questionId || answer.selectedOptionIds.length === 0) {
       return accumulator
     }
@@ -184,7 +223,7 @@ function toEvaluationAnswers(storedAnswers: StoredAnswer[]): EvaluationAnswers {
       selectedOptionIds.length === 1 ? selectedOptionIds[0] : selectedOptionIds
 
     return accumulator
-  },  {})
+  }, {})
 }
 
 function getActiveRiskThemes(result: EvaluationResult): RiskThemeResult[] {
@@ -192,67 +231,67 @@ function getActiveRiskThemes(result: EvaluationResult): RiskThemeResult[] {
 }
 
 function getMechanicVisualExample(
-  mechanic: MechanicAlternative, 
+  mechanic: MechanicAlternative,
 ): MechanicVisualExample {
-  const examples: Record<string,  MechanicVisualExample> = {
+  const examples: Record<string, MechanicVisualExample> = {
     mechanic_streak: {
-      before: 'Série de 12 jours, ne perdez pas votre progression.', 
-      after: 'Vous pouvez reprendre là où vous vous êtes arrêté-e.', 
-    }, 
+      before: 'Série de 12 jours — ne perdez pas votre progression.',
+      after: 'Vous pouvez reprendre là où vous vous êtes arrêté-e.',
+    },
     mechanic_ranking: {
-      before: 'Vous êtes 18e sur 42 participant-es.', 
-      after: 'Votre progression personnelle a augmenté cette semaine.', 
-    }, 
+      before: 'Vous êtes 18e sur 42 participant-es.',
+      after: 'Votre progression personnelle a augmenté cette semaine.',
+    },
     mechanic_comparison_users: {
-      before: 'Vous faites moins bien que 64% des utilisateur-rices.', 
-      after: 'Objectif collectif atteint à 72%. Chaque contribution compte.', 
-    }, 
+      before: 'Vous faites moins bien que 64% des utilisateur-rices.',
+      after: 'Objectif collectif atteint à 72%. Chaque contribution compte.',
+    },
     mechanic_rewards_benefits: {
-      before: 'Agissez maintenant pour débloquer votre avantage.', 
-      after: 'Avantage disponible après une action utile,  sans urgence artificielle.', 
-    }, 
+      before: 'Agissez maintenant pour débloquer votre avantage.',
+      after: 'Avantage disponible après une action utile, sans urgence artificielle.',
+    },
     mechanic_notifications_reminders: {
-      before: 'Revenez maintenant pour ne pas perdre votre avancée.', 
-      after: 'Souhaitez-vous recevoir un rappel plus tard ?', 
-    }, 
+      before: 'Revenez maintenant pour ne pas perdre votre avancée.',
+      after: 'Souhaitez-vous recevoir un rappel plus tard ?',
+    },
     mechanic_badges_trophies: {
-      before: 'Badge affiché publiquement après chaque micro-action.', 
-      after: 'Badge discret dans un récapitulatif personnel.', 
-    }, 
+      before: 'Badge affiché publiquement après chaque micro-action.',
+      after: 'Badge discret dans un récapitulatif personnel.',
+    },
     mechanic_levels: {
-      before: 'Niveau insuffisant pour accéder à cette fonctionnalité.', 
-      after: 'Étape suivante proposée,  avec accès au parcours principal conservé.', 
-    }, 
+      before: 'Niveau insuffisant pour accéder à cette fonctionnalité.',
+      after: 'Étape suivante proposée, avec accès au parcours principal conservé.',
+    },
     mechanic_progress_bar: {
-      before: 'Plus que 5 étapes à terminer maintenant.', 
-      after: 'Étape 2 sur 5, vous pouvez reprendre plus tard.', 
-    }, 
+      before: 'Plus que 5 étapes à terminer maintenant.',
+      after: 'Étape 2 sur 5 — vous pouvez reprendre plus tard.',
+    },
     mechanic_points_score: {
-      before: '+50 points pour chaque action réalisée.', 
-      after: 'Action complétée,  progression mise à jour.', 
-    }, 
+      before: '+50 points pour chaque action réalisée.',
+      after: 'Action complétée, progression mise à jour.',
+    },
     mechanic_challenges_missions: {
-      before: 'Mission obligatoire pour continuer.', 
-      after: 'Défi optionnel proposé pour explorer une fonctionnalité.', 
-    }, 
+      before: 'Mission obligatoire pour continuer.',
+      after: 'Défi optionnel proposé pour explorer une fonctionnalité.',
+    },
     mechanic_personalized_goals: {
-      before: 'Objectif imposé automatiquement.', 
-      after: 'Objectif proposé,  modifiable par l’utilisateur-rice.', 
-    }, 
+      before: 'Objectif imposé automatiquement.',
+      after: 'Objectif proposé, modifiable par l’utilisateur-rice.',
+    },
     mechanic_visual_feedback: {
-      before: 'Animation forte après chaque micro-action.', 
-      after: 'Confirmation simple : votre action a été enregistrée.', 
-    }, 
+      before: 'Animation forte après chaque micro-action.',
+      after: 'Confirmation simple : votre action a été enregistrée.',
+    },
     mechanic_random_reward: {
-      before: 'Tirage surprise à chaque connexion, tentez votre chance !', 
-      after: 'Bonus fixe annoncé à l’avance,  sans effet de tirage.', 
-    }, 
+      before: 'Tirage surprise à chaque connexion — tentez votre chance !',
+      after: 'Bonus fixe annoncé à l’avance, sans effet de tirage.',
+    },
   }
 
   return (
     examples[mechanic.id] ?? {
-      before: mechanic.possibleRisk, 
-      after: mechanic.ethicalAlternative, 
+      before: mechanic.possibleRisk,
+      after: mechanic.ethicalAlternative,
     }
   )
 }
@@ -260,16 +299,16 @@ function getMechanicVisualExample(
 function getPriorityItems(result: EvaluationResult): PriorityItem[] {
   const contradictionItems: PriorityItem[] = result.contradictions.map(
     (contradiction) => ({
-      id: contradiction.id, 
-      level: severityToLevel[contradiction.severity], 
-      category: severityLabels[contradiction.severity], 
-      title: contradiction.title, 
-      why: contradiction.message, 
-      action: contradiction.recommendation, 
-      deepDive: contradiction.deepDive, 
-      source: 'contradiction', 
-      tier: getItemTier('contradiction',  severityToLevel[contradiction.severity]), 
-    }), 
+      id: contradiction.id,
+      level: severityToLevel[contradiction.severity],
+      category: severityLabels[contradiction.severity],
+      title: contradiction.title,
+      why: contradiction.message,
+      action: contradiction.recommendation,
+      deepDive: contradiction.deepDive,
+      source: 'contradiction',
+      tier: getItemTier('contradiction', severityToLevel[contradiction.severity]),
+    }),
   )
 
   const riskItems: PriorityItem[] = getActiveRiskThemes(result).map((theme) => {
@@ -277,84 +316,84 @@ function getPriorityItems(result: EvaluationResult): PriorityItem[] {
       new Set(
         theme.signals
           .filter((signal) => signal.questionId === 'Q12')
-          .map((signal) => signal.optionId), 
-      ), 
+          .map((signal) => signal.optionId),
+      ),
     )
 
     return {
-      id: theme.id, 
-      level: theme.level, 
-      category: 'Réduire le risque', 
-      title: theme.label, 
-      why: theme.summary, 
+      id: theme.id,
+      level: theme.level,
+      category: 'Réduire le risque',
+      title: theme.label,
+      why: theme.summary,
       action:
-        theme.recommendation ?? 'Clarifier cette thématique avant de valider la mécanique.', 
-      deepDive: theme.deepDive, 
+        theme.recommendation ?? 'Clarifier cette thématique avant de valider la mécanique.',
+      deepDive: theme.deepDive,
       relatedMechanics: mechanicOptionIds
         .map((optionId) => MECHANIC_CHIP_INFO[optionId])
-        .filter((chip): chip is MechanicChipInfo => Boolean(chip)), 
-      source: 'risk', 
-      tier: getItemTier('risk',  theme.level), 
+        .filter((chip): chip is MechanicChipInfo => Boolean(chip)),
+      source: 'risk',
+      tier: getItemTier('risk', theme.level),
     }
   })
 
   const synergyItems: PriorityItem[] = result.synergyResults.map((synergy) => ({
-    id: synergy.id, 
-    level: synergy.level, 
-    category: 'Combinaison à risque', 
-    title: synergy.title, 
-    why: synergy.message, 
-    action: synergy.recommendation, 
-    deepDive: synergy.deepDive, 
-    source: 'synergy', 
-    tier: getItemTier('synergy',  synergy.level), 
+    id: synergy.id,
+    level: synergy.level,
+    category: 'Combinaison à risque',
+    title: synergy.title,
+    why: synergy.message,
+    action: synergy.recommendation,
+    deepDive: synergy.deepDive,
+    source: 'synergy',
+    tier: getItemTier('synergy', synergy.level),
   }))
 
   const mechanicItems: PriorityItem[] = result.mechanicsAlternatives.map(
     (mechanic) => ({
-      id: mechanic.id, 
-      level: mechanic.baseVigilanceLevel, 
-      category: 'Adapter une mécanique', 
-      title: mechanic.mechanicLabel, 
-      why: mechanic.possibleRisk, 
-      action: mechanic.ethicalAlternative, 
-      visualExample: getMechanicVisualExample(mechanic), 
-      deepDive: mechanic.deepDive, 
+      id: mechanic.id,
+      level: mechanic.baseVigilanceLevel,
+      category: 'Adapter une mécanique',
+      title: mechanic.mechanicLabel,
+      why: mechanic.possibleRisk,
+      action: mechanic.ethicalAlternative,
+      visualExample: getMechanicVisualExample(mechanic),
+      deepDive: mechanic.deepDive,
       relatedMechanics: MECHANIC_CHIP_INFO[mechanic.mechanicOptionId]
         ? [MECHANIC_CHIP_INFO[mechanic.mechanicOptionId] as MechanicChipInfo]
-        : undefined, 
-      source: 'mechanic', 
-      tier: getItemTier('mechanic',  mechanic.baseVigilanceLevel), 
-    }), 
+        : undefined,
+      source: 'mechanic',
+      tier: getItemTier('mechanic', mechanic.baseVigilanceLevel),
+    }),
   )
 
   const recommendationItems: PriorityItem[] = result.positiveRecommendations.map(
     (recommendation) => ({
-      id: recommendation.id, 
-      level: priorityToLevel[recommendation.priority], 
-      category: priorityLabels[recommendation.priority], 
-      title: recommendation.title, 
-      why: recommendation.insight, 
-      action: recommendation.recommendation, 
-      plainExample: recommendation.example, 
-      deepDive: recommendation.deepDive, 
-      source: 'recommendation', 
-      tier: getItemTier('recommendation',  priorityToLevel[recommendation.priority]), 
-    }), 
+      id: recommendation.id,
+      level: priorityToLevel[recommendation.priority],
+      category: priorityLabels[recommendation.priority],
+      title: recommendation.title,
+      why: recommendation.insight,
+      action: recommendation.recommendation,
+      plainExample: recommendation.example,
+      deepDive: recommendation.deepDive,
+      source: 'recommendation',
+      tier: getItemTier('recommendation', priorityToLevel[recommendation.priority]),
+    }),
   )
 
   const allItems = [
-    ...contradictionItems, 
-    ...riskItems, 
-    ...synergyItems, 
-    ...mechanicItems, 
-    ...recommendationItems, 
+    ...contradictionItems,
+    ...riskItems,
+    ...synergyItems,
+    ...mechanicItems,
+    ...recommendationItems,
   ]
 
-  // Tri stable : à niveau égal,  l’ordre d’origine est conservé (contradictions
-  // avant thématiques,  avant synergies,  avant mécaniques,  avant recommandations).
+  // Tri stable : à niveau égal, l’ordre d’origine est conservé (contradictions
+  // avant thématiques, avant synergies, avant mécaniques, avant recommandations).
   return allItems.sort(
-    (first,  second) => priorityLevelWeight[second.level] - priorityLevelWeight[first.level], 
+    (first, second) => priorityLevelWeight[second.level] - priorityLevelWeight[first.level],
   )
 }
 
@@ -362,40 +401,40 @@ function buildTextSummary(result: EvaluationResult): string {
   const priorityItems = getPriorityItems(result)
 
   return [
-    `Diagnostic : ${result.globalOrientation.title}`, 
-    '', 
-    result.globalOrientation.summary, 
-    '', 
-    `Prochaine étape : ${result.globalOrientation.nextStep}`, 
-    '', 
-    `Points identifiés : ${priorityItems.length}`, 
-    '', 
-    'Plan d’action,  du plus au moins prioritaire :', 
-    ...priorityItems.map((item,  index) => `${index + 1}. ${item.title}, ${item.action}`), 
+    `Diagnostic : ${result.globalOrientation.title}`,
+    '',
+    result.globalOrientation.summary,
+    '',
+    `Prochaine étape : ${result.globalOrientation.nextStep}`,
+    '',
+    `Points identifiés : ${priorityItems.length}`,
+    '',
+    'Plan d’action, du plus au moins prioritaire :',
+    ...priorityItems.map((item, index) => `${index + 1}. ${item.title} — ${item.action}`),
   ].join('\n')
 }
 
 function DiagnosticHero({
-  result, 
-  priorityItems, 
-  onNavigate, 
+  result,
+  priorityItems,
+  onNavigate,
 }: {
   result: EvaluationResult
   priorityItems: PriorityItem[]
   onNavigate: (id: string) => void
 }) {
   // Les « principaux sujets » sont les thématiques de risque les plus
-  // sévères, c'est ce qui donne le plus rapidement une idée de la nature
-  // du problème,  avant même d'ouvrir une seule fiche.
-  const mainSubjects = priorityItems.filter((item) => item.source === 'risk').slice(0,  3)
+  // sévères — c'est ce qui donne le plus rapidement une idée de la nature
+  // du problème, avant même d'ouvrir une seule fiche.
+  const mainSubjects = priorityItems.filter((item) => item.source === 'risk').slice(0, 3)
 
   const groupCounts = PLAN_GROUP_ORDER.map((group) => ({
-    group, 
-    count: priorityItems.filter((item) => getPlanGroup(item.level) === group).length, 
+    group,
+    count: priorityItems.filter((item) => getPlanGroup(item.level) === group).length,
   })).filter(({ count }) => count > 0)
 
-  // Niveau du badge : dérivé du diagnostic global affiché (son id),  pas du
-  // pire point individuel de la liste, un item "critique" isolé ne doit
+  // Niveau du badge : dérivé du diagnostic global affiché (son id), pas du
+  // pire point individuel de la liste — un item "critique" isolé ne doit
   // pas teinter le titre en rouge si le diagnostic global reste "élevée".
   const overallLevel = GLOBAL_ORIENTATION_LEVEL[result.globalOrientation.id]
 
@@ -417,7 +456,7 @@ function DiagnosticHero({
 
       {groupCounts.length > 0 && (
         <div className="mt-6 flex max-w-md flex-wrap gap-3">
-          {groupCounts.map(({ group,  count }) => (
+          {groupCounts.map(({ group, count }) => (
             <div key={group} className="rounded-2xl bg-foreground/5 px-4 py-3">
               <p className="text-2xl font-semibold text-foreground">{count}</p>
               <p className="text-xs text-foreground/60">{PLAN_GROUP_LABELS[group]}</p>
@@ -461,19 +500,19 @@ function DiagnosticHero({
 
 // ─── Carte unique pour tous les points de la liste ────────────────────────────
 //
-// Un seul gabarit,  dont l’intensité (fond,  épaisseur du titre) diminue avec le
-// niveau et le rang, pas un composant différent par type de contenu.
+// Un seul gabarit, dont l’intensité (fond, épaisseur du titre) diminue avec le
+// niveau et le rang — pas un composant différent par type de contenu.
 
 // ─── Groupement du plan d'action (sommaire) ───────────────────────────────────
 
 type PlanGroup = 'priority' | 'improve' | 'good'
 
-const PLAN_GROUP_ORDER: PlanGroup[] = ['priority',  'improve',  'good']
+const PLAN_GROUP_ORDER: PlanGroup[] = ['priority', 'improve', 'good']
 
-const PLAN_GROUP_LABELS: Record<PlanGroup,  string> = {
-  priority: 'À traiter en priorité', 
-  improve: 'À améliorer', 
-  good: 'Bonnes pratiques', 
+const PLAN_GROUP_LABELS: Record<PlanGroup, string> = {
+  priority: 'À traiter en priorité',
+  improve: 'À améliorer',
+  good: 'Bonnes pratiques',
 }
 
 function getPlanGroup(level: RiskLevel): PlanGroup {
@@ -499,17 +538,17 @@ function getItemPreview(item: PriorityItem): string {
 }
 
 function ActionPlanNavList({
-  items, 
-  activeId, 
-  onNavigate, 
+  items,
+  activeId,
+  onNavigate,
 }: {
   items: PriorityItem[]
   activeId: string | null
   onNavigate: (id: string) => void
 }) {
   const flatIndexById = useMemo(
-    () => new Map(items.map((item,  index) => [item.id,  index])), 
-    [items], 
+    () => new Map(items.map((item, index) => [item.id, index])),
+    [items],
   )
   const activeIndex = activeId ? flatIndexById.get(activeId) ?? -1 : -1
 
@@ -540,26 +579,26 @@ function ActionPlanNavList({
                       type="button"
                       onClick={() => onNavigate(item.id)}
                       className={[
-                        'w-full rounded-md border-l-2 px-3 py-2 text-left transition-colors', 
+                        'w-full rounded-md px-3 py-2 text-left transition-colors',
                         isActive
-                          ? 'border-primary bg-foreground/[0.04]'
-                          : 'border-transparent hover:bg-foreground/[0.03]', 
+                          ? 'bg-foreground/[0.06]'
+                          : 'hover:bg-foreground/[0.03]',
                       ].join(' ')}
                     >
                       <p
                         className={[
-                          'text-sm leading-snug', 
+                          'text-sm leading-snug',
                           isActive
                             ? 'font-medium text-foreground'
                             : isRead
-                              ? 'text-foreground/40'
-                              : 'text-foreground/65', 
+                              ? 'text-foreground/55'
+                              : 'text-foreground/80',
                         ].join(' ')}
                       >
                         {item.title}
                       </p>
 
-                      <p className="mt-0.5 text-xs text-foreground/40">
+                      <p className="mt-0.5 text-xs text-foreground/55">
                         {getItemPreview(item)}
                       </p>
                     </button>
@@ -575,15 +614,15 @@ function ActionPlanNavList({
 }
 
 function ActionPlanNav({
-  items, 
-  activeId, 
-  onNavigate, 
+  items,
+  activeId,
+  onNavigate,
 }: {
   items: PriorityItem[]
   activeId: string | null
   onNavigate: (id: string) => void
 }) {
-  const [isMobileOpen,  setIsMobileOpen] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   if (items.length === 0) {
     return null
@@ -596,7 +635,7 @@ function ActionPlanNav({
 
   return (
     <>
-      {/* Desktop : colonne sticky,  ne défile pas au-delà de la hauteur de l'écran */}
+      {/* Desktop : colonne sticky, ne défile pas au-delà de la hauteur de l'écran */}
       <nav
         aria-label="Recommandations"
         className="hidden lg:sticky lg:top-28 lg:block lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pb-8"
@@ -628,8 +667,8 @@ function ActionPlanNav({
 }
 
 function PriorityItemCard({
-  item, 
-  rank, 
+  item,
+  rank,
 }: {
   item: PriorityItem
   rank: number
@@ -641,20 +680,20 @@ function PriorityItemCard({
       id={item.id}
       data-priority-item-id={item.id}
       className={[
-        'scroll-mt-28 rounded-2xl border p-8 sm:p-10', 
-        priorityCardStyles[item.level], 
+        'scroll-mt-28 rounded-2xl border p-8 sm:p-10',
+        priorityCardStyles[item.level],
       ].join(' ')}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs font-medium tracking-wide text-foreground/45">
-          {isTopItem ? 'À faire en premier, ' : ''}
+          {isTopItem ? 'À faire en premier — ' : ''}
           {item.category}
         </p>
 
         <span
           className={[
-            'rounded-md px-2.5 py-1 text-xs font-medium', 
-            riskLevelStyles[item.level], 
+            'rounded-md px-2.5 py-1 text-xs font-medium',
+            riskLevelStyles[item.level],
           ].join(' ')}
         >
           {riskLevelLabels[item.level]}
@@ -663,8 +702,8 @@ function PriorityItemCard({
 
       <h3
         className={[
-          'mt-3 font-semibold leading-snug text-foreground', 
-          isTopItem ? 'text-2xl' : 'text-lg', 
+          'mt-3 font-semibold leading-snug text-foreground',
+          isTopItem ? 'text-2xl' : 'text-lg',
         ].join(' ')}
       >
         {item.title}
@@ -718,7 +757,7 @@ function PriorityItemCard({
           </p>
 
           <ul className="flex max-w-2xl flex-col gap-1.5">
-            {item.deepDive.alternatives.map((alternative,  index) => (
+            {item.deepDive.alternatives.map((alternative, index) => (
               <li
                 key={index}
                 className="text-[15px] leading-relaxed text-foreground/75"
@@ -767,12 +806,12 @@ function PriorityItemCard({
   )
 }
 
-// Format compact pour les pistes secondaires : une explication courte, 
-// 2-3 actions au maximum,  un exemple seulement s'il tient en peu de place.
-// Volontairement plus court qu'une fiche majeure, la taille reflète
+// Format compact pour les pistes secondaires : une explication courte,
+// 2-3 actions au maximum, un exemple seulement s'il tient en peu de place.
+// Volontairement plus court qu'une fiche majeure — la taille reflète
 // l'importance plutôt que d'uniformiser toutes les cartes.
 function CompactItemCard({ item }: { item: PriorityItem }) {
-  const topAlternatives = item.deepDive?.alternatives.slice(0,  3) ?? []
+  const topAlternatives = item.deepDive?.alternatives.slice(0, 3) ?? []
 
   return (
     <article
@@ -787,8 +826,8 @@ function CompactItemCard({ item }: { item: PriorityItem }) {
 
         <span
           className={[
-            'rounded-md px-2 py-0.5 text-xs font-medium', 
-            riskLevelStyles[item.level], 
+            'rounded-md px-2 py-0.5 text-xs font-medium',
+            riskLevelStyles[item.level],
           ].join(' ')}
         >
           {riskLevelLabels[item.level]}
@@ -805,7 +844,7 @@ function CompactItemCard({ item }: { item: PriorityItem }) {
 
       {topAlternatives.length > 0 && (
         <ul className="mt-3 flex flex-col gap-1">
-          {topAlternatives.map((alternative,  index) => (
+          {topAlternatives.map((alternative, index) => (
             <li key={index} className="text-sm leading-relaxed text-foreground/70">
               {alternative}
             </li>
@@ -830,16 +869,112 @@ function CompactItemCard({ item }: { item: PriorityItem }) {
   )
 }
 
+const LEVEL_FILTER_SHORT_LABELS: Record<RiskLevel, string> = {
+  critical: 'Critique',
+  high: 'Élevée',
+  moderate: 'Modérée',
+  low: 'Faible',
+  none: 'Aucune',
+}
+
+function FilterChipGroup<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: { value: T; label: string; count: number }[]
+  value: T
+  onChange: (value: T) => void
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="text-xs font-medium text-foreground/45">{label}</span>
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          onClick={() => onChange(option.value)}
+          aria-pressed={value === option.value}
+          className={[
+            'rounded-full px-3 py-1 text-xs font-medium transition-colors',
+            value === option.value
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-foreground/[0.05] text-foreground/60 hover:bg-foreground/[0.09]',
+          ].join(' ')}
+        >
+          {option.label} ({option.count})
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function FilterBar({
+  allItems,
+  levelFilter,
+  onLevelFilterChange,
+  typeFilter,
+  onTypeFilterChange,
+}: {
+  allItems: PriorityItem[]
+  levelFilter: LevelFilter
+  onLevelFilterChange: (value: LevelFilter) => void
+  typeFilter: TypeFilter
+  onTypeFilterChange: (value: TypeFilter) => void
+}) {
+  const levelOptions: { value: LevelFilter; label: string; count: number }[] = [
+    { value: 'all', label: 'Tout', count: allItems.length },
+    ...LEVEL_FILTER_ORDER
+      .filter((level) => allItems.some((item) => item.level === level))
+      .map((level) => ({
+        value: level,
+        label: LEVEL_FILTER_SHORT_LABELS[level],
+        count: allItems.filter((item) => item.level === level).length,
+      })),
+  ]
+
+  const typeGroupOrder: SourceGroup[] = ['structural', 'mechanic', 'recommendation']
+  const typeOptions: { value: TypeFilter; label: string; count: number }[] = [
+    { value: 'all', label: 'Tout', count: allItems.length },
+    ...typeGroupOrder
+      .filter((group) => allItems.some((item) => getSourceGroup(item.source) === group))
+      .map((group) => ({
+        value: group,
+        label: SOURCE_GROUP_LABELS[group],
+        count: allItems.filter((item) => getSourceGroup(item.source) === group).length,
+      })),
+  ]
+
+  return (
+    <div className="mb-5 flex flex-col gap-3">
+      <FilterChipGroup label="Niveau" options={levelOptions} value={levelFilter} onChange={onLevelFilterChange} />
+      <FilterChipGroup label="Type" options={typeOptions} value={typeFilter} onChange={onTypeFilterChange} />
+    </div>
+  )
+}
+
 function PriorityListSection({
-  items, 
-  showAll, 
-  onShowAllChange, 
+  items,
+  allItems,
+  showAll,
+  onShowAllChange,
+  levelFilter,
+  onLevelFilterChange,
+  typeFilter,
+  onTypeFilterChange,
 }: {
   items: PriorityItem[]
+  allItems: PriorityItem[]
   showAll: boolean
   onShowAllChange: (showAll: boolean) => void
+  levelFilter: LevelFilter
+  onLevelFilterChange: (value: LevelFilter) => void
+  typeFilter: TypeFilter
+  onTypeFilterChange: (value: TypeFilter) => void
 }) {
-  if (items.length === 0) {
+  if (allItems.length === 0) {
     return (
       <section className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
         <p className="text-sm leading-relaxed text-foreground/70">
@@ -851,7 +986,7 @@ function PriorityListSection({
     )
   }
 
-  const visibleItems = showAll ? items : items.slice(0,  INITIAL_VISIBLE_ITEMS)
+  const visibleItems = showAll ? items : items.slice(0, INITIAL_VISIBLE_ITEMS)
   const hiddenCount = items.length - INITIAL_VISIBLE_ITEMS
   const listId = 'priority-list'
 
@@ -864,38 +999,56 @@ function PriorityListSection({
         Recommandations
       </h2>
 
-      <div id={listId} className="flex flex-col gap-4">
-        {visibleItems.map((item,  index) =>
-          item.tier === 'major' ? (
-            <PriorityItemCard key={item.id} item={item} rank={index} />
-          ) : (
-            <CompactItemCard key={item.id} item={item} />
-          ), 
-        )}
-      </div>
+      <FilterBar
+        allItems={allItems}
+        levelFilter={levelFilter}
+        onLevelFilterChange={onLevelFilterChange}
+        typeFilter={typeFilter}
+        onTypeFilterChange={onTypeFilterChange}
+      />
 
-      {hiddenCount > 0 && (
-        <div className="mt-6 flex justify-center">
-          <Button
-            variant="outline"
-            onClick={() => onShowAllChange(!showAll)}
-            aria-expanded={showAll}
-            aria-controls={listId}
-            className="gap-1.5 border-primary text-primary hover:bg-secondary"
-          >
-            {showAll
-              ? 'Afficher moins'
-              : `Afficher ${hiddenCount} point${hiddenCount > 1 ? 's' : ''} de plus`}
-            <ChevronDown
-              size={16}
-              className={[
-                'shrink-0 transition-transform duration-200', 
-                showAll ? 'rotate-180' : '', 
-              ].join(' ')}
-              aria-hidden="true"
-            />
-          </Button>
-        </div>
+      {items.length === 0 ? (
+        <section className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
+          <p className="text-sm leading-relaxed text-foreground/70">
+            Aucun point ne correspond à ces filtres. Essayez d'élargir votre sélection.
+          </p>
+        </section>
+      ) : (
+        <>
+          <div id={listId} className="flex flex-col gap-4">
+            {visibleItems.map((item, index) =>
+              item.tier === 'major' ? (
+                <PriorityItemCard key={item.id} item={item} rank={index} />
+              ) : (
+                <CompactItemCard key={item.id} item={item} />
+              ),
+            )}
+          </div>
+
+          {hiddenCount > 0 && (
+            <div className="mt-6 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={() => onShowAllChange(!showAll)}
+                aria-expanded={showAll}
+                aria-controls={listId}
+                className="gap-1.5 border-primary text-primary hover:bg-secondary"
+              >
+                {showAll
+                  ? 'Afficher moins'
+                  : `Afficher ${hiddenCount} point${hiddenCount > 1 ? 's' : ''} de plus`}
+                <ChevronDown
+                  size={16}
+                  className={[
+                    'shrink-0 transition-transform duration-200',
+                    showAll ? 'rotate-180' : '',
+                  ].join(' ')}
+                  aria-hidden="true"
+                />
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </section>
   )
@@ -903,15 +1056,15 @@ function PriorityListSection({
 
 // Referme le rapport sur une synthèse actionnable plutôt que de laisser la
 // lecture s'arrêter net après la dernière carte : les 3-4 actions les plus
-// importantes,  dans l'ordre où elles ont déjà été présentées.
+// importantes, dans l'ordre où elles ont déjà été présentées.
 const CONCLUSION_ACTIONS_COUNT = 4
 
 function ActionSummarySection({
-  items, 
-  copyState, 
-  onCopySummary, 
-  onDownloadPdf, 
-  onRestart, 
+  items,
+  copyState,
+  onCopySummary,
+  onDownloadPdf,
+  onRestart,
 }: {
   items: PriorityItem[]
   copyState: CopyState
@@ -919,7 +1072,7 @@ function ActionSummarySection({
   onDownloadPdf: () => void
   onRestart: () => void
 }) {
-  const topItems = items.slice(0,  CONCLUSION_ACTIONS_COUNT)
+  const topItems = items.slice(0, CONCLUSION_ACTIONS_COUNT)
 
   if (topItems.length === 0) {
     return null
@@ -940,7 +1093,7 @@ function ActionSummarySection({
       </p>
 
       <ol className="mt-4 flex max-w-2xl flex-col gap-2.5">
-        {topItems.map((item,  index) => (
+        {topItems.map((item, index) => (
           <li key={item.id} className="flex gap-3 text-[15px] leading-relaxed">
             <span className="text-foreground/35 tabular-nums">{index + 1}.</span>
             <span className="text-foreground/80">{item.action}</span>
@@ -948,8 +1101,8 @@ function ActionSummarySection({
         ))}
       </ol>
 
-      {/* Les actions utilitaires arrivent ici,  une fois le rapport lu, pas
-          avant,  comme un PDF qu'on lit d'abord et qu'on télécharge ensuite. */}
+      {/* Les actions utilitaires arrivent ici, une fois le rapport lu — pas
+          avant, comme un PDF qu'on lit d'abord et qu'on télécharge ensuite. */}
       <div className="mt-8 flex flex-wrap gap-3 print:hidden">
         <Button
           variant="ghost"
@@ -985,11 +1138,11 @@ function ActionSummarySection({
 }
 
 function AiPromptSection({ result }: { result: EvaluationResult }) {
-  const [copyState,  setCopyState] = useState<CopyState>('idle')
-  const [showPrompt,  setShowPrompt] = useState(false)
+  const [copyState, setCopyState] = useState<CopyState>('idle')
+  const [showPrompt, setShowPrompt] = useState(false)
 
-  const prompt = useMemo(() => buildAiPrompt(result),  [result])
-  const priorityItemsCount = useMemo(() => getPriorityItems(result).length,  [result])
+  const prompt = useMemo(() => buildAiPrompt(result), [result])
+  const priorityItemsCount = useMemo(() => getPriorityItems(result).length, [result])
 
   async function handleCopyPrompt() {
     try {
@@ -1000,7 +1153,7 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
     } finally {
       window.setTimeout(() => {
         setCopyState('idle')
-      },  3000)
+      }, 3000)
     }
   }
 
@@ -1018,8 +1171,8 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
           </h2>
 
           <p className="mt-2 text-sm leading-relaxed text-foreground/65">
-            Sert à reformuler ou préparer une synthèse,  sans remplacer le résultat
-            ci-dessus. Aucun appel API n’est fait depuis le site : pas de clé,  pas de coût.
+            Sert à reformuler ou préparer une synthèse, sans remplacer le résultat
+            ci-dessus. Aucun appel API n’est fait depuis le site : pas de clé, pas de coût.
           </p>
         </div>
 
@@ -1062,8 +1215,8 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
               <ChevronDown
                 size={16}
                 className={[
-                  'shrink-0 transition-transform duration-200', 
-                  showPrompt ? 'rotate-180' : '', 
+                  'shrink-0 transition-transform duration-200',
+                  showPrompt ? 'rotate-180' : '',
                 ].join(' ')}
                 aria-hidden="true"
               />
@@ -1127,18 +1280,20 @@ function ClientArgumentSection({ result }: { result: EvaluationResult }) {
 export function ResultsClient() {
   const router = useRouter()
 
-  const [result,  setResult] = useState<EvaluationResult | null>(null)
-  const [isClientContext,  setIsClientContext] = useState(false)
-  const [hasLoaded,  setHasLoaded] = useState(false)
-  const [copyState,  setCopyState] = useState<CopyState>('idle')
-  const [showAllItems,  setShowAllItems] = useState(false)
-  const [activeItemId,  setActiveItemId] = useState<string | null>(null)
+  const [result, setResult] = useState<EvaluationResult | null>(null)
+  const [isClientContext, setIsClientContext] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
+  const [copyState, setCopyState] = useState<CopyState>('idle')
+  const [showAllItems, setShowAllItems] = useState(false)
+  const [activeItemId, setActiveItemId] = useState<string | null>(null)
+  const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
 
   useEffect(() => {
     window.requestAnimationFrame(() => {
-      window.scrollTo({ top: 0,  left: 0,  behavior: 'auto' })
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
     })
-  },  [])
+  }, [])
 
   useEffect(() => {
     const storedAnswers = loadAnswers() as StoredAnswer[] | null
@@ -1154,7 +1309,7 @@ export function ResultsClient() {
     setResult(evaluationResult)
     setIsClientContext(evaluationAnswers.Q19 === 'client_argument')
     setHasLoaded(true)
-  },  [])
+  }, [])
 
   const priorityItems = useMemo(() => {
     if (!result) {
@@ -1162,18 +1317,23 @@ export function ResultsClient() {
     }
 
     return getPriorityItems(result)
-  },  [result])
+  }, [result])
+
+  const sortedItems = useMemo(
+    () => filterPriorityItems(priorityItems, levelFilter, typeFilter),
+    [priorityItems, levelFilter, typeFilter],
+  )
 
   // Repère la carte actuellement la plus visible pour mettre en évidence
   // l'élément correspondant dans le plan d'action (technique de scrollspy :
   // une fine bande proche du haut de l'écran fait office de ligne de détection).
   useEffect(() => {
-    if (priorityItems.length === 0) {
+    if (sortedItems.length === 0) {
       return
     }
 
     const elements = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-priority-item-id]'), 
+      document.querySelectorAll<HTMLElement>('[data-priority-item-id]'),
     )
 
     if (elements.length === 0) {
@@ -1184,7 +1344,7 @@ export function ResultsClient() {
       (entries) => {
         const visibleEntries = entries
           .filter((entry) => entry.isIntersecting)
-          .sort((a,  b) => a.boundingClientRect.top - b.boundingClientRect.top)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
 
         const topEntry = visibleEntries[0]
 
@@ -1195,17 +1355,17 @@ export function ResultsClient() {
             setActiveItemId(id)
           }
         }
-      }, 
-      { rootMargin: '-15% 0px -70% 0px',  threshold: 0 }, 
+      },
+      { rootMargin: '-15% 0px -70% 0px', threshold: 0 },
     )
 
     elements.forEach((element) => observer.observe(element))
 
     return () => observer.disconnect()
-  },  [priorityItems,  showAllItems])
+  }, [sortedItems, showAllItems])
 
   function handleNavigate(id: string) {
-    const index = priorityItems.findIndex((item) => item.id === id)
+    const index = sortedItems.findIndex((item) => item.id === id)
     const isHidden = index >= INITIAL_VISIBLE_ITEMS && !showAllItems
 
     if (isHidden) {
@@ -1218,8 +1378,8 @@ export function ResultsClient() {
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         document.getElementById(id)?.scrollIntoView({
-          behavior: 'smooth', 
-          block: 'start', 
+          behavior: 'smooth',
+          block: 'start',
         })
       })
     })
@@ -1238,7 +1398,7 @@ export function ResultsClient() {
     } finally {
       window.setTimeout(() => {
         setCopyState('idle')
-      },  3000)
+      }, 3000)
     }
   }
 
@@ -1267,7 +1427,7 @@ export function ResultsClient() {
         </p>
 
         <p className="mb-6 text-sm leading-relaxed text-foreground/70">
-          Vous n’avez pas encore complété le questionnaire,  ou vos réponses ont
+          Vous n’avez pas encore complété le questionnaire, ou vos réponses ont
           été effacées.
         </p>
 
@@ -1285,26 +1445,31 @@ export function ResultsClient() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
       <DiagnosticHero
         result={result}
-        priorityItems={priorityItems}
+        priorityItems={sortedItems}
         onNavigate={handleNavigate}
       />
 
       <div className="grid gap-8 lg:grid-cols-[220px_1fr] lg:items-start">
         <ActionPlanNav
-          items={priorityItems}
+          items={sortedItems}
           activeId={activeItemId}
           onNavigate={handleNavigate}
         />
 
         <PriorityListSection
-          items={priorityItems}
+          items={sortedItems}
+          allItems={priorityItems}
           showAll={showAllItems}
           onShowAllChange={setShowAllItems}
+          levelFilter={levelFilter}
+          onLevelFilterChange={setLevelFilter}
+          typeFilter={typeFilter}
+          onTypeFilterChange={setTypeFilter}
         />
       </div>
 
       <ActionSummarySection
-        items={priorityItems}
+        items={sortedItems}
         copyState={copyState}
         onCopySummary={handleCopySummary}
         onDownloadPdf={handleDownloadPdf}
