@@ -1,7 +1,28 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Flame, TriangleAlert, Clock } from 'lucide-react'
-import { ProgressionShowcase } from '@/components/principes/showcases/ProgressionShowcase'
+
+const whoItsFor = [
+  {
+    id: 'amont',
+    title: 'Pour cadrer une conception en amont',
+    text: `Utilisé tôt, avant que les mécaniques soient figées — que vous travailliez seul-e ou en équipe.`,
+  },
+  {
+    id: 'argumenter',
+    title: 'Pour argumenter une décision',
+    text: `Même sans y avoir été confronté-e directement, l'outil aide à structurer un argumentaire et à sensibiliser une équipe.`,
+  },
+  {
+    id: 'client',
+    title: 'Face à une demande client qui interroge',
+    text: `Un doute sur une mécanique demandée ? L'outil aide à construire une réponse argumentée, plutôt qu'un refus ou un accord à l'aveugle.`,
+  },
+  {
+    id: 'recommandation',
+    title: 'Comme recommandation, même sans l\u2019utiliser soi-même',
+    text: `Chef-fes de projet ou account managers peuvent orienter un-e designer ou un-e client-e vers l'outil avant de se lancer.`,
+  },
+]
 
 const howItWorks = [
   {
@@ -72,16 +93,116 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Illustration du hero */}
-          <div className="hidden lg:block">
-            <Image
-              src="/images/hero-illustration.png"
-              alt="Illustration d'une personne tenant un trophée, entourée d'icônes de récompenses XP, étoiles, badges et drapeaux"
-              width={1200}
-              height={500}
-              className="h-auto w-full"
-              priority
-            />
+          {/* Aperçu du questionnaire — un vrai composant codé (pas une
+              capture d'écran), intégré dans un mockup de MacBook pour bien
+              signaler "aperçu à regarder", pas une interface cliquable. */}
+          <div aria-hidden="true" className="hidden lg:block">
+            <div className="mx-auto max-w-[520px]">
+              {/* Écran */}
+              <div className="rounded-t-xl bg-[#e5e5e5] p-1.5 pb-2" style={{ boxShadow: '0 4px 24px rgba(74,45,87,0.1)' }}>
+                <div className="mb-1 flex justify-center">
+                  <span className="h-1 w-1 rounded-full bg-[#b0b0b0]" />
+                </div>
+
+                <div className="overflow-hidden rounded-md border border-border bg-white">
+                  {/* Barre de navigateur */}
+                  <div className="flex items-center gap-2.5 border-b border-border bg-foreground/[0.03] px-3 py-1.5">
+                    <div className="flex gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground/15" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground/15" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground/15" />
+                    </div>
+                    <div className="flex-1 rounded bg-foreground/[0.04] px-2 py-0.5">
+                      <span className="text-[9px] text-foreground/30">gamification-ethique.ch/evaluation</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-[130px_1fr] gap-4 p-5 pt-6">
+                    {/* Menu des sections */}
+                    <div className="flex flex-col gap-1">
+                      {[
+                        { label: 'Mode d\u2019utilisation', active: true },
+                        { label: 'Besoin et intention' },
+                        { label: 'Public et contexte' },
+                        { label: 'Direction de gamification' },
+                        { label: 'Transparence et contrôle' },
+                        { label: 'Temporalité et visibilité' },
+                        { label: 'Finalisation' },
+                      ].map((section) => (
+                        <div
+                          key={section.label}
+                          className={[
+                            'rounded px-1.5 py-1',
+                            section.active ? 'bg-primary/10' : '',
+                          ].join(' ')}
+                        >
+                          <p
+                            className={[
+                              'text-[7px] font-semibold leading-tight',
+                              section.active ? 'text-primary' : 'text-foreground/60',
+                            ].join(' ')}
+                          >
+                            {section.label}
+                          </p>
+                        </div>
+                      ))}
+
+                      <div className="mt-0.5 rounded px-1.5 py-1">
+                        <p className="text-[6.5px] text-foreground/40">Progression globale</p>
+                        <p className="text-[8px] font-semibold text-foreground">0 / 15</p>
+                      </div>
+                    </div>
+
+                    {/* Question */}
+                    <div>
+                      <p className="mb-0.5 text-[8px] font-semibold uppercase tracking-widest text-foreground/40">
+                        Section 1 sur 7
+                      </p>
+                      <p className="mb-2 text-sm font-semibold text-foreground">Mode d'utilisation</p>
+
+                      <div className="rounded-lg border border-border bg-white/60 p-2.5">
+                        <p className="mb-1 text-[8px] font-semibold uppercase tracking-widest text-foreground/40">
+                          Question 1
+                        </p>
+                        <p className="mb-2 text-xs font-semibold text-foreground">
+                          Où en êtes-vous dans votre réflexion ?
+                        </p>
+                        <div className="flex flex-col gap-1">
+                          {[
+                            `Aucune mécanique n'a encore été choisie`,
+                            'Une ou plusieurs mécaniques sont déjà envisagées',
+                            'Une mécanique est déjà définie',
+                          ].map((option) => (
+                            <div
+                              key={option}
+                              className="flex items-center gap-2 rounded-md border border-border px-2 py-1"
+                            >
+                              <span className="h-2 w-2 shrink-0 rounded-full border-2 border-foreground/25" />
+                              <span className="text-[10px] text-foreground/80">{option}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-[8px] text-foreground/40">0 / 15 réponses</span>
+                        <span className="rounded-md bg-foreground/10 px-2 py-1 text-[8px] font-semibold text-foreground/40">
+                          Section suivante →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Charnière */}
+              <div className="h-1 bg-[#cfcfcf]" />
+
+              {/* Base / clavier (simplifié) */}
+              <div className="relative rounded-b-xl bg-gradient-to-b from-[#d8d8d8] to-[#c2c2c2] pb-1 pt-1.5">
+                <div className="mx-auto mt-1 h-0.5 w-14 rounded-full bg-[#a8a8a8]" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -114,33 +235,6 @@ export default function HomePage() {
             ces risques avant le développement du produit, plutôt qu'à les découvrir 
             une fois le produit en ligne.
           </p>
-        </div>
-      </section>
-
-      {/* ── Démonstration ─────────────────────────────────────────────────── */}
-      {/* Le comparatif interactif promu en section à part entière : c'est la
-          preuve que l'outil s'observe et se manipule, pas une documentation
-          à lire — répond directement à "en quoi c'est différent d'une
-          checklist ?". */}
-      <section
-        aria-labelledby="demo-heading"
-        className="mx-auto w-full max-w-[66rem] px-6 py-20"
-      >
-        <div className="mx-auto max-w-2xl text-center">
-          <h2
-            id="demo-heading"
-            className="mb-4 text-3xl font-semibold text-foreground"
-          >
-            Pas une simple checklist
-          </h2>
-          <p className="text-base leading-relaxed text-foreground/70">
-            Chaque recommandation s'observe directement sur une interface,
-            pas dans une liste à cocher. Survolez les éléments pour voir ce qui change.
-          </p>
-        </div>
-
-        <div className="mt-10 flex justify-center">
-          <ProgressionShowcase compact />
         </div>
       </section>
 
@@ -177,6 +271,34 @@ export default function HomePage() {
         </ol>
       </section>
 
+      {/* ── Pour qui, et comment ──────────────────────────────────────────── */}
+      {/* Basée sur des retours de tests utilisateurs réels — reformulés et
+          filtrés (certains retours parlaient d'évolutions futures, comme la
+          génération d'idées de mécaniques, volontairement écartées ici car
+          ce n'est pas un usage actuel de l'outil). */}
+      <section
+        aria-labelledby="pourqui-heading"
+        className="mx-auto w-full max-w-[66rem] px-6 py-20"
+      >
+        <h2
+          id="pourqui-heading"
+          className="mb-12 text-center text-3xl font-semibold text-foreground"
+        >
+          Pour qui, et comment ?
+        </h2>
+        <ul className="grid gap-5 sm:grid-cols-2">
+          {whoItsFor.map((item) => (
+            <li
+              key={item.id}
+              className="flex flex-col gap-2 rounded-2xl p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              style={{ background: 'rgba(255,255,255,0.60)', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+            >
+              <h3 className="text-base font-semibold text-foreground">{item.title}</h3>
+              <p className="text-sm leading-relaxed text-foreground/70">{item.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {/* ── Ce que vous obtenez ──────────────────────────────────────────── */}
       {/* Répond à "qu'est-ce que j'obtiens à la fin ?" — l'ancienne carte de
@@ -246,7 +368,7 @@ export default function HomePage() {
             <div className="mt-6 divide-y divide-border">
               {[
                 { label: 'Autonomie et contrôle', className: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]', level: 'Critique', Icon: Flame },
-                { label: 'Comparaison sociale', className: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]', level: 'Élevée', Icon: TriangleAlert },
+                { label: 'Comparaison sociale', className: 'bg-[var(--color-high-risk)]/10 text-[var(--color-high-risk)]', level: 'Élevée', Icon: TriangleAlert },
                 { label: 'Pression temporelle', className: 'bg-foreground/5 text-foreground/70', level: 'Modérée', Icon: Clock },
               ].map((row) => (
                 <div key={row.label} className="flex items-center justify-between gap-4 py-3">

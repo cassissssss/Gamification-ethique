@@ -2,12 +2,21 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronDown } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronDown, FilterX, Flame, TriangleAlert, Clock, CircleCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { clearAnswers, loadAnswers } from '@/lib/storage'
 import { evaluateAnswers } from '@/logic/evaluationEngine'
 import { buildAiPrompt } from '@/lib/evaluation/ai-prompt'
+import { ProgressionShowcase } from '@/components/principes/showcases/ProgressionShowcase'
+import { RareteUrgenceShowcase } from '@/components/principes/showcases/RareteUrgenceShowcase'
+import { TransparenceShowcase } from '@/components/principes/showcases/TransparenceShowcase'
+import { AutonomieShowcase } from '@/components/principes/showcases/AutonomieShowcase'
+import { FeedbackShowcase } from '@/components/principes/showcases/FeedbackShowcase'
+import { RecompensesShowcase } from '@/components/principes/showcases/RecompensesShowcase'
+import { ComparaisonSocialeShowcase } from '@/components/principes/showcases/ComparaisonSocialeShowcase'
+import { ChoixContraintShowcase } from '@/components/principes/showcases/ChoixContraintShowcase'
 import type {
   ContradictionResult,
   EvaluationAnswers,
@@ -63,6 +72,8 @@ interface PriorityItem {
   relatedMechanics?: MechanicChipInfo[]
   source: PriorityItemSource
   tier: PriorityItemTier
+  /** Slug du principe illustré par un comparatif interactif, si ce point y correspond. */
+  principleSlug?: string
 }
 
 // Une thématique de risque, une contradiction ou une synergie sont toujours
@@ -98,12 +109,11 @@ function getSourceGroup(source: PriorityItemSource): SourceGroup {
 // ─── Filtres ───────────────────────────────────────────────────────────────
 //
 // Réduisent la liste affichée, sur deux critères qui existent réellement
-// dans les données (niveau de vigilance, type de point) — pas de donnée
-// fabriquée pour l'occasion.
-type LevelFilter = 'all' | RiskLevel
+// dans les données : la priorité (même regroupement que le diagnostic en
+// haut de page — pas une seconde catégorisation de sévérité en parallèle,
+// qui faisait doublon) et le type de point.
+type LevelFilter = 'all' | PlanGroup
 type TypeFilter = 'all' | SourceGroup
-
-const LEVEL_FILTER_ORDER: RiskLevel[] = ['critical', 'high', 'moderate', 'low', 'none']
 
 function filterPriorityItems(
   items: PriorityItem[],
@@ -111,7 +121,7 @@ function filterPriorityItems(
   typeFilter: TypeFilter,
 ): PriorityItem[] {
   return items.filter((item) => {
-    const matchesLevel = levelFilter === 'all' || item.level === levelFilter
+    const matchesLevel = levelFilter === 'all' || getPlanGroup(item.level) === levelFilter
     const matchesType = typeFilter === 'all' || getSourceGroup(item.source) === typeFilter
     return matchesLevel && matchesType
   })
@@ -160,11 +170,19 @@ const GLOBAL_ORIENTATION_LEVEL: Record<GlobalOrientationId, RiskLevel> = {
 // Badges de niveau très discrets (esprit Linear/Notion) : fond quasi neutre,
 // pas de contour, la couleur n'apparaît que sur le texte et seulement à
 // partir du niveau élevé.
+const riskLevelIcons: Record<RiskLevel, typeof Flame> = {
+  critical: Flame,
+  high: TriangleAlert,
+  moderate: Clock,
+  low: CircleCheck,
+  none: CircleCheck,
+}
+
 const riskLevelStyles: Record<RiskLevel, string> = {
   none: 'bg-foreground/5 text-foreground/60',
   low: 'bg-foreground/5 text-foreground/60',
   moderate: 'bg-foreground/5 text-foreground/70',
-  high: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]',
+  high: 'bg-[var(--color-high-risk)]/10 text-[var(--color-high-risk)]',
   critical: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]',
 }
 
@@ -172,7 +190,7 @@ const riskLevelStyles: Record<RiskLevel, string> = {
 // élevés — la couleur de vigilance reste la seule variation chromatique.
 const priorityCardStyles: Record<RiskLevel, string> = {
   critical: 'bg-[var(--color-danger)]/[0.025] border-border',
-  high: 'bg-[var(--color-warning)]/[0.03] border-border',
+  high: 'bg-[var(--color-high-risk)]/[0.03] border-border',
   moderate: 'bg-transparent border-border',
   low: 'bg-transparent border-border',
   none: 'bg-transparent border-border',
@@ -208,6 +226,52 @@ const severityToLevel: Record<ContradictionResult['severity'], RiskLevel> = {
   blocking: 'critical',
   warning: 'high',
   info: 'low',
+}
+
+// Correspondance vers les principes qui ont un comparatif interactif dédié.
+// Volontairement partielle : mieux vaut ne pas illustrer un point que de le
+// relier à un principe approximatif. "data_profile", "commercial_conversion"
+// et "sensitive_context" n'ont pas de correspondance nette avec un principe
+// unique, donc pas d'entrée ici.
+const THEME_TO_PRINCIPLE: Partial<Record<string, string>> = {
+  social_comparison: 'comparaison-sociale',
+  autonomy_control: 'autonomie',
+  temporal_pressure: 'rarete-urgence',
+}
+
+const MECHANIC_OPTION_TO_PRINCIPLE: Partial<Record<string, string>> = {
+  streak: 'rarete-urgence',
+  notifications_reminders: 'rarete-urgence',
+  ranking: 'comparaison-sociale',
+  comparison_users: 'comparaison-sociale',
+  random_reward: 'recompenses',
+  levels: 'progression',
+  progress_bar: 'progression',
+  personalized_goals: 'progression',
+  visual_feedback: 'feedback',
+  badges_trophies: 'transparence',
+}
+
+const PRINCIPLE_TITLES: Record<string, string> = {
+  transparence: 'Transparence',
+  autonomie: 'Autonomie',
+  progression: 'Progression',
+  feedback: 'Feedback',
+  recompenses: 'Récompenses et motivation',
+  'comparaison-sociale': 'Comparaison sociale',
+  'rarete-urgence': 'Rareté et urgence',
+  'choix-contraint': 'Choix contraint',
+}
+
+const SHOWCASE_BY_SLUG: Record<string, () => React.JSX.Element> = {
+  progression: ProgressionShowcase,
+  'rarete-urgence': RareteUrgenceShowcase,
+  transparence: TransparenceShowcase,
+  autonomie: AutonomieShowcase,
+  feedback: FeedbackShowcase,
+  recompenses: RecompensesShowcase,
+  'comparaison-sociale': ComparaisonSocialeShowcase,
+  'choix-contraint': ChoixContraintShowcase,
 }
 
 function toEvaluationAnswers(storedAnswers: StoredAnswer[]): EvaluationAnswers {
@@ -334,6 +398,7 @@ function getPriorityItems(result: EvaluationResult): PriorityItem[] {
         .filter((chip): chip is MechanicChipInfo => Boolean(chip)),
       source: 'risk',
       tier: getItemTier('risk', theme.level),
+      principleSlug: THEME_TO_PRINCIPLE[theme.id],
     }
   })
 
@@ -364,6 +429,7 @@ function getPriorityItems(result: EvaluationResult): PriorityItem[] {
         : undefined,
       source: 'mechanic',
       tier: getItemTier('mechanic', mechanic.baseVigilanceLevel),
+      principleSlug: MECHANIC_OPTION_TO_PRINCIPLE[mechanic.mechanicOptionId],
     }),
   )
 
@@ -379,6 +445,9 @@ function getPriorityItems(result: EvaluationResult): PriorityItem[] {
       deepDive: recommendation.deepDive,
       source: 'recommendation',
       tier: getItemTier('recommendation', priorityToLevel[recommendation.priority]),
+      principleSlug: recommendation.sourceOptionId
+        ? MECHANIC_OPTION_TO_PRINCIPLE[recommendation.sourceOptionId]
+        : undefined,
     }),
   )
 
@@ -418,10 +487,12 @@ function DiagnosticHero({
   result,
   priorityItems,
   onNavigate,
+  onFilterByGroup,
 }: {
   result: EvaluationResult
   priorityItems: PriorityItem[]
   onNavigate: (id: string) => void
+  onFilterByGroup: (group: PlanGroup) => void
 }) {
   // Les « principaux sujets » sont les thématiques de risque les plus
   // sévères — c'est ce qui donne le plus rapidement une idée de la nature
@@ -457,10 +528,15 @@ function DiagnosticHero({
       {groupCounts.length > 0 && (
         <div className="mt-6 flex max-w-md flex-wrap gap-3">
           {groupCounts.map(({ group, count }) => (
-            <div key={group} className="rounded-2xl bg-foreground/5 px-4 py-3">
+            <button
+              key={group}
+              type="button"
+              onClick={() => onFilterByGroup(group)}
+              className="rounded-2xl bg-foreground/5 px-4 py-3 text-left transition-colors hover:bg-foreground/10 cursor-pointer"
+            >
               <p className="text-2xl font-semibold text-foreground">{count}</p>
               <p className="text-xs text-foreground/60">{PLAN_GROUP_LABELS[group]}</p>
-            </div>
+            </button>
           ))}
         </div>
       )}
@@ -477,15 +553,19 @@ function DiagnosticHero({
                 <button
                   type="button"
                   onClick={() => onNavigate(item.id)}
-                  className="flex w-full items-center justify-between gap-4 py-3 text-left"
+                  className="flex w-full items-center justify-between gap-4 py-3 text-left cursor-pointer"
                 >
                   <span className="text-[15px] font-medium text-foreground">
                     {item.title}
                   </span>
 
                   <span
-                    className={`inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-medium ${riskLevelStyles[item.level]}`}
+                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${riskLevelStyles[item.level]}`}
                   >
+                    {(() => {
+                      const Icon = riskLevelIcons[item.level]
+                      return <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                    })()}
                     {riskLevelLabels[item.level]}
                   </span>
                 </button>
@@ -579,7 +659,7 @@ function ActionPlanNavList({
                       type="button"
                       onClick={() => onNavigate(item.id)}
                       className={[
-                        'w-full rounded-md px-3 py-2 text-left transition-colors',
+                        'w-full rounded-md px-3 py-2 text-left transition-colors cursor-pointer',
                         isActive
                           ? 'bg-foreground/[0.06]'
                           : 'hover:bg-foreground/[0.03]',
@@ -650,7 +730,7 @@ function ActionPlanNav({
           <SheetTrigger asChild>
             <button
               type="button"
-              className="mb-2 text-sm font-medium text-primary hover:opacity-80"
+              className="mb-2 text-sm font-medium text-primary hover:opacity-80 cursor-pointer"
             >
               Recommandations
             </button>
@@ -692,10 +772,14 @@ function PriorityItemCard({
 
         <span
           className={[
-            'rounded-md px-2.5 py-1 text-xs font-medium',
+            'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium',
             riskLevelStyles[item.level],
           ].join(' ')}
         >
+          {(() => {
+            const Icon = riskLevelIcons[item.level]
+            return <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+          })()}
           {riskLevelLabels[item.level]}
         </span>
       </div>
@@ -711,12 +795,34 @@ function PriorityItemCard({
 
       <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-foreground/70">
         {item.why} {item.action}
+        {item.principleSlug && PRINCIPLE_TITLES[item.principleSlug] && (
+          <>
+            {' '}
+            <Link
+              href={`/principes/${item.principleSlug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-primary underline underline-offset-2 hover:opacity-80"
+            >
+              Voir le principe « {PRINCIPLE_TITLES[item.principleSlug]} » →
+            </Link>
+          </>
+        )}
       </p>
 
       {item.plainExample && (
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-foreground/55">
           {item.plainExample}
         </p>
+      )}
+
+      {item.principleSlug && SHOWCASE_BY_SLUG[item.principleSlug] && (
+        <div className="mt-6">
+          {(() => {
+            const Showcase = SHOWCASE_BY_SLUG[item.principleSlug as string]
+            return <Showcase />
+          })()}
+        </div>
       )}
 
       {item.relatedMechanics && item.relatedMechanics.length > 0 && (
@@ -826,10 +932,14 @@ function CompactItemCard({ item }: { item: PriorityItem }) {
 
         <span
           className={[
-            'rounded-md px-2 py-0.5 text-xs font-medium',
+            'inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium',
             riskLevelStyles[item.level],
           ].join(' ')}
         >
+          {(() => {
+            const Icon = riskLevelIcons[item.level]
+            return <Icon className="h-3 w-3" aria-hidden="true" />
+          })()}
           {riskLevelLabels[item.level]}
         </span>
       </div>
@@ -840,6 +950,19 @@ function CompactItemCard({ item }: { item: PriorityItem }) {
 
       <p className="mt-2 text-sm leading-relaxed text-foreground/70">
         {item.why} {item.action}
+        {item.principleSlug && PRINCIPLE_TITLES[item.principleSlug] && (
+          <>
+            {' '}
+            <Link
+              href={`/principes/${item.principleSlug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-primary underline underline-offset-2 hover:opacity-80"
+            >
+              Voir le principe « {PRINCIPLE_TITLES[item.principleSlug]} » →
+            </Link>
+          </>
+        )}
       </p>
 
       {topAlternatives.length > 0 && (
@@ -869,14 +992,6 @@ function CompactItemCard({ item }: { item: PriorityItem }) {
   )
 }
 
-const LEVEL_FILTER_SHORT_LABELS: Record<RiskLevel, string> = {
-  critical: 'Critique',
-  high: 'Élevée',
-  moderate: 'Modérée',
-  low: 'Faible',
-  none: 'Aucune',
-}
-
 function FilterChipGroup<T extends string>({
   label,
   options,
@@ -898,7 +1013,7 @@ function FilterChipGroup<T extends string>({
           onClick={() => onChange(option.value)}
           aria-pressed={value === option.value}
           className={[
-            'rounded-full px-3 py-1 text-xs font-medium transition-colors',
+            'rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer',
             value === option.value
               ? 'bg-primary text-primary-foreground'
               : 'bg-foreground/[0.05] text-foreground/60 hover:bg-foreground/[0.09]',
@@ -924,32 +1039,43 @@ function FilterBar({
   typeFilter: TypeFilter
   onTypeFilterChange: (value: TypeFilter) => void
 }) {
+  // Les compteurs de chaque groupe tiennent compte du filtre déjà actif dans
+  // l'AUTRE dimension (pas de la sienne) — sans ça, deux filtres pouvaient
+  // sembler compatibles (ex. "Faible (1)" + "Bonnes pratiques (6)") alors que
+  // leur intersection réelle est vide, sans aucun indice visuel préalable.
+  const itemsMatchingTypeFilter = allItems.filter(
+    (item) => typeFilter === 'all' || getSourceGroup(item.source) === typeFilter,
+  )
+  const itemsMatchingLevelFilter = allItems.filter(
+    (item) => levelFilter === 'all' || getPlanGroup(item.level) === levelFilter,
+  )
+
   const levelOptions: { value: LevelFilter; label: string; count: number }[] = [
-    { value: 'all', label: 'Tout', count: allItems.length },
-    ...LEVEL_FILTER_ORDER
-      .filter((level) => allItems.some((item) => item.level === level))
-      .map((level) => ({
-        value: level,
-        label: LEVEL_FILTER_SHORT_LABELS[level],
-        count: allItems.filter((item) => item.level === level).length,
+    { value: 'all', label: 'Tout', count: itemsMatchingTypeFilter.length },
+    ...PLAN_GROUP_ORDER
+      .filter((group) => allItems.some((item) => getPlanGroup(item.level) === group))
+      .map((group) => ({
+        value: group,
+        label: PLAN_GROUP_LABELS[group],
+        count: itemsMatchingTypeFilter.filter((item) => getPlanGroup(item.level) === group).length,
       })),
   ]
 
   const typeGroupOrder: SourceGroup[] = ['structural', 'mechanic', 'recommendation']
   const typeOptions: { value: TypeFilter; label: string; count: number }[] = [
-    { value: 'all', label: 'Tout', count: allItems.length },
+    { value: 'all', label: 'Tout', count: itemsMatchingLevelFilter.length },
     ...typeGroupOrder
       .filter((group) => allItems.some((item) => getSourceGroup(item.source) === group))
       .map((group) => ({
         value: group,
         label: SOURCE_GROUP_LABELS[group],
-        count: allItems.filter((item) => getSourceGroup(item.source) === group).length,
+        count: itemsMatchingLevelFilter.filter((item) => getSourceGroup(item.source) === group).length,
       })),
   ]
 
   return (
     <div className="mb-5 flex flex-col gap-3">
-      <FilterChipGroup label="Niveau" options={levelOptions} value={levelFilter} onChange={onLevelFilterChange} />
+      <FilterChipGroup label="Priorité" options={levelOptions} value={levelFilter} onChange={onLevelFilterChange} />
       <FilterChipGroup label="Type" options={typeOptions} value={typeFilter} onChange={onTypeFilterChange} />
     </div>
   )
@@ -1008,10 +1134,21 @@ function PriorityListSection({
       />
 
       {items.length === 0 ? (
-        <section className="rounded-3xl bg-white/70 p-6 ring-1 ring-border">
-          <p className="text-sm leading-relaxed text-foreground/70">
-            Aucun point ne correspond à ces filtres. Essayez d'élargir votre sélection.
+        <section className="flex flex-col items-center gap-3 rounded-3xl bg-white/70 px-6 py-12 text-center ring-1 ring-border">
+          <FilterX className="h-6 w-6 text-foreground/30" aria-hidden="true" />
+          <p className="max-w-sm text-sm leading-relaxed text-foreground/70">
+            Aucun point ne correspond à cette combinaison de filtres.
           </p>
+          <Button
+            variant="outline"
+            onClick={() => {
+              onLevelFilterChange('all')
+              onTypeFilterChange('all')
+            }}
+            className="mt-1 border-primary text-primary hover:bg-secondary"
+          >
+            Réinitialiser les filtres
+          </Button>
         </section>
       ) : (
         <>
@@ -1079,11 +1216,11 @@ function ActionSummarySection({
   }
 
   return (
-    <section className="border-t border-border pt-10">
-      <p className="text-xs font-medium tracking-wide text-foreground/40">Conclusion</p>
+    <section>
+      <p className="text-xs font-medium tracking-wide text-foreground/40">Plan d'action</p>
 
       <h2 className="mt-2 text-xl font-semibold text-foreground">
-        Plan d’action recommandé
+        Plan d'action recommandé
       </h2>
 
       <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-foreground/70">
@@ -1101,8 +1238,9 @@ function ActionSummarySection({
         ))}
       </ol>
 
-      {/* Les actions utilitaires arrivent ici, une fois le rapport lu — pas
-          avant, comme un PDF qu'on lit d'abord et qu'on télécharge ensuite. */}
+      {/* Les actions utilitaires (copier / télécharger / recommencer) sont
+          disponibles dès ce résumé en haut de page, sans attendre d'avoir
+          parcouru toute la liste détaillée plus bas. */}
       <div className="mt-8 flex flex-wrap gap-3 print:hidden">
         <Button
           variant="ghost"
@@ -1140,8 +1278,9 @@ function ActionSummarySection({
 function AiPromptSection({ result }: { result: EvaluationResult }) {
   const [copyState, setCopyState] = useState<CopyState>('idle')
   const [showPrompt, setShowPrompt] = useState(false)
+  const [projectContext, setProjectContext] = useState('')
 
-  const prompt = useMemo(() => buildAiPrompt(result), [result])
+  const prompt = useMemo(() => buildAiPrompt(result, projectContext), [result, projectContext])
   const priorityItemsCount = useMemo(() => getPriorityItems(result).length, [result])
 
   async function handleCopyPrompt() {
@@ -1174,6 +1313,26 @@ function AiPromptSection({ result }: { result: EvaluationResult }) {
             Sert à reformuler ou préparer une synthèse, sans remplacer le résultat
             ci-dessus. Aucun appel API n’est fait depuis le site : pas de clé, pas de coût.
           </p>
+
+          <div className="mt-5">
+            <label
+              htmlFor="ai-project-context"
+              className="mb-1.5 block text-sm font-medium text-foreground"
+            >
+              Contexte du projet <span className="font-normal text-foreground/50">(optionnel)</span>
+            </label>
+            <textarea
+              id="ai-project-context"
+              value={projectContext}
+              onChange={(event) => setProjectContext(event.target.value)}
+              placeholder="Ex : application de sport pour un public jeune adulte, objectif de fidélisation quotidienne..."
+              rows={3}
+              className="w-full rounded-xl border border-border bg-white/70 p-3 text-sm text-foreground placeholder:text-foreground/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+            />
+            <p className="mt-1.5 text-xs text-foreground/50">
+              Ajouté au prompt pour des réponses plus adaptées à votre projet, pas plus génériques.
+            </p>
+          </div>
         </div>
 
         <div className="rounded-3xl bg-white/70 p-5">
@@ -1365,7 +1524,18 @@ export function ResultsClient() {
   }, [sortedItems, showAllItems])
 
   function handleNavigate(id: string) {
-    const index = sortedItems.findIndex((item) => item.id === id)
+    const isCurrentlyFiltered = levelFilter !== 'all' || typeFilter !== 'all'
+    const isVisibleWithCurrentFilters = sortedItems.some((item) => item.id === id)
+
+    // Si l'item ciblé (ex. depuis "Extrait des recommandations") est exclu
+    // par un filtre actif, on le réinitialise d'abord pour garantir que la
+    // carte existe bien dans le DOM avant de tenter d'y défiler.
+    if (isCurrentlyFiltered && !isVisibleWithCurrentFilters) {
+      setLevelFilter('all')
+      setTypeFilter('all')
+    }
+
+    const index = priorityItems.findIndex((item) => item.id === id)
     const isHidden = index >= INITIAL_VISIBLE_ITEMS && !showAllItems
 
     if (isHidden) {
@@ -1381,6 +1551,18 @@ export function ResultsClient() {
           behavior: 'smooth',
           block: 'start',
         })
+      })
+    })
+  }
+
+  function handleFilterByGroup(group: PlanGroup) {
+    setLevelFilter(group)
+    setTypeFilter('all')
+
+    window.requestAnimationFrame(() => {
+      document.getElementById('priority-list-heading')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
       })
     })
   }
@@ -1445,8 +1627,22 @@ export function ResultsClient() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
       <DiagnosticHero
         result={result}
-        priorityItems={sortedItems}
+        priorityItems={priorityItems}
         onNavigate={handleNavigate}
+        onFilterByGroup={handleFilterByGroup}
+      />
+
+      {/* Remonté ici sur retour de tests utilisateurs : enterré tout en bas,
+          après la liste détaillée des recommandations, il risquait de
+          passer inaperçu. Utilise la liste complète (pas sortedItems) :
+          le plan d'action global ne doit pas dépendre d'un filtre laissé
+          actif plus bas dans la page. */}
+      <ActionSummarySection
+        items={priorityItems}
+        copyState={copyState}
+        onCopySummary={handleCopySummary}
+        onDownloadPdf={handleDownloadPdf}
+        onRestart={handleRestart}
       />
 
       <div className="grid gap-8 lg:grid-cols-[220px_1fr] lg:items-start">
@@ -1467,14 +1663,6 @@ export function ResultsClient() {
           onTypeFilterChange={setTypeFilter}
         />
       </div>
-
-      <ActionSummarySection
-        items={sortedItems}
-        copyState={copyState}
-        onCopySummary={handleCopySummary}
-        onDownloadPdf={handleDownloadPdf}
-        onRestart={handleRestart}
-      />
 
       <AiPromptSection result={result} />
 

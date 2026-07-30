@@ -202,48 +202,23 @@ export default async function PrincipleDetailPage({
 )}
                   </li>
                 ))}
+                {relatedResources.map((resource) => (
+                  <li key={resource.id} className="flex flex-col gap-0.5">
+                    <span className="text-xs font-medium text-foreground/50">
+                      {resource.authors}{resource.year ? ` · ${resource.year}` : ''}
+                    </span>
+                    <a
+                      href={resource.url}
+                      className="text-sm font-semibold text-foreground underline decoration-foreground/20 underline-offset-2 hover:text-primary"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {resource.title}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </section>
-
-            {/* Pour aller plus loin — simple teaser vers la bibliothèque de
-                ressources, pas une seconde bibliographie : liens cliquables
-                seulement, sans dupliquer le format auteur/année déjà utilisé
-                dans Références. Affichée seulement si une ressource distincte
-                (non déjà citée) y est rattachée. */}
-            {relatedResources.length > 0 && (
-              <section aria-labelledby="ressources-liees-heading">
-                <div className="mb-3 flex items-center gap-2">
-                  <LibraryBig className="h-4 w-4 text-primary" />
-                  <h2 id="ressources-liees-heading" className="text-lg font-semibold text-foreground">
-                    Pour aller plus loin
-                  </h2>
-                </div>
-                <ul className="flex flex-col gap-2">
-                  {relatedResources.map((resource) => (
-                    <li key={resource.id}>
-                      <a
-                        href={resource.url}
-                        className="text-sm font-semibold text-foreground underline decoration-foreground/20 underline-offset-2 hover:text-primary"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {resource.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/ressources"
-                  className={[
-                    'mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline underline-offset-2',
-                    'transition-opacity hover:opacity-70',
-                    'focus-visible:rounded focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
-                  ].join(' ')}
-                >
-                  Voir toutes les ressources →
-                </Link>
-              </section>
-            )}
 
             {/* Navigation précédent / suivant */}
             <nav

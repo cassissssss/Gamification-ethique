@@ -74,6 +74,9 @@
   /* Valeurs ajustées pour garantir 4.5:1 sur fond blanc/clair */
   --color-positive: oklch(35% 0.1 155); /* vert foncé */
   --color-warning: oklch(48% 0.13 55); /* orange foncé */
+  --color-high-risk: oklch(
+    42% 0.15 35
+  ); /* rouge-orangé, entre warning et danger */
   --color-danger: oklch(35% 0.14 25); /* rouge foncé */
   --color-info: oklch(33% 0.09 240); /* bleu foncé */
   --color-neutral: oklch(38% 0.01 0); /* gris neutre */
@@ -121,7 +124,7 @@
   }
 
   /* ── Focus visible global ─────────────────────────────────────────────
-     Règle unique,  cohérente,  suffisamment visible (3px + offset 2px).
+     Règle unique, cohérente, suffisamment visible (3px + offset 2px).
      Couvre tous les éléments interactifs natifs et Shadcn.
   ──────────────────────────────────────────────────────────────────── */
   :focus-visible {

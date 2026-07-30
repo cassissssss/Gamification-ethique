@@ -6,7 +6,6 @@ import {
 } from 'lucide-react'
 import { principles } from '@/data/principles'
 import { PrincipleCard } from '@/components/principes/PrincipleCard'
-import { RareteUrgenceShowcase } from '@/components/principes/showcases/RareteUrgenceShowcase'
 
 export const metadata: Metadata = {
   title: 'Principes',
@@ -23,11 +22,6 @@ const PRINCIPLE_ICONS: Record<string, LucideIcon> = {
   'rarete-urgence':        Zap,
   'choix-contraint':       Scale,
 }
-
-// Exemple concret tiré des données réelles du principe (pas un exemple
-// inventé) — répond au manque de preuves relevé sur cette page.
-const exampleSlug = 'rarete-urgence'
-const examplePrinciple = principles.find((p) => p.slug === exampleSlug)!
 
 export default function PrincipesPage() {
   return (
@@ -63,23 +57,6 @@ export default function PrincipesPage() {
             </li>
           ))}
         </ul>
-      </section>
-
-      {/* ── Exemple concret ───────────────────────────────────────────────── */}
-      {/* Répond au manque de preuves de la page : montre comment un principe
-          se traduit concrètement, avec le vrai contenu du principe choisi. */}
-      <section aria-labelledby="exemple-heading" className="mx-auto w-full max-w-[62rem] px-6 py-16">
-        <div className="max-w-2xl">
-          <h2 id="exemple-heading" className="mb-3 text-3xl font-semibold text-foreground">
-            Un principe, en pratique
-          </h2>
-          <p className="mb-10 text-base leading-relaxed text-foreground/70">
-            Voici comment le principe « {examplePrinciple.title} » se traduit
-            concrètement dans une interface.
-          </p>
-        </div>
-
-        <RareteUrgenceShowcase />
       </section>
 
       {/* ── Pourquoi ──────────────────────────────────────────────────────── */}
