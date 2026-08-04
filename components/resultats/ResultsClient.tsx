@@ -97,7 +97,7 @@ type SourceGroup = 'structural' | 'mechanic' | 'recommendation'
 const SOURCE_GROUP_LABELS: Record<SourceGroup, string> = {
   structural: 'Risques structurels',
   mechanic: 'Mécaniques à adapter',
-  recommendation: 'Bonnes pratiques',
+  recommendation: 'Renforts positifs',
 }
 
 function getSourceGroup(source: PriorityItemSource): SourceGroup {
@@ -487,12 +487,10 @@ function DiagnosticHero({
   result,
   priorityItems,
   onNavigate,
-  onFilterByGroup,
 }: {
   result: EvaluationResult
   priorityItems: PriorityItem[]
   onNavigate: (id: string) => void
-  onFilterByGroup: (group: PlanGroup) => void
 }) {
   // Les « principaux sujets » sont les thématiques de risque les plus
   // sévères — c'est ce qui donne le plus rapidement une idée de la nature
@@ -528,15 +526,10 @@ function DiagnosticHero({
       {groupCounts.length > 0 && (
         <div className="mt-6 flex max-w-md flex-wrap gap-3">
           {groupCounts.map(({ group, count }) => (
-            <button
-              key={group}
-              type="button"
-              onClick={() => onFilterByGroup(group)}
-              className="rounded-2xl bg-foreground/5 px-4 py-3 text-left transition-colors hover:bg-foreground/10 cursor-pointer"
-            >
+            <div key={group} className="rounded-2xl bg-foreground/5 px-4 py-3">
               <p className="text-2xl font-semibold text-foreground">{count}</p>
               <p className="text-xs text-foreground/60">{PLAN_GROUP_LABELS[group]}</p>
-            </button>
+            </div>
           ))}
         </div>
       )}
@@ -1090,6 +1083,7 @@ function PriorityListSection({
   onLevelFilterChange,
   typeFilter,
   onTypeFilterChange,
+  onDownloadPdf,
 }: {
   items: PriorityItem[]
   allItems: PriorityItem[]
@@ -1099,6 +1093,7 @@ function PriorityListSection({
   onLevelFilterChange: (value: LevelFilter) => void
   typeFilter: TypeFilter
   onTypeFilterChange: (value: TypeFilter) => void
+  onDownloadPdf: () => void
 }) {
   if (allItems.length === 0) {
     return (
@@ -1117,13 +1112,30 @@ function PriorityListSection({
   const listId = 'priority-list'
 
   return (
-    <section aria-labelledby="priority-list-heading">
-      <h2
-        id="priority-list-heading"
-        className="mb-4 text-xl font-semibold text-foreground"
-      >
-        Recommandations
-      </h2>
+    <section aria-labelledby="priority-list-heading" className="w-full min-w-0">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2
+          id="priority-list-heading"
+          className="text-xl font-semibold text-foreground"
+        >
+          Recommandations
+        </h2>
+
+        {/* Ici plutôt que dans le Plan d'action : window.print() imprime ce
+            qui est affiché à l'écran, donc le contenu du PDF dépend du
+            filtre actif dans CETTE section, pas du plan d'action fixe
+            au-dessus. Le libellé précise si un filtre réduit la sélection,
+            pour ne pas laisser croire à un export complet par erreur. */}
+        <Button
+          variant="outline"
+          onClick={onDownloadPdf}
+          className="border-border text-foreground/70 hover:bg-foreground/[0.04] print:hidden"
+        >
+          {items.length === allItems.length
+            ? 'Télécharger en PDF'
+            : `Télécharger la sélection filtrée (${items.length}) en PDF`}
+        </Button>
+      </div>
 
       <FilterBar
         allItems={allItems}
@@ -1134,7 +1146,7 @@ function PriorityListSection({
       />
 
       {items.length === 0 ? (
-        <section className="flex flex-col items-center gap-3 rounded-3xl bg-white/70 px-6 py-12 text-center ring-1 ring-border">
+        <section className="flex w-full flex-col items-center gap-3 rounded-3xl bg-white/70 px-6 py-12 text-center ring-1 ring-border">
           <FilterX className="h-6 w-6 text-foreground/30" aria-hidden="true" />
           <p className="max-w-sm text-sm leading-relaxed text-foreground/70">
             Aucun point ne correspond à cette combinaison de filtres.
@@ -1200,14 +1212,10 @@ function ActionSummarySection({
   items,
   copyState,
   onCopySummary,
-  onDownloadPdf,
-  onRestart,
 }: {
   items: PriorityItem[]
   copyState: CopyState
   onCopySummary: () => void
-  onDownloadPdf: () => void
-  onRestart: () => void
 }) {
   const topItems = items.slice(0, CONCLUSION_ACTIONS_COUNT)
 
@@ -1219,7 +1227,7 @@ function ActionSummarySection({
     <section>
       <p className="text-xs font-medium tracking-wide text-foreground/40">Plan d'action</p>
 
-      <h2 className="mt-2 text-xl font-semibold text-foreground">
+      <h2 id="plan-action-heading" className="mt-2 text-xl font-semibold text-foreground">
         Plan d'action recommandé
       </h2>
 
@@ -1238,15 +1246,17 @@ function ActionSummarySection({
         ))}
       </ol>
 
-      {/* Les actions utilitaires (copier / télécharger / recommencer) sont
+      {/* Les actions utilitaires (copier / voir l'analyse IA) sont
           disponibles dès ce résumé en haut de page, sans attendre d'avoir
-          parcouru toute la liste détaillée plus bas. */}
+          parcouru toute la liste détaillée plus bas. Le téléchargement PDF
+          vit dans Recommandations : window.print() capture l'écran tel
+          qu'affiché, donc son contenu dépend du filtre actif là-bas. */}
       <div className="mt-8 flex flex-wrap gap-3 print:hidden">
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={onCopySummary}
           disabled={copyState === 'success'}
-          className="text-sm font-medium text-foreground/70 hover:bg-foreground/[0.04]"
+          className="border-border text-foreground/70 hover:bg-foreground/[0.04]"
         >
           {copyState === 'success'
             ? 'Résumé copié'
@@ -1257,18 +1267,12 @@ function ActionSummarySection({
 
         <Button
           variant="outline"
-          onClick={onDownloadPdf}
+          onClick={() =>
+            document.getElementById('ai-prompt-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
           className="border-border text-foreground/70 hover:bg-foreground/[0.04]"
         >
-          Télécharger en PDF
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={onRestart}
-          className="border-border text-foreground/70 hover:bg-foreground/[0.04]"
-        >
-          Recommencer
+          Voir l'analyse IA →
         </Button>
       </div>
     </section>
@@ -1555,18 +1559,6 @@ export function ResultsClient() {
     })
   }
 
-  function handleFilterByGroup(group: PlanGroup) {
-    setLevelFilter(group)
-    setTypeFilter('all')
-
-    window.requestAnimationFrame(() => {
-      document.getElementById('priority-list-heading')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    })
-  }
-
   async function handleCopySummary() {
     if (!result) {
       return
@@ -1629,7 +1621,6 @@ export function ResultsClient() {
         result={result}
         priorityItems={priorityItems}
         onNavigate={handleNavigate}
-        onFilterByGroup={handleFilterByGroup}
       />
 
       {/* Remonté ici sur retour de tests utilisateurs : enterré tout en bas,
@@ -1641,8 +1632,6 @@ export function ResultsClient() {
         items={priorityItems}
         copyState={copyState}
         onCopySummary={handleCopySummary}
-        onDownloadPdf={handleDownloadPdf}
-        onRestart={handleRestart}
       />
 
       <div className="grid gap-8 lg:grid-cols-[220px_1fr] lg:items-start">
@@ -1661,12 +1650,24 @@ export function ResultsClient() {
           onLevelFilterChange={setLevelFilter}
           typeFilter={typeFilter}
           onTypeFilterChange={setTypeFilter}
+          onDownloadPdf={handleDownloadPdf}
         />
       </div>
 
       <AiPromptSection result={result} />
 
       {isClientContext && <ClientArgumentSection result={result} />}
+
+      {/* Action finale de page, déplacée ici depuis le Plan d'action (en
+          haut) où elle n'avait pas de sens juste après le diagnostic. */}
+      <div className="flex justify-center border-t border-border pt-8 print:hidden">
+        <Button
+          onClick={handleRestart}
+          className="bg-primary text-primary-foreground hover:opacity-90"
+        >
+          Recommencer l'évaluation
+        </Button>
+      </div>
     </div>
   )
 }
