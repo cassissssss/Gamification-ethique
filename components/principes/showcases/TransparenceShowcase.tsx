@@ -25,6 +25,7 @@ function XpRow({ label, sublabel, xp }: { label: string; sublabel: string; xp: s
 export function TransparenceShowcase() {
   return (
     <ShowcaseShell
+      principles={['transparence']}
       flush
       cardWidth={280}
       intro="Comparez ces deux versions d'un même écran, puis survolez leurs éléments pour comprendre ce que change ce principe."

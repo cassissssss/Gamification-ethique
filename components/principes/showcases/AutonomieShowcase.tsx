@@ -50,6 +50,7 @@ function OptionRow({
 export function AutonomieShowcase() {
   return (
     <ShowcaseShell
+      principles={['autonomie']}
       extraBottomSpace
       intro="Comparez ces deux versions d'un même écran, puis survolez leurs éléments pour comprendre ce que change ce principe."
       before={

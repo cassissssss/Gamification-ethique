@@ -84,10 +84,45 @@ export default async function PrincipleDetailPage({
 
       {/* ── Contenu ───────────────────────────────────────────────────────── */}
       <div className="mx-auto w-full max-w-[68rem] px-6 py-16">
-        <div className="grid gap-16 lg:grid-cols-[1fr_300px] lg:items-start">
+        <div className="grid gap-16 lg:grid-cols-[220px_1fr] lg:items-start">
+
+          {/* ── Colonne latérale gauche ─────────────────────────────────── */}
+          <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
+
+            {/* Index */}
+            <div
+              className="rounded-2xl p-5"
+              style={{ background: 'rgba(231, 225, 218, 0.5)', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.05)' }}
+            >
+              <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                Tous les principes
+              </p>
+              <nav aria-label="Index des principes">
+                <ul className="flex flex-col gap-1">
+                  {principles.map((p) => (
+                    <li key={p.slug}>
+                      <Link
+                        href={`/principes/${p.slug}`}
+                        aria-current={p.slug === slug ? 'page' : undefined}
+                        className={[
+                          'block rounded-lg px-3 py-2 text-sm transition-colors',
+                          'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-1 focus-visible:outline-primary',
+                          p.slug === slug
+                            ? 'font-semibold text-primary bg-[#D9D0E3]/50'
+                            : 'text-foreground/70 hover:bg-white/50 hover:text-foreground',
+                        ].join(' ')}
+                      >
+                        {p.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </aside>
 
           {/* Colonne principale */}
-          <div className="flex flex-col gap-14">
+          <div className="flex min-w-0 max-w-[52rem] flex-col gap-14">
 
             {/* En pratique — l'élément central de la page. La définition
                 complète (3 paragraphes) est réduite à 1-2 phrases en légende
@@ -258,40 +293,6 @@ export default async function PrincipleDetailPage({
             </nav>
           </div>
 
-          {/* ── Colonne latérale ────────────────────────────────────────── */}
-          <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
-
-            {/* Index */}
-            <div
-              className="rounded-2xl p-5"
-              style={{ background: 'rgba(231, 225, 218, 0.5)', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.05)' }}
-            >
-              <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground/50">
-                Tous les principes
-              </p>
-              <nav aria-label="Index des principes">
-                <ul className="flex flex-col gap-1">
-                  {principles.map((p) => (
-                    <li key={p.slug}>
-                      <Link
-                        href={`/principes/${p.slug}`}
-                        aria-current={p.slug === slug ? 'page' : undefined}
-                        className={[
-                          'block rounded-lg px-3 py-2 text-sm transition-colors',
-                          'focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-1 focus-visible:outline-primary',
-                          p.slug === slug
-                            ? 'font-semibold text-primary bg-[#D9D0E3]/50'
-                            : 'text-foreground/70 hover:bg-white/50 hover:text-foreground',
-                        ].join(' ')}
-                      >
-                        {p.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-          </aside>
         </div>
       </div>
     </div>

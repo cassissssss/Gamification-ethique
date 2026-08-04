@@ -126,6 +126,7 @@ export function RareteUrgenceShowcase() {
   return (
     <ShowcaseShell
       flush
+      principles={['rarete-urgence']}
       cardWidth={340}
       intro="Comparez ces deux versions d'une même interface, puis survolez les éléments marqués pour comprendre ce que change ce principe."
       before={

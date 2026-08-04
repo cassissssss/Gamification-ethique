@@ -5,6 +5,7 @@ import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 export function ComparaisonSocialeShowcase() {
   return (
     <ShowcaseShell
+      principles={['comparaison-sociale']}
       intro="Comparez ces deux versions d'un même écran, puis survolez leurs éléments pour comprendre ce que change ce principe."
       before={
         <div className="h-[360px] w-[320px] overflow-hidden rounded-t-[36px] border-[3px] border-b-0 border-primary bg-[#FAF6F0] p-[22px]">

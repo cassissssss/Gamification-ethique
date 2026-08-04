@@ -1,4 +1,6 @@
 import { ArrowRight } from 'lucide-react'
+import { PrincipleLegend } from './Hotspot'
+import type { PrincipleKey } from './Hotspot'
 
 interface ShowcaseShellProps {
   /** Phrase d'intro au-dessus du bloc. Omise si le contexte l'explique déjà. */
@@ -10,8 +12,12 @@ interface ShowcaseShellProps {
   /** Libellés au-dessus de chaque écran. */
   beforeLabel?: string
   afterLabel?: string
-  /** Légende des principes illustrés, affichée juste au-dessus des écrans. */
-  legend?: React.ReactNode
+  /**
+   * Principes illustrés — génère la légende automatiquement, toujours
+   * présente pour garantir la cohérence visuelle entre toutes les fiches.
+   * Remplace la prop `legend` libre qui n'était pas toujours passée.
+   */
+  principles: PrincipleKey[]
   /**
    * Quand true : les labels passent au-dessus de la zone violette (plutôt
    * que dedans), et les écrans s'alignent pile sur ses bords haut/bas —
@@ -32,8 +38,7 @@ interface ShowcaseShellProps {
 /**
  * Coquille partagée par tous les mockups "En pratique" des fiches principes.
  * Chaque fiche ne fournit que son propre contenu (before/after) — la phrase
- * d'intro, les labels, le fond et la flèche de transformation sont communs,
- * pour éviter de dupliquer cette structure sur les 8 principes.
+ * d'intro, la légende, les labels, le fond et la flèche sont communs.
  */
 export function ShowcaseShell({
   intro,
@@ -41,16 +46,22 @@ export function ShowcaseShell({
   after,
   beforeLabel = 'Interface initiale',
   afterLabel = 'Application du principe',
-  legend,
+  principles,
   flush = false,
   cardWidth = 320,
   extraBottomSpace = false,
 }: ShowcaseShellProps) {
+  const legend = (
+    <div className="mb-5">
+      <PrincipleLegend keys={principles} />
+    </div>
+  )
+
   if (flush) {
     return (
       <div>
         {intro && <p className="mb-4 max-w-lg text-sm leading-relaxed text-foreground/70">{intro}</p>}
-        {legend && <div className="mb-5">{legend}</div>}
+        {legend}
 
         <div className="flex flex-nowrap items-start justify-center gap-6">
           <p
@@ -82,7 +93,7 @@ export function ShowcaseShell({
   return (
     <div>
       {intro && <p className="mb-4 max-w-lg text-sm leading-relaxed text-foreground/70">{intro}</p>}
-      {legend && <div className="mb-5">{legend}</div>}
+      {legend}
 
       <div className={`flex flex-nowrap items-start justify-center gap-6 rounded-3xl bg-[rgba(217,208,227,0.4)] px-6 pt-8 ${extraBottomSpace ? 'pb-8' : ''}`}>
         <div className="shrink-0">

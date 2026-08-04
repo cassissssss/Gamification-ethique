@@ -1,12 +1,39 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Flame, TriangleAlert, Clock } from 'lucide-react'
+import { Flame, TriangleAlert, Clock, PencilRuler, Code2, Compass, Handshake } from 'lucide-react'
+
+const audiences = [
+  {
+    id: 'designers',
+    Icon: PencilRuler,
+    title: 'Vous êtes designer UX/UI',
+    text: `Vous imaginez les mécaniques d'engagement et voulez motiver vos utilisateur-rices sans les manipuler.`,
+  },
+  {
+    id: 'devs',
+    Icon: Code2,
+    title: 'Vous êtes développeur-se',
+    text: `Vous intégrez ces mécaniques et voulez en mesurer les effets avant de les coder.`,
+  },
+  {
+    id: 'pilotage',
+    Icon: Compass,
+    title: 'Vous pilotez le projet',
+    text: `Chef-fe de projet ou product owner, vous devez arbitrer, prioriser et défendre vos choix de conception.`,
+  },
+  {
+    id: 'client',
+    Icon: Handshake,
+    title: 'Vous commandez le produit',
+    text: `Côté client ou métier, vous voulez un cadre clair pour décider ensemble, en toute transparence.`,
+  },
+]
 
 const whoItsFor = [
   {
     id: 'amont',
     title: 'Pour cadrer une conception en amont',
-    text: `Utilisé tôt, avant que les mécaniques soient figées — que vous travailliez seul-e ou en équipe.`,
+    text: `Utilisé tôt, avant que les mécaniques soient figées, que vous travailliez seul-e ou en équipe.`,
   },
   {
     id: 'argumenter',
@@ -173,7 +200,51 @@ export default function HomePage() {
         </ol>
       </section>
 
-      {/* ── Pour qui, et comment ──────────────────────────────────────────── */}
+      {/* ── À qui s'adresse le framework ──────────────────────────────────── */}
+      {/* Profils cibles repris de la page « À propos » (designers,
+          développeur-ses, chef-fes de projet, product owners, équipes
+          client), regroupés en quatre familles d'usage. Répond au « est-ce
+          que c'est pour moi ? » avant d'entrer dans les situations d'usage. */}
+      <section
+        aria-labelledby="audience-heading"
+        className="mx-auto w-full max-w-[66rem] px-6 py-20"
+      >
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2
+            id="audience-heading"
+            className="mb-4 text-3xl font-semibold text-foreground"
+          >
+            À qui s'adresse ce framework ?
+          </h2>
+          <p className="text-base leading-relaxed text-foreground/70">
+            Que vous conceviez, développiez, pilotiez ou commandiez une expérience
+            numérique gamifiée, l'outil est fait pour vous. Voici comment il vous sert
+            selon votre rôle.
+          </p>
+        </div>
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {audiences.map((item) => (
+            <li
+              key={item.id}
+              className="flex flex-col gap-4 rounded-2xl p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              style={{ background: 'rgba(255,255,255,0.60)', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+            >
+              <span
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                aria-hidden="true"
+              >
+                <item.Icon className="h-5 w-5" />
+              </span>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-base font-semibold leading-snug text-foreground">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-foreground/70">{item.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ── Dans quelles situations ───────────────────────────────────────── */}
       {/* Basée sur des retours de tests utilisateurs réels — reformulés et
           filtrés (certains retours parlaient d'évolutions futures, comme la
           génération d'idées de mécaniques, volontairement écartées ici car
@@ -186,7 +257,7 @@ export default function HomePage() {
           id="pourqui-heading"
           className="mb-12 text-center text-3xl font-semibold text-foreground"
         >
-          Pour qui, et comment ?
+          Dans quelles situations l'utiliser ?
         </h2>
         <ul className="grid gap-5 sm:grid-cols-2">
           {whoItsFor.map((item) => (

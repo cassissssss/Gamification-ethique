@@ -1,12 +1,12 @@
 import { ArrowRight, Book, ChevronRight } from 'lucide-react'
 import { PhoneStatusBar } from '@/components/principes/showcases/shared/PhoneStatusBar'
 import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
-import { Hotspot, PrincipleLegend } from '@/components/principes/showcases/shared/Hotspot'
+import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 
 export function ProgressionShowcase({ compact = false }: { compact?: boolean } = {}) {
   return (
     <ShowcaseShell
-      legend={!compact && <PrincipleLegend keys={['transparence', 'progression', 'autonomie']} />}
+      principles={['transparence', 'progression', 'autonomie']}
       intro={!compact ? "Comparez ces deux versions d'une même interface, puis survolez leurs éléments pour comprendre ce que change ce principe." : undefined}
         before={
           <div className="h-[400px] w-[320px] overflow-hidden rounded-t-[36px] border-[3px] border-b-0 border-primary bg-[#FAF6F0] p-[22px]">

@@ -40,6 +40,7 @@ function Card({ children }: { children: React.ReactNode }) {
 export function FeedbackShowcase() {
   return (
     <ShowcaseShell
+      principles={['feedback']}
       intro="Comparez ces deux versions d'un même écran, puis survolez leurs éléments pour comprendre ce que change ce principe."
       before={
         <Card>
