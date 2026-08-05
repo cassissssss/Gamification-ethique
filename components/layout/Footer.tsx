@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LinkedinIcon } from '@/components/icons/LinkedinIcon'
 
 const footerLinks = [
   { href: '/evaluation', label: `Lancer l'évaluation` },
@@ -25,6 +26,18 @@ export function Footer() {
               Framework d'évaluation éthique pour la conception
               d'expériences numériques gamifiées.
             </p>
+            <a
+              href="https://www.linkedin.com/in/christelespinasse/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Profil LinkedIn de Christel Espinasse"
+              className={[
+                'mt-4 inline-flex items-center justify-center rounded-full bg-primary/10 p-1.5 text-primary transition-opacity hover:opacity-70',
+                'focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
+              ].join(' ')}
+            >
+              <LinkedinIcon size={20} />
+            </a>
           </div>
 
           <nav aria-label="Liens secondaires" className="flex flex-col gap-3 sm:items-end">
@@ -50,8 +63,31 @@ export function Footer() {
           className="mt-8 pt-5 text-sm text-foreground/60"
           style={{ borderTop: '1px solid rgba(217,208,227,0.6)' }}
         >
-          © {currentYear} — Réalisé dans le cadre du Travail de Bachelor à la HEIG-VD. 
-          En collaboration avec l'agence digitale Antistatique.
+          © {currentYear} — Réalisé par{' '}
+          <a
+            href="https://www.linkedin.com/in/christelespinasse/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={[
+              'font-medium text-primary underline underline-offset-2 transition-opacity hover:opacity-70',
+              'focus-visible:rounded focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
+            ].join(' ')}
+          >
+            Christel Espinasse
+          </a>{' '}
+          dans le cadre du Travail de Bachelor à la HEIG-VD. 
+          En collaboration avec l'agence digitale{' '}
+          <a
+            href="https://antistatique.net"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={[
+              'font-medium text-primary underline underline-offset-2 transition-opacity hover:opacity-70',
+              'focus-visible:rounded focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
+            ].join(' ')}
+          >
+            Antistatique
+          </a>.
         </div>
       </div>
     </footer>

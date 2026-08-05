@@ -249,6 +249,12 @@ function QuestionCard({
           )}
         </legend>
 
+        {question.type === 'checkbox' && (question.maxSelections ?? 0) > 1 && (
+          <p className="mt-2 inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            Maximum {question.maxSelections} réponses
+          </p>
+        )}
+
         <div className="mt-5 flex flex-col gap-3">
           {question.options.map((option) => {
             const isSelected = selectedOptionIds.includes(option.id)
@@ -296,14 +302,8 @@ function QuestionCard({
           })}
         </div>
 
-        {question.type === 'checkbox' && (question.maxSelections ?? 0) > 1 && (
-          <p className="mt-3 text-xs text-foreground/50">
-            Maximum {question.maxSelections} réponses.
-          </p>
-        )}
-
         {question.type === 'checkbox' && hasReachedMaxSelections && (
-          <p className="mt-2 text-xs text-primary/70">
+          <p className="mt-3 text-xs text-primary/70">
             Le nombre maximum de réponses est atteint. Désélectionnez une option
             pour en choisir une autre.
           </p>

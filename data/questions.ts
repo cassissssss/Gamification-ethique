@@ -20,6 +20,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Besoin et intention",
     title: "Quel besoin la gamification doit-elle aider à traiter ?",
     type: "checkbox",
+    maxSelections: 2,
     options: [
       { id: "understand_what_to_do", label: "Aider les utilisateur-rices à comprendre quoi faire", tags: ["besoin_comprehension"] },
       { id: "early_dropoff", label: "Accompagner les utilisateur-rices qui quittent le parcours tôt", tags: ["besoin_retention_precoce"] },
@@ -29,7 +30,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "engagement_indicator", label: "Améliorer un indicateur d'engagement ou de participation", tags: ["besoin_indicateur_engagement"] },
       { id: "need_unclear", label: "Je préfère répondre plus tard", tags: ["besoin_a_clarifier"], isExclusive: true },
     ],
-    note: "Le besoin correspond au problème que l'on cherche à résoudre avant de choisir une mécanique.",
+    note: "Le besoin correspond au problème que l'on cherche à résoudre avant de choisir une mécanique. Limité à 2 réponses pour forcer une priorisation plutôt qu'une liste exhaustive.",
     recommendationEffect: "Oriente les mécaniques recommandées : progression, feedback, étapes, défis optionnels, contribution, rappel modéré ou retour au cadrage.",
   },
   {
@@ -72,6 +73,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Besoin et intention",
     title: "Quel est le bénéfice principal recherché pour l'utilisateur-rice à travers cette gamification ?",
     type: "checkbox",
+    maxSelections: 2,
     options: [
       { id: "help_task", label: "Aider l'utilisateur-rice à accomplir sa tâche plus facilement", tags: ["benefice_aide_tache"] },
       { id: "improve_autonomy", label: "Améliorer sa compréhension ou son autonomie", tags: ["benefice_autonomie"] },
@@ -81,7 +83,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "commercial_objective", label: "Répondre à un objectif commercial (ventes, conversion, rétention)", tags: ["benefice_business_commercial", "risque_conversion"] },
       { id: "benefit_unclear", label: "Je préfère répondre plus tard", tags: ["benefice_a_clarifier"], isExclusive: true },
     ],
-    note: "Un bénéfice pour l'utilisateur-rice et un objectif business peuvent coexister : plusieurs réponses sont possibles.",
+    note: "Un bénéfice pour l'utilisateur-rice et un objectif business peuvent coexister : jusqu'à 2 réponses possibles, pour rester ciblé plutôt que de cocher tous les bénéfices envisageables.",
     recommendationEffect: "Si seules des options orientées business sont cochées sans aucune option orientée bénéfice utilisateur, déclenche une contradiction invitant à clarifier l'intention. Alimente aussi la thématique Finalité commerciale / conversion.",
   },
   {
@@ -89,6 +91,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Public et contexte",
     title: "Le projet présente-t-il des caractéristiques particulières à prendre en compte ?",
     type: "checkbox",
+    maxSelections: 3,
     options: [
       { id: "young_audience", label: "Public jeune ou adolescent", tags: ["risque_public_jeune", "risque_comparaison_sociale"] },
       { id: "health_wellbeing_performance", label: "Santé, bien-être ou performance", tags: ["contexte_sante_bien_etre", "risque_public_sensible"] },
@@ -99,7 +102,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "no_specific_element", label: "Aucun élément particulier identifié", tags: ["contexte_aucun_signal"], isExclusive: true },
       { id: "context_to_verify", label: "Je préfère répondre plus tard", tags: ["contexte_a_verifier"], isExclusive: true },
     ],
-    note: "Certaines mécaniques peuvent avoir des effets différents selon le public ou le contexte d'usage.",
+    note: "Certaines mécaniques peuvent avoir des effets différents selon le public ou le contexte d'usage. Limite portée à 3 (contre 2 ailleurs) car plusieurs caractéristiques sensibles coexistent souvent dans un même projet.",
     recommendationEffect: "Augmente le niveau de vigilance et déclenche des recommandations sur autonomie, transparence, comparaison sociale, données ou pression de performance.",
   },
   {
@@ -107,6 +110,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Public et contexte",
     title: "Dans quelle situation l'utilisateur-rice utilise-t-il ou elle cette expérience ?",
     type: "checkbox",
+    maxSelections: 2,
     options: [
       { id: "personal_choice", label: "Par choix personnel", tags: ["usage_volontaire"] },
       { id: "work_context", label: "Dans le cadre du travail", tags: ["contexte_travail", "risque_autonomie"] },
@@ -116,7 +120,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "commercial_context", label: "Dans un contexte commercial", tags: ["risque_conversion"] },
       { id: "context_undefined", label: "Je préfère répondre plus tard", tags: ["contexte_a_definir"], isExclusive: true },
     ],
-    note: "Plusieurs situations peuvent coexister (ex. un contexte de santé au travail).",
+    note: "Plusieurs situations peuvent coexister (ex. un contexte de santé au travail), mais limitées à 2 pour garder une réponse ciblée.",
     recommendationEffect: "Influence les recommandations sur participation optionnelle, consentement réel, contrôle utilisateur et niveau de prudence.",
   },
   {
@@ -141,6 +145,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Public et contexte",
     title: "Le fonctionnement prévu implique-t-il des données personnelles, un profil ou un suivi individuel ?",
     type: "checkbox",
+    maxSelections: 2,
     options: [
       { id: "no_personal_data", label: "Non, aucune donnée personnelle liée à la gamification n'est prévue", tags: ["donnees_aucunes"], isExclusive: true },
       { id: "personal_progress_data", label: "Oui, pour afficher une progression personnelle", tags: ["donnees_progression_personnelle"] },
@@ -148,7 +153,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "ranking_data", label: "Oui, pour situer ou classer les utilisateur-rices les un-es par rapport aux autres", tags: ["donnees_classement", "risque_donnees", "risque_comparaison_sociale"] },
       { id: "data_undefined", label: "Je préfère répondre plus tard", tags: ["donnees_a_definir"], isExclusive: true },
     ],
-    note: "Plusieurs usages peuvent coexister (ex. progression personnelle et personnalisation).",
+    note: "Plusieurs usages peuvent coexister (ex. progression personnelle et personnalisation), jusqu'à 2 réponses.",
     recommendationEffect: "Déclenche des recommandations sur transparence, minimisation des données, consentement, contrôle et visibilité du suivi.",
   },
   {
@@ -195,6 +200,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Direction de gamification",
     title: "Quelles mécaniques sont déjà envisagées ou demandées ?",
     type: "checkbox",
+    maxSelections: 3,
     options: [
       { id: "points_score", label: "Points ou score", tags: ["mecanique_points_score"] },
       { id: "badges_trophies", label: "Badges ou trophées", tags: ["mecanique_badges"] },
@@ -211,7 +217,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "random_reward", label: "Récompense aléatoire ou surprise (ex. tirage, loot mystère, bonus imprévisible)", tags: ["mecanique_recompense_aleatoire", "risque_pression_temporelle"] },
       { id: "no_precise_mechanic", label: "Aucune mécanique précise pour l'instant", tags: ["mecanique_aucune"], isExclusive: true },
     ],
-    note: "Si aucune mécanique n'est encore définie, vous pouvez sélectionner \"Aucune mécanique précise pour l'instant\".",
+    note: "Si aucune mécanique n'est encore définie, vous pouvez sélectionner \"Aucune mécanique précise pour l'instant\". Limité à 3 réponses, car plusieurs mécaniques coexistent souvent dans une même expérience gamifiée.",
     recommendationEffect: "Déclenche des recommandations spécifiques par mécanique : alternatives au classement, usage sobre des récompenses, progression individuelle, feedback clair, etc. La récompense aléatoire déclenche un signal fort de pression temporelle / dépendance, en raison du renforcement à ratio variable qu'elle implique.",
   },
   {
@@ -235,6 +241,7 @@ export const evaluationQuestions: EvaluationQuestion[] = [
     section: "Transparence et contrôle",
     title: "Comment l'utilisateur-rice interagit-il ou elle avec la mécanique ?",
     type: "checkbox",
+    maxSelections: 3,
     options: [
       { id: "optional_participation", label: "La participation est proposée comme option", tags: ["controle_optionnel"] },
       { id: "adjustable_settings", label: "Certains paramètres peuvent être ajustés", tags: ["controle_parametrable"] },
@@ -242,9 +249,9 @@ export const evaluationQuestions: EvaluationQuestion[] = [
       { id: "main_path", label: "La mécanique fait partie du parcours principal", tags: ["controle_parcours_principal", "risque_autonomie"] },
       { id: "dependent_elements", label: "Certains éléments dépendent de l'interaction avec la mécanique", tags: ["controle_dependance_mecanique", "risque_autonomie"] },
       { id: "hard_to_disengage", label: "Une fois engagé-e, il est difficile de revenir en arrière ou de se désengager complètement (ex. quitter un classement, arrêter un streak, supprimer sa progression)", tags: ["controle_desengagement_difficile", "risque_autonomie"] },
-      { id: "control_undefined", label: "Je préfère répondre plus tard", tags: ["controle_a_definir"] },
+      { id: "control_undefined", label: "Je préfère répondre plus tard", tags: ["controle_a_definir"], isExclusive: true },
     ],
-    note: "Plusieurs réponses sont possibles si plusieurs aspects s'appliquent à la fois.",
+    note: "Plusieurs réponses sont possibles si plusieurs aspects s'appliquent à la fois, jusqu'à 3 réponses.",
     recommendationEffect: "Déclenche des recommandations sur autonomie, opt-out, personnalisation, accès non bloquant et niveau de contrôle utilisateur. L'option sur la réversibilité alimente ce même score avec un poids renforcé, car l'impossibilité de se désengager facilement est un signal de vigilance fort à elle seule.",
   },
   {

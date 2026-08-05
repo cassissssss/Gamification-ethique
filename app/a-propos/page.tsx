@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { LinkedinIcon } from '@/components/icons/LinkedinIcon'
 
 export const metadata: Metadata = {
   title: 'À propos',
@@ -48,6 +49,24 @@ export default function AProposPage() {
                 Antistatique
               </a>, agence digitale basée à Lausanne.
             </p>
+          </div>
+
+          <div className="mt-6 flex items-center gap-3">
+            <p className="text-sm font-semibold text-foreground">
+              Travail réalisé par Christel Espinasse
+            </p>
+            <a
+              href="https://www.linkedin.com/in/christelespinasse/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Profil LinkedIn de Christel Espinasse"
+              className={[
+                'inline-flex items-center justify-center rounded-full bg-primary/10 p-1.5 text-primary transition-opacity hover:opacity-70',
+                'focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
+              ].join(' ')}
+            >
+              <LinkedinIcon size={16} />
+            </a>
           </div>
         </div>
       </section>
