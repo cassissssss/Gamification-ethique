@@ -64,7 +64,7 @@ export const metadata: Metadata = {
       "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.", 
     images: [
     {
-      url: '/og-image.png', 
+      url: '/og-image-v2.png', 
       width: 1200, 
       height: 630, 
       alt: 'Gamification Éthique', 
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
   title: "Gamification Éthique | Framework d'évaluation", 
   description:
     "Évaluez les risques éthiques des mécaniques de gamification avant leur intégration dans un projet numérique.", 
-  images: ['/og-image.png'], 
+  images: ['/og-image-v2.png'], 
 }, 
 
   robots: {
