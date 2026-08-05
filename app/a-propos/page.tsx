@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { LinkedinIcon } from '@/components/icons/LinkedinIcon'
 
 export const metadata: Metadata = {
   title: 'À propos',
@@ -34,9 +33,20 @@ export default function AProposPage() {
               Pourtant, les équipes disposent de peu d'outils pour questionner les implications 
               éthiques de leurs choix avant la conception. Ce framework est né pour répondre à ce besoin.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── À propos de moi ──────────────────────────────────────────────── */}
+      <section aria-labelledby="bio-heading" className="mx-auto w-full max-w-[62rem] px-6 py-20">
+        <div className="max-w-2xl">
+          <h2 id="bio-heading" className="mb-5 text-3xl font-semibold text-foreground">
+            Christel Espinasse
+          </h2>
+          <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground/80">
             <p>
-              Réalisé dans le cadre d'un Travail de Bachelor à la HEIG-VD, en
-              collaboration avec{' '}
+              Je m'appelle Christel et j'ai réalisé ce projet dans le cadre de mon Travail de Bachelor à la HEIG-VD en 2026.
+              J'ai été accueillie par l'agence digitale{' '}
               <a
                 href="https://antistatique.net"
                 target="_blank"
@@ -47,51 +57,36 @@ export default function AProposPage() {
                 ].join(' ')}
               >
                 Antistatique
-              </a>, agence digitale basée à Lausanne.
+              </a>, notamment par Noémie Sandoz, UX designer 
+              et associée, qui m'a suivie pendant 4 mois.
             </p>
-          </div>
-
-          <div className="mt-6 flex items-center gap-3">
-            <p className="text-sm font-semibold text-foreground">
-              Travail réalisé par Christel Espinasse
-            </p>
-            <a
-              href="https://www.linkedin.com/in/christelespinasse/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Profil LinkedIn de Christel Espinasse"
-              className={[
-                'inline-flex items-center justify-center rounded-full bg-primary/10 p-1.5 text-primary transition-opacity hover:opacity-70',
-                'focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
-              ].join(' ')}
-            >
-              <LinkedinIcon size={16} />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Ce que fait l'outil ───────────────────────────────────────────── */}
-      <section aria-labelledby="objectif-heading" className="mx-auto w-full max-w-[62rem] px-6 py-20">
-        <div className="max-w-2xl">
-          <h2 id="objectif-heading" className="mb-5 text-3xl font-semibold text-foreground">
-            Ce que fait l'outil
-          </h2>
-          <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground/80">
             <p>
-              Il aide à cadrer une décision de conception avant qu'elle soit
-              prise, pas à la remplacer. Il ne donne pas de réponse
-              définitive sur la qualité éthique d'un produit : il aide à
-              poser les bonnes questions, au bon moment, avant que les choix
-              ne soient figés.
+              Je m'intéresse à la manière dont les choix de conception
+              orientent le comportement des utilisateur-rices.
+              De plus en plus de jeunes sont confrontés à des interfaces qui exploitent
+              leur psychologie, et je trouve d'autant plus important d'intégrer l'éthique 
+              dans les choix de conception.
+
             </p>
+            <p>
+  Si vous avez des commentaires ou des questions, n'hésitez pas à me contacter via mon{' '}
+  <a
+    href="https://www.linkedin.com/in/christelespinasse/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className={[
+      'font-semibold text-primary underline underline-offset-2 transition-opacity hover:opacity-70',
+      'focus-visible:rounded focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-primary',
+    ].join(' ')}
+  >
+    profil LinkedIn
+  </a>
+  !
+</p>
           </div>
-          <p className="mt-5 text-sm italic text-foreground/60">
-            Conçu pour les designers, développeur-ses, chef-fes de projet,
-            product owners et équipes client.
-          </p>
         </div>
       </section>
+
 
       {/* ── Méthode ───────────────────────────────────────────────────────── */}
       <section aria-labelledby="methode-heading" className="mx-auto w-full max-w-[62rem] px-6 py-20">

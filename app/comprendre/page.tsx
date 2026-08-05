@@ -11,6 +11,15 @@ export const metadata: Metadata = {
   description: `Comprendre la démarche,  la logique du framework d'évaluation éthique et le rôle limité de l'analyse IA.`, 
 }
 
+const glossary = [
+  { term: 'Gamification', text: `Intégration d'éléments de jeu (points, badges, niveaux) dans un contexte qui n'est pas initialement ludique.` },
+  { term: 'Dark pattern', text: `Interface conçue pour orienter une décision contre l'intérêt de la personne qui l'utilise.` },
+  { term: 'FOMO', text: `Peur de manquer une opportunité, qui pousse à agir dans l'urgence plutôt que par choix réfléchi.` },
+  { term: 'Streak', text: `Série d'actions réalisées sans interruption, mise en avant pour encourager un usage quotidien.` },
+  { term: 'Récompense aléatoire', text: `Récompense dont le contenu ou le moment d'obtention est imprévisible, comme dans une loot box.` },
+  { term: 'Design persuasif', text: `Techniques de conception visant à influencer le comportement d'une personne.` },
+]
+
 const dimensions = [
   { id: 'objectif',       label: `Objectif de l'expérience`,       text: `Pourquoi intégrer une gamification ? Engagement,  apprentissage,  conversion,  changement de comportement ?`,  Icon: Target }, 
   { id: 'public',         label: 'Public concerné',                 text: `À qui s'adresse l'expérience ? Des mineur-es,  des personnes vulnérables,  des professionnel-les ?`,  Icon: Users }, 
@@ -73,6 +82,31 @@ export default function ComprendrePage() {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* ── Glossaire ─────────────────────────────────────────────────────── */}
+      {/* Complète l'introduction avant de plonger dans les dimensions du
+          framework (qui mentionnent déjà "streaks", "récompenses aléatoires").
+          Volontairement compact : quelques termes clés, pas un lexique
+          exhaustif — cette page explique le framework, pas le sujet en entier. */}
+      <section
+        aria-labelledby="glossaire-heading"
+        className="mx-auto w-full max-w-[62rem] px-6 py-20"
+      >
+        <h2 id="glossaire-heading" className="mb-3 text-3xl font-semibold text-foreground">
+          Quelques termes clés
+        </h2>
+        <p className="mb-10 max-w-xl text-base leading-relaxed text-foreground/70">
+          Pour suivre plus facilement le reste de cette page.
+        </p>
+        <dl className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+          {glossary.map((item) => (
+            <div key={item.term}>
+              <dt className="text-sm font-semibold text-foreground">{item.term}</dt>
+              <dd className="mt-1 text-sm leading-relaxed text-foreground/70">{item.text}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       {/* ── Ce que l'outil évalue ─────────────────────────────────────────── */}
