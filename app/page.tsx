@@ -386,10 +386,7 @@ export default function HomePage() {
             >
               Commencer l'évaluation
             </Link>
-            <p className="mt-6 text-xs text-foreground/40">
-              Développé dans le cadre d'un Travail de Bachelor à la HEIG-VD, sur la
-              base de recherches en psychologie de la motivation (Deci &amp; Ryan, Pink).
-            </p>
+            
           </div>
         </div>
       </section>
