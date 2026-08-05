@@ -2,64 +2,114 @@ import { PhoneStatusBar } from '@/components/principes/showcases/shared/PhoneSta
 import { ShowcaseShell } from '@/components/principes/showcases/shared/ShowcaseShell'
 import { Hotspot } from '@/components/principes/showcases/shared/Hotspot'
 
+const RANKING = [
+  { medal: '🥇', name: 'Alex', points: '45’320 pts' },
+  { medal: '🥈', name: 'Mia_K', points: '40’912 pts' },
+  { medal: '🥉', name: 'Sam.divi', points: '39’022 pts' },
+]
+
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-[440px] w-[300px] shrink-0 flex-col border-x-[3px] border-primary bg-[#FAF6F0] px-5 py-5">
+      {children}
+    </div>
+  )
+}
+
+function RankingRow({ medal, name, points }: { medal: string; name: string; points: string }) {
+  return (
+    <div className="flex items-center gap-3 text-sm text-foreground/70">
+      <span className="text-lg">{medal}</span>
+      <span className="flex-1">{name}</span>
+      <span>{points}</span>
+    </div>
+  )
+}
+
+function YouRow() {
+  return (
+    <div className="flex items-center gap-3 rounded-xl bg-primary/10 px-3 py-2 text-sm font-semibold text-foreground">
+      <span className="w-6">103.</span>
+      <span className="flex-1">Vous</span>
+      <span>20’169 pts</span>
+    </div>
+  )
+}
+
 export function ComparaisonSocialeShowcase() {
   return (
     <ShowcaseShell
-      principles={['comparaison-sociale']}
+      principles={['comparaison-sociale', 'progression']}
+      flush
+      cardWidth={300}
       intro="Comparez ces deux versions d'un même écran, puis survolez leurs éléments pour comprendre ce que change ce principe."
       before={
-        <div className="h-[360px] w-[320px] overflow-hidden rounded-t-[36px] border-[3px] border-b-0 border-primary bg-[#FAF6F0] p-[22px]">
+        <Card>
           <PhoneStatusBar />
-          <p className="mb-4 text-[19px] font-semibold text-foreground">Classement</p>
-
-          <div className="flex flex-col gap-2 rounded-2xl border border-border p-4 text-sm">
-            <div className="flex justify-between text-foreground/60">
-              <span>1. Alex99</span>
-              <span>45 320 pts</span>
-            </div>
-            <div className="flex justify-between text-foreground/60">
-              <span>2. Mia_K</span>
-              <span>41 800 pts</span>
-            </div>
-            <div className="flex justify-between text-foreground/60">
-              <span>3. Sam.dev</span>
-              <span>39 120 pts</span>
-            </div>
-            <Hotspot
-              principle="comparaison-sociale"
-              message="Un classement public crée mécaniquement des perdant-es : la grande majorité des utilisateur-rices se voit renvoyer un rang défavorable, quel que soit leur effort réel."
-            >
-              <div className="flex justify-between rounded-lg bg-primary/5 px-2 py-1 font-semibold text-foreground">
-                <span>8 542e — Vous</span>
-                <span>210 pts</span>
-              </div>
-            </Hotspot>
-          </div>
-        </div>
-      }
-      after={
-        <div className="h-[360px] w-[320px] overflow-hidden rounded-t-[36px] border-[3px] border-b-0 border-primary bg-[#FAF6F0] p-[22px]">
-          <PhoneStatusBar />
-          <p className="mb-4 text-[19px] font-semibold text-foreground">Votre progression</p>
+          <p className="mb-4 mt-1.5 text-[17px] font-bold text-foreground">Classement hebdomadaire</p>
 
           <Hotspot
             principle="comparaison-sociale"
-            message="Comparer l'utilisateur à lui-même plutôt qu'aux autres préserve la motivation sans créer de hiérarchie : chacun progresse à partir de sa propre référence."
-            tint
+            message="Le classement met principalement l'accent sur la position des utilisateurs par rapport aux autres, ce qui peut encourager une compétition excessive."
           >
-            <div className="rounded-2xl border border-border p-4">
-              <p className="mb-1 text-xs font-semibold text-foreground/50">Cette semaine</p>
-              <p className="text-lg font-semibold text-[var(--color-positive)]">+12 % d'assiduité</p>
-              <p className="text-xs text-foreground/50">Par rapport à votre moyenne personnelle</p>
+            <div className="flex flex-col gap-2.5">
+              {RANKING.map((row) => (
+                <RankingRow key={row.name} {...row} />
+              ))}
+              <span className="text-foreground/40">...</span>
+              <YouRow />
             </div>
           </Hotspot>
 
-          <div className="mt-4 flex items-end gap-1.5">
-            {[40, 55, 45, 70, 60, 80, 90].map((h, i) => (
-              <div key={i} className="flex-1 rounded-t bg-primary/20" style={{ height: `${h * 0.4}px` }} />
+          <Hotspot
+            principle="comparaison-sociale"
+            message="Le message incite à progresser pour dépasser les autres plutôt que pour atteindre ses propres objectifs."
+          >
+            <p className="mt-3.5 text-center text-sm font-semibold text-foreground">
+              Vous êtes à trois places du top 100. Continuez comme ça !
+            </p>
+          </Hotspot>
+
+          <Hotspot
+            principle="comparaison-sociale"
+            message="L'objectif proposé est de dépasser les autres utilisateurs, renforçant la comparaison sociale comme principale source de motivation."
+          >
+            <button className="mt-8 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground">
+              Rattraper les autres
+            </button>
+          </Hotspot>
+        </Card>
+      }
+      after={
+        <Card>
+          <PhoneStatusBar />
+          <p className="mb-4 mt-1.5 text-[17px] font-bold text-foreground">Votre progression</p>
+
+          <div className="flex flex-col gap-2.5">
+            {RANKING.map((row) => (
+              <RankingRow key={row.name} {...row} />
             ))}
+            <span className="text-foreground/40">...</span>
+            <YouRow />
           </div>
-        </div>
+
+          <Hotspot
+            principle="comparaison-sociale"
+            message="L'accent est mis sur l'évolution de l'utilisateur plutôt que sur sa position dans le classement."
+            tint
+          >
+            <p className="mt-2.5 text-sm font-semibold text-primary">+8 places cette semaine</p>
+          </Hotspot>
+
+          <Hotspot
+            principle="progression"
+            message="La motivation repose sur les progrès réalisés et l'amélioration personnelle plutôt que sur la compétition avec les autres."
+          >
+            <button className="mt-8 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground">
+              Continuer à progresser
+            </button>
+          </Hotspot>
+        </Card>
       }
     />
   )
