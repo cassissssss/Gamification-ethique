@@ -23,17 +23,17 @@ const steps = [
   {
     number: '02', 
     title: 'Comprenez les recommandations', 
-    description: `Vos réponses génèrent des tags,  qui activent des règles de priorité. Le résultat propose un verdict général,  des points de vigilance et des recommandations concrètes.`, 
+    description: `Vos réponses génèrent des tags,  qui activent des règles de priorité. Le résultat propose une orientation générale,  des points de vigilance et des recommandations concrètes.`, 
   }, 
   {
     number: '03', 
     title: 'Utilisez le résultat comme support de discussion', 
-    description: `Les recommandations ne remplacent pas une décision de projet,  un test utilisateur ou une analyse juridique. Elles servent à préparer une discussion avec l'équipe ou le client.`, 
+    description: `Les recommandations ne remplacent pas une décision de projet,  un test utilisateur ou une analyse juridique. Elles servent à préparer une discussion avec l'équipe ou le·la client·e.`, 
   }, 
   {
     number: '04', 
-    title: 'Analyse IA complémentaire', 
-    description: `Une analyse IA peut aider à reformuler ou approfondir les résultats,  mais elle intervient après la logique du framework. Elle ne remplace pas les règles définies dans l'outil.`, 
+    title: 'Poursuivez la réflexion avec une IA', 
+    description: `Un prompt reprenant vos résultats peut être généré et copié pour être utilisé dans l'outil d'IA de votre choix,  afin d'obtenir des pistes complémentaires. Il ne remplace pas les règles définies dans le framework.`, 
   }, 
 ]
 
@@ -78,7 +78,7 @@ export function GuideModal({ open,  onOpenChange }: GuideModalProps) {
           </DialogTitle>
           <DialogDescription className="text-sm leading-relaxed text-foreground/70">
             Cette évaluation aide à identifier les points de vigilance éthiques
-            d'une expérience gamifiée. Elle s'adresse aux professionnel-les qui
+            d'une expérience gamifiée. Elle s'adresse aux professionnel·les qui
             souhaitent questionner une idée,  une mécanique ou une interface avant
             sa conception ou sa mise en production.
           </DialogDescription>
