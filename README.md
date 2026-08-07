@@ -63,56 +63,6 @@ Le site est alors accessible sur [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Structure du projet
-
-```
-gamification-ethique/
-├── app/                  Pages du site (App Router) et parcours utilisateur
-│   ├── page.tsx            Accueil
-│   ├── principes/          Les 8 principes (+ sous-pages par principe)
-│   ├── comprendre/         Explication du fonctionnement de l'outil
-│   ├── evaluation/         Questionnaire
-│   ├── resultats/          Diagnostic et recommandations
-│   ├── ressources/         Sources et ressources utiles
-│   └── a-propos/           Contexte du projet et autrice
-│
-├── components/           Composants d'interface, organisés par fonctionnalité
-│   ├── ui/                 Composants de base (shadcn/ui)
-│   ├── evaluation/         Questionnaire, guide, barre de progression
-│   ├── resultats/          Verdict, recommandations, export, prompt IA
-│   ├── principes/          Cartes et visuels d'exemple (showcases)
-│   └── layout/             Header, footer, navigation
-│
-├── data/                 Contenu du framework (données pures, sans logique)
-│   ├── questions.ts        Les 19 questions et leurs options
-│   ├── tags.ts             Tags associés aux réponses
-│   ├── principles.ts       Les 8 principes éthiques
-│   ├── recommendations.ts  Recommandations liées aux tags
-│   ├── verdicts.ts         Orientations générales possibles
-│   └── resources.ts        Ressources externes
-│
-├── logic/                Moteurs d'analyse (le cœur de l'évaluation)
-│   ├── evaluationEngine.ts     Orchestre toute l'analyse
-│   ├── riskEngine.ts           Regroupe les signaux par thème de risque
-│   ├── contradictionEngine.ts  Détecte les incohérences dans les réponses
-│   ├── mechanicsEngine.ts      Propose des alternatives par mécanique
-│   ├── synergyEngine.ts        Détecte les combinaisons à risque amplifié
-│   ├── visibilityEngine.ts     Gère l'affichage des questions conditionnelles
-│   └── recommendationEngine.ts Recommandations positives
-│
-├── lib/                  Fonctions utilitaires et sous-moteurs d'évaluation
-│   ├── storage.ts          Gestion du localStorage
-│   └── evaluation/         tag-engine, verdict-engine, ai-prompt, etc.
-│
-├── hooks/                Hooks React (ex. useEvaluationForm)
-├── types/                Types TypeScript partagés
-└── public/               Images et fichiers statiques
-```
-
-La séparation entre `data/` (contenu), `logic/` (analyse) et `components/` (interface) permet de faire évoluer le framework — ajouter une question, un tag ou une recommandation — sans toucher au reste de l'application.
-
----
-
 ## Auteure
 
 **Christel Espinasse** — Travail de Bachelor 2025-2026
